@@ -1,0 +1,15 @@
+*.suo
+/.vs
+/packages
+/ICanPay/bin
+/ICanPay/obj
+/Mi9Pay.DataModel/bin
+/Mi9Pay.DataModel/obj
+/Mi9Pay.Entities/bin
+/Mi9Pay.Entities/obj
+/Mi9Pay.Service/bin
+/Mi9Pay.Service/obj
+/Mi9Pay.ViewModel/bin
+/Mi9Pay.ViewModel/obj
+/Mi9Pay.Web/bin
+/Mi9Pay.Web/obj

@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mi9Pay.Web", "Mi9Pay.Web\Mi9Pay.Web.csproj", "{94368FDD-DAF4-45C1-884B-B36C60EC8C01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mi9Pay.ViewModel", "Mi9Pay.ViewModel\Mi9Pay.ViewModel.csproj", "{1695AE88-25B1-4E3E-89F3-704FB4DF0167}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mi9Pay.Service", "Mi9Pay.Service\Mi9Pay.Service.csproj", "{EE73B7D2-C769-4E15-BCA1-95F181C84F67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mi9Pay.Entities", "Mi9Pay.Entities\Mi9Pay.Entities.csproj", "{6C35C7D3-BFCF-4D46-A803-28EAF8E4213B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICanPay", "ICanPay\ICanPay.csproj", "{8CC9F719-2537-4B54-BAD7-268057B946FA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DLLs", "DLLs", "{01DA51B4-767B-47C9-8604-E1D224F148CA}"
+	ProjectSection(SolutionItems) = preProject
+		DLLs\Alipay.AopSdk.dll = DLLs\Alipay.AopSdk.dll
+		DLLs\Alipay.F2FPay.dll = DLLs\Alipay.F2FPay.dll
+		DLLs\ThoughtWorks.QRCode.dll = DLLs\ThoughtWorks.QRCode.dll
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mi9Pay.DataModel", "Mi9Pay.DataModel\Mi9Pay.DataModel.csproj", "{8D8D4996-2FB4-4089-BE60-9B81606A2ABC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{94368FDD-DAF4-45C1-884B-B36C60EC8C01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94368FDD-DAF4-45C1-884B-B36C60EC8C01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94368FDD-DAF4-45C1-884B-B36C60EC8C01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94368FDD-DAF4-45C1-884B-B36C60EC8C01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1695AE88-25B1-4E3E-89F3-704FB4DF0167}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1695AE88-25B1-4E3E-89F3-704FB4DF0167}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1695AE88-25B1-4E3E-89F3-704FB4DF0167}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1695AE88-25B1-4E3E-89F3-704FB4DF0167}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE73B7D2-C769-4E15-BCA1-95F181C84F67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE73B7D2-C769-4E15-BCA1-95F181C84F67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE73B7D2-C769-4E15-BCA1-95F181C84F67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE73B7D2-C769-4E15-BCA1-95F181C84F67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C35C7D3-BFCF-4D46-A803-28EAF8E4213B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C35C7D3-BFCF-4D46-A803-28EAF8E4213B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C35C7D3-BFCF-4D46-A803-28EAF8E4213B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C35C7D3-BFCF-4D46-A803-28EAF8E4213B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CC9F719-2537-4B54-BAD7-268057B946FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CC9F719-2537-4B54-BAD7-268057B946FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CC9F719-2537-4B54-BAD7-268057B946FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CC9F719-2537-4B54-BAD7-268057B946FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D8D4996-2FB4-4089-BE60-9B81606A2ABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D8D4996-2FB4-4089-BE60-9B81606A2ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D8D4996-2FB4-4089-BE60-9B81606A2ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D8D4996-2FB4-4089-BE60-9B81606A2ABC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
