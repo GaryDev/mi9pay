@@ -35,6 +35,11 @@ namespace Mi9Pay.Web.Controllers
 
                 Mapper.Initialize(cfg => cfg.CreateMap<OrderRequest, OrderRequestViewModel>());
                 OrderRequestViewModel order = Mapper.Map<OrderRequest, OrderRequestViewModel>(orderRequest);
+
+                IEnumerable<PaymentMethod> paymentMethods = _gatewayService.GetPaymentMethods();
+                Mapper.Initialize(cfg => cfg.CreateMap<PaymentMethod, PaymentMethodViewModel>());
+                order.PaymentMethodList = Mapper.Map<IEnumerable<PaymentMethod>, IEnumerable<PaymentMethodViewModel>>(paymentMethods);
+
                 return View(order);
             }
             catch (Exception ex)

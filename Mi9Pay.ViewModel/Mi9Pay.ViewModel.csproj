@@ -43,8 +43,15 @@
     <Compile Include="OrderRequestViewModel.cs" />
     <Compile Include="OrderPaymentResponseViewModel.cs" />
     <Compile Include="OrderPaymentViewModel.cs" />
+    <Compile Include="PaymentMethodViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\SignatureUtil.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ICanPay\ICanPay.csproj">
+      <Project>{8CC9F719-2537-4B54-BAD7-268057B946FA}</Project>
+      <Name>ICanPay</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

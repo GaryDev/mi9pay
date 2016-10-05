@@ -45,6 +45,7 @@
     <Compile Include="OrderPaymentResponse.cs" />
     <Compile Include="OrderRequest.cs" />
     <Compile Include="OrderResponse.cs" />
+    <Compile Include="PaymentMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -10,8 +10,12 @@
         <div style="padding: 8px; font-size: 12pt;">订单金额: <span id="amount" style="margin-left: 12px; font-size: 18pt; font-weight: bold">@Model.TotalAmount.ToString("c")</span></div>
         <div style="padding: 8px; font-size: 12pt;">
             请选择支付方式：<br />
-            @Html.RadioButtonFor(m => m.PaymentMethod, "alipay", new { @checked = "checked" }) 支付宝 &nbsp;&nbsp;&nbsp;&nbsp;
-            @Html.RadioButtonFor(m => m.PaymentMethod, "wechatpayment") 微信
+            @foreach (var item in Model.PaymentMethodList)
+            {
+                <div style="padding: 4px;">
+                    @Html.RadioButtonFor(m => m.PaymentMethod, @item.Code.ToLower()) @item.Name
+                </div>
+            }
         </div>
         <div style="padding: 8px;"><a class="btn btn-primary btn-lg" id="confirm">生成支付二维码</a></div>
     </div>

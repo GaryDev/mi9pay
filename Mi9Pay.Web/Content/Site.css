@@ -22,3 +22,23 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.btn-disabled, .btn-disabled:hover {
+    border: 1px solid #DDD;
+    background-color: #F5F5F5;
+    color: #ACA899;
+}
+
+.loading-indicator {
+	height: 80px;
+	width: 80px;
+	background: url( 'loading.gif' );
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.loading-indicator-overlay {
+	background-color: #FFFFFF;
+	opacity: 0.6;
+	filter: alpha(opacity = 60);
+}

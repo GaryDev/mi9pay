@@ -2,9 +2,21 @@
     var domainPath = "http://localhost/mi9pay";
 
     var interval = null;
-    var qrDiv = $("#qrCodeImg");
+    var selectMethod = null;
 
-    $("#confirm").click(function () {
+    var container = $("#payOrderContainer");
+    var qrDiv = $("#qrCodeImg");
+    var confirmBtn = $("#confirm");
+    var radioMethod = $('input[name="PaymentMethod"]');
+
+    confirmBtn.addClass("btn-disabled");
+    confirmBtn.click(function () {
+        if (confirmBtn.hasClass("btn-disabled"))
+            return false;
+
+        confirmBtn.addClass("btn-disabled");
+
+        container.showLoading();
         $.ajax({
             url: domainPath + "/gateway/qrcode",
             type: "GET",
@@ -13,16 +25,27 @@
             },
             dataType: 'json',
             success: function (data) {
+                container.hideLoading();
                 qrDiv.empty();
                 if (data.img) {
                     qrDiv.append(data.img);
                     longPolling();
                 }
+            },
+            error: function () {
+                container.hideLoading();
+                confirmBtn.removeClass("btn-disabled");
             }
         });
     });
 
-    $('input[name="PaymentMethod"]').click(function () {
+    radioMethod.click(function (evt) {
+        var currentVal = evt.target.value;
+        if (selectMethod == currentVal)
+            return false;
+        selectMethod = evt.target.value;
+
+        confirmBtn.removeClass("btn-disabled");
         qrDiv.empty();
         if (interval)
             clearInterval(interval);

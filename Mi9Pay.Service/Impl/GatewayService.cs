@@ -1,4 +1,5 @@
-﻿using ICanPay;
+﻿using AutoMapper;
+using ICanPay;
 using ICanPay.Configs;
 using Mi9Pay.DataModel;
 using Mi9Pay.Entities;
@@ -147,6 +148,14 @@ namespace Mi9Pay.Service
             });
 
             return gatewayTypes;
+        }
+
+        public IEnumerable<PaymentMethod> GetPaymentMethods()
+        {
+            IEnumerable<GatewayPaymentMethod> paymentMethods = GetGatewayPaymentMethods();
+
+            Mapper.Initialize(cfg => cfg.CreateMap<GatewayPaymentMethod, PaymentMethod>());
+            return Mapper.Map<IEnumerable<GatewayPaymentMethod>, IEnumerable<PaymentMethod>>(paymentMethods);
         }
 
         private GatewayPaymentApp GetGatewayPaymentApp(string appId)
