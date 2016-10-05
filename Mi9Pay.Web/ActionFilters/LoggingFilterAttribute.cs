@@ -17,18 +17,20 @@ namespace Mi9Pay.Web.ActionFilters
             var actionDescriptor = filterContext.ActionDescriptor;
             string controllerName = actionDescriptor.ControllerDescriptor.ControllerName;
             string actionName = actionDescriptor.ActionName;
-            DateTime timeStamp = filterContext.HttpContext.Timestamp;
 
-            HttpMethod httpMethod = new HttpMethod(HttpContext.Current.Request.HttpMethod);
-            Uri requestUrl = HttpContext.Current.Request.Url;
-            HttpRequestMessage request = new HttpRequestMessage(httpMethod, requestUrl);
+            if (actionName != "LongPolling")
+            {
+                HttpMethod httpMethod = new HttpMethod(HttpContext.Current.Request.HttpMethod);
+                Uri requestUrl = HttpContext.Current.Request.Url;
+                HttpRequestMessage request = new HttpRequestMessage(httpMethod, requestUrl);
 
-            HttpConfiguration config = new HttpConfiguration();
-            config.Services.Replace(typeof(ITraceWriter), new NLogHelper());
-            var trace = config.Services.GetTraceWriter();
-            trace.Info(request,
-                "Controller : " + controllerName + Environment.NewLine +
-                "Action : " + actionName, "JSON", filterContext.ActionParameters.Values.ToArray());
+                HttpConfiguration config = new HttpConfiguration();
+                config.Services.Replace(typeof(ITraceWriter), new NLogHelper());
+                var trace = config.Services.GetTraceWriter();
+                trace.Info(request,
+                    "Controller : " + controllerName + Environment.NewLine +
+                    "Action : " + actionName, "JSON", filterContext.ActionParameters.Values.ToArray());
+            }
         }
     }
 }

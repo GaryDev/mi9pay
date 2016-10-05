@@ -34,6 +34,8 @@ namespace Mi9Pay.Service
 
             if (requestSign != serverSign)
                 throw new Exception("签名验证失败");
+
+            requestParameter.Add("sign", requestSign);
         }
 
         public OrderRequest RecieveRequestForm(Dictionary<string, string> requestParameter)
@@ -41,7 +43,7 @@ namespace Mi9Pay.Service
             OrderRequest request = new OrderRequest();
 
             request.AppId = requestParameter["app_id"];
-            request.InvoiceNumber = requestParameter["invoice"] as string;
+            request.InvoiceNumber = requestParameter["invoice"];
             //request.InvoiceNumber = DateTime.Now.ToString("yyyyMMddHHmmss") + "0000" + (new Random()).Next(1, 10000).ToString(); // For test
             request.TotalAmount = Convert.ToDecimal(requestParameter["amount"]) / 100;
             request.Currency = requestParameter["currency"];
@@ -66,6 +68,7 @@ namespace Mi9Pay.Service
                 }
             }
 
+            request.Signature = requestParameter["sign"];
             request.DoneUrl = requestParameter["done_url"];
             request.NotifyUrl = requestParameter["notify_url"];
 

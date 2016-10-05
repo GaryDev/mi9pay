@@ -30,7 +30,7 @@ namespace Mi9Pay.Web.Controllers
                 Dictionary<string, string> parameters = form.CovertToDictionary();
                 _gatewayService.ValidateRequestParameter(parameters);
 
-                OrderRequest orderRequest = _gatewayService.RecieveRequestForm(form.CovertToDictionary());
+                OrderRequest orderRequest = _gatewayService.RecieveRequestForm(parameters);
                 ControllerContext.HttpContext.Session[OrderRequest.SessionKey] = orderRequest;
 
                 Mapper.Initialize(cfg => cfg.CreateMap<OrderRequest, OrderRequestViewModel>());
@@ -111,7 +111,7 @@ namespace Mi9Pay.Web.Controllers
 
         [Route("order/polling")]
         [HttpGet]
-        public JsonResult QueryPaymentStatus(OrderRequest request, string invoice)
+        public JsonResult LongPolling(OrderRequest request, string invoice)
         {
             try
             {
