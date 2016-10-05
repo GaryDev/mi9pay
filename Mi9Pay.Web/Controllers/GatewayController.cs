@@ -63,11 +63,11 @@ namespace Mi9Pay.Web.Controllers
                 {
                     imgTag = string.Format("<img src='data:image/png;base64,{0}' />", Convert.ToBase64String(ms.ToArray()));
                 }
-                return Json(new { img = imgTag }, JsonRequestBehavior.AllowGet);
+                return Json(new { return_code = "SUCCESS", img = imgTag, return_msg = "OK" }, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Json(new { img = string.Empty }, JsonRequestBehavior.AllowGet);
+                return Json(new { return_code = "FAIL", img = string.Empty, return_msg = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -136,13 +136,24 @@ namespace Mi9Pay.Web.Controllers
             Exception ex = filterContext.Exception;
             filterContext.ExceptionHandled = true;
 
-            var model = new HandleErrorInfo(filterContext.Exception, "Controller", "Action");
-
-            filterContext.Result = new ViewResult()
+            if (filterContext.HttpContext.Request.HttpMethod == "GET")
             {
-                ViewName = "Error",
-                ViewData = new ViewDataDictionary(model)
-            };
+                filterContext.HttpContext.Response.StatusCode = 200;
+                filterContext.Result = new JsonResult
+                {
+                    Data = new { return_code = "FAIL", return_msg = ex.Message },
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet
+                };
+            }
+            else
+            {
+                var model = new HandleErrorInfo(filterContext.Exception, "Controller", "Action");
+                filterContext.Result = new ViewResult()
+                {
+                    ViewName = "Error",
+                    ViewData = new ViewDataDictionary(model)
+                };
+            }
         }
     }
 }

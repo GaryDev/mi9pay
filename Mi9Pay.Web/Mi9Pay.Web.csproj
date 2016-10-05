@@ -158,6 +158,7 @@
     </Compile>
     <Compile Include="Helpers\FormHelper.cs" />
     <Compile Include="Helpers\NLogHelper.cs" />
+    <Compile Include="Helpers\TimeHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

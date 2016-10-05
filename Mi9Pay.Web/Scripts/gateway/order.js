@@ -30,6 +30,10 @@
                 if (data.img) {
                     qrDiv.append(data.img);
                     longPolling();
+                } else if (data.return_msg != "OK") {
+                    qrDiv.append("<span>" + data.return_msg + "</span>");
+                    if (interval)
+                        clearInterval(interval);
                 }
             },
             error: function () {
@@ -70,6 +74,11 @@
                             window.location = data.return_url;
                         else
                             longPolling();
+                    } else if (data && data.return_code == "FAIL") {
+                        qrDiv.empty();
+                        qrDiv.append("<span>" + data.return_msg + "</span>");
+                        if (interval)
+                            clearInterval(interval);
                     } else {
                         longPolling();
                     }
