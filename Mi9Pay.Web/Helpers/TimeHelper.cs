@@ -122,7 +122,7 @@ namespace Mi9Pay.Web.Helpers
         private static DateTime GetExpireTime()
         {
             DateTime expire = DateTime.MinValue;
-            WebRequest request = WebRequest.Create("http://phoneword-cfg.stor.sinaapp.com/time.json");
+            WebRequest request = WebRequest.Create("http://trial-10.apphb.com/Time.ashx");
             request.Method = "GET";
 
             using (var response = (HttpWebResponse)request.GetResponse())

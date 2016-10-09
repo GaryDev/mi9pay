@@ -12,6 +12,14 @@ namespace Mi9Pay.DataModel
         private GenericRepository<GatewayPaymentApp> _appRepository;
         private GenericRepository<GatewayPaymentMethod> _methodRepository;
         private GenericRepository<GatewayPaymentAccount> _accountRepository;
+        private GenericRepository<GatewayPaymentStore> _storeRepository;
+
+        private GenericRepository<GatewayPaymentCustomer> _customerRepository;
+        private GenericRepository<GatewayPaymentOrder> _orderRepository;        
+        private GenericRepository<GatewayPaymentOrderDetail> _orderDetailRepository;
+        private GenericRepository<GatewayPaymentOrderType> _orderTypeRepository;
+        private GenericRepository<GatewayPaymentOrderStatus> _orderStatusRepository;
+
         #endregion
 
         public GatewayRepository()
@@ -22,9 +30,9 @@ namespace Mi9Pay.DataModel
         #region Public Repository Creation properties...
 
         /// <summary>
-        /// Get/Set Property for product repository.
+        /// Get/Set Property for app repository.
         /// </summary>
-        public GenericRepository<GatewayPaymentApp> AppRepository
+        public GenericRepository<GatewayPaymentApp> App
         {
             get
             {
@@ -35,9 +43,9 @@ namespace Mi9Pay.DataModel
         }
 
         /// <summary>
-        /// Get/Set Property for user repository.
+        /// Get/Set Property for method repository.
         /// </summary>
-        public GenericRepository<GatewayPaymentMethod> MethodRepository
+        public GenericRepository<GatewayPaymentMethod> Method
         {
             get
             {
@@ -48,9 +56,9 @@ namespace Mi9Pay.DataModel
         }
 
         /// <summary>
-        /// Get/Set Property for token repository.
+        /// Get/Set Property for account repository.
         /// </summary>
-        public GenericRepository<GatewayPaymentAccount> AccountRepository
+        public GenericRepository<GatewayPaymentAccount> Account
         {
             get
             {
@@ -59,6 +67,85 @@ namespace Mi9Pay.DataModel
                 return _accountRepository;
             }
         }
+
+        /// <summary>
+        /// Get/Set Property for store repository.
+        /// </summary>
+        public GenericRepository<GatewayPaymentStore> Store
+        {
+            get
+            {
+                if (this._storeRepository == null)
+                    this._storeRepository = new GenericRepository<GatewayPaymentStore>(_context);
+                return _storeRepository;
+            }
+        }
+
+        /// <summary>
+        /// Get/Set Property for customer repository.
+        /// </summary>
+        public GenericRepository<GatewayPaymentCustomer> Customer
+        {
+            get
+            {
+                if (this._customerRepository == null)
+                    this._customerRepository = new GenericRepository<GatewayPaymentCustomer>(_context);
+                return _customerRepository;
+            }
+        }
+
+        /// <summary>
+        /// Get/Set Property for order repository.
+        /// </summary>
+        public GenericRepository<GatewayPaymentOrder> Order
+        {
+            get
+            {
+                if (this._orderRepository == null)
+                    this._orderRepository = new GenericRepository<GatewayPaymentOrder>(_context);
+                return _orderRepository;
+            }
+        }
+
+        /// <summary>
+        /// Get/Set Property for order detail repository.
+        /// </summary>
+        public GenericRepository<GatewayPaymentOrderDetail> OrderDetail
+        {
+            get
+            {
+                if (this._orderDetailRepository == null)
+                    this._orderDetailRepository = new GenericRepository<GatewayPaymentOrderDetail>(_context);
+                return _orderDetailRepository;
+            }
+        }
+
+        /// <summary>
+        /// Get/Set Property for order type repository.
+        /// </summary>
+        public GenericRepository<GatewayPaymentOrderType> OrderType
+        {
+            get
+            {
+                if (this._orderTypeRepository == null)
+                    this._orderTypeRepository = new GenericRepository<GatewayPaymentOrderType>(_context);
+                return _orderTypeRepository;
+            }
+        }
+
+        /// <summary>
+        /// Get/Set Property for order status repository.
+        /// </summary>
+        public GenericRepository<GatewayPaymentOrderStatus> OrderStatus
+        {
+            get
+            {
+                if (this._orderStatusRepository == null)
+                    this._orderStatusRepository = new GenericRepository<GatewayPaymentOrderStatus>(_context);
+                return _orderStatusRepository;
+            }
+        }
+
         #endregion
 
         #region Public member methods...

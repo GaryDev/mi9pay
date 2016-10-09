@@ -69,7 +69,25 @@
     <Compile Include="GatewayPaymentApp.cs">
       <DependentUpon>GatewayPayDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="GatewayPaymentCustomer.cs">
+      <DependentUpon>GatewayPayDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="GatewayPaymentMethod.cs">
+      <DependentUpon>GatewayPayDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GatewayPaymentOrder.cs">
+      <DependentUpon>GatewayPayDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GatewayPaymentOrderDetail.cs">
+      <DependentUpon>GatewayPayDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GatewayPaymentOrderStatus.cs">
+      <DependentUpon>GatewayPayDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GatewayPaymentOrderType.cs">
+      <DependentUpon>GatewayPayDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GatewayPaymentStore.cs">
       <DependentUpon>GatewayPayDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="GenericRepository.cs" />

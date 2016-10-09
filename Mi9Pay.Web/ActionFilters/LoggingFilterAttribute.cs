@@ -15,7 +15,7 @@ namespace Mi9Pay.Web.ActionFilters
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             if (!TimeHelper.IsValid())
-                throw new Exception("感谢使用Mi9Pay支付网关，您的使用权已到期");
+                throw new Exception("感谢使用Mi9Pay支付网关，功能试用已到期");
 
             var actionDescriptor = filterContext.ActionDescriptor;
             string controllerName = actionDescriptor.ControllerDescriptor.ControllerName;

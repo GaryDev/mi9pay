@@ -12,20 +12,17 @@ namespace Mi9Pay.DataModel
     using System;
     using System.Collections.Generic;
     
-    public partial class GatewayPaymentMethod
+    public partial class GatewayPaymentOrderStatus
     {
-        public GatewayPaymentMethod()
+        public GatewayPaymentOrderStatus()
         {
-            this.GatewayPaymentAccount = new HashSet<GatewayPaymentAccount>();
             this.GatewayPaymentOrder = new HashSet<GatewayPaymentOrder>();
         }
     
         public System.Guid UniqueId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
         public string Code { get; set; }
+        public string Description { get; set; }
     
-        public virtual ICollection<GatewayPaymentAccount> GatewayPaymentAccount { get; set; }
         public virtual ICollection<GatewayPaymentOrder> GatewayPaymentOrder { get; set; }
     }
 }

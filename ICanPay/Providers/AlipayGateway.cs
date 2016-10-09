@@ -315,7 +315,7 @@ namespace ICanPay.Providers
             builder.operator_id = AlipayConfig.operId;
             builder.subject = Order.Subject;
             builder.time_expire = DateTime.Now.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss");
-            builder.store_id = AlipayConfig.storeId;
+            builder.store_id = GetGatewayParameterValue("storeid"); //AlipayConfig.storeId;
             builder.seller_id = AlipayConfig.pid;
 
             //List<GoodsInfo> gList = new List<GoodsInfo>();

@@ -11,8 +11,11 @@ using System.Linq;
 
 namespace Mi9Pay.Service
 {
-    public class GatewayService : IGatewayService
+    public partial class GatewayService : IGatewayService
     {
+        private const int Multiplicator = 1000000;
+        private const int AmountMultiplicator = 100;
+
         private readonly GatewayRepository _repository;
 
         public GatewayService(GatewayRepository repository)
@@ -43,10 +46,34 @@ namespace Mi9Pay.Service
             OrderRequest request = new OrderRequest();
 
             request.AppId = requestParameter["app_id"];
-            request.InvoiceNumber = requestParameter["invoice"];
             //request.InvoiceNumber = DateTime.Now.ToString("yyyyMMddHHmmss") + "0000" + (new Random()).Next(1, 10000).ToString(); // For test
-            request.TotalAmount = Convert.ToDecimal(requestParameter["amount"]) / 100;
+            request.InvoiceNumber = requestParameter["invoice"];
+            request.StoreId = ParseStoreId(requestParameter["invoice"]);
             request.Currency = requestParameter["currency"];
+            request.TotalAmount = Convert.ToDecimal(requestParameter["amount"]) / AmountMultiplicator;
+            if (requestParameter.Keys.Contains("discount"))
+                request.Discount = Convert.ToDecimal(requestParameter["discount"]) / AmountMultiplicator;
+            if (requestParameter.Keys.Contains("shipping_fee"))
+                request.ShippingFee = Convert.ToDecimal(requestParameter["shipping_fee"]) / AmountMultiplicator;
+            if (requestParameter.Keys.Contains("tax"))
+                request.Tax = Convert.ToDecimal(requestParameter["tax"]) / AmountMultiplicator;
+            
+            if (requestParameter.Keys.Contains("s_a_first_name") && requestParameter.Keys.Contains("s_a_last_name"))
+            {
+                request.Customer = new PaymentOrderCustomer
+                {
+                    FirstName = requestParameter["s_a_first_name"],
+                    LastName = requestParameter["s_a_last_name"],
+                    Country = requestParameter.Keys.Contains("s_a_country") ? requestParameter["s_a_country"] : string.Empty,
+                    State = requestParameter.Keys.Contains("s_a_state") ? requestParameter["s_a_state"] : string.Empty,
+                    City = requestParameter.Keys.Contains("s_a_city") ? requestParameter["s_a_city"] : string.Empty,
+                    District = requestParameter.Keys.Contains("s_a_district") ? requestParameter["s_a_district"] : string.Empty,
+                    Street = requestParameter.Keys.Contains("s_a_street") ? requestParameter["s_a_street"] : string.Empty,
+                    ZipCode = requestParameter.Keys.Contains("s_a_zipcode") ? requestParameter["s_a_zipcode"] : string.Empty,
+                    PhoneNumber = requestParameter.Keys.Contains("s_a_phone") ? requestParameter["s_a_phone"] : string.Empty,
+                    Address = requestParameter.Keys.Contains("s_a_district") ? requestParameter["s_a_district"] : string.Empty
+                };
+            }            
 
             int itemCount = requestParameter.Keys.Count(k => k.StartsWith("item_"));
             for (int i = 0; i < itemCount; i++)
@@ -58,11 +85,11 @@ namespace Mi9Pay.Service
                     requestParameter.ContainsKey(itemAmountKey) &&
                     requestParameter.ContainsKey(itemQtyKey))
                 {
-                    OrderItem item = new OrderItem
+                    PaymentOrderDetail item = new PaymentOrderDetail
                     {
-                      Name = requestParameter[itemNameKey],
-                      Quantity = Convert.ToDecimal(requestParameter[itemQtyKey]),
-                      Amount = Convert.ToDecimal(requestParameter[itemAmountKey])
+                      ItemName = requestParameter[itemNameKey],
+                      ItemQty = Convert.ToDecimal(requestParameter[itemQtyKey]),
+                      ItemAmount = Convert.ToDecimal(requestParameter[itemAmountKey]) / AmountMultiplicator
                     };
                     request.PayItems.Add(item);
                 }
@@ -80,16 +107,34 @@ namespace Mi9Pay.Service
             PaymentSetting paymentSetting = InitPaymentSetting(orderRequest, gatewayType);
             paymentSetting.Order.Amount = (double)orderRequest.TotalAmount;
             paymentSetting.Order.Id = orderRequest.InvoiceNumber;
-            paymentSetting.Order.Subject = "MPOS订单编号" + orderRequest.InvoiceNumber;
+            string orderSubject = "MPOS订单编号" + orderRequest.InvoiceNumber;
+            paymentSetting.Order.Subject = orderSubject;
 
-            return paymentSetting.PaymentQRCode();
+            MemoryStream ms = paymentSetting.PaymentQRCode();
+            if (ms != null)
+            {
+                Mapper.Initialize(cfg => {
+                    cfg.CreateMap<OrderRequest, PaymentOrder>();
+                });
+                PaymentOrder paymentOrder = Mapper.Map<OrderRequest, PaymentOrder>(orderRequest);
+                if (paymentOrder != null)
+                {
+                    paymentOrder.OrderType = "MOSAIC";
+                    paymentOrder.Subject = orderSubject;
+                    paymentOrder.GatewayType = gatewayType;
+                    paymentOrder.Status = PaymentOrderStatus.UNPAID;
+                    CreatePaymentOrder(paymentOrder);
+                }
+            }
+            return ms;
         }
 
         public OrderPaymentResponse QueryPayment(string appId, string invoiceNumber, GatewayType gatewayType)
         {
             OrderPaymentResponse response = new OrderPaymentResponse();
 
-            PaymentSetting paymentSetting = InitPaymentSetting(new OrderRequest { AppId = appId }, gatewayType);
+            OrderRequest orderRequest = new OrderRequest { AppId = appId, StoreId = ParseStoreId(invoiceNumber) };
+            PaymentSetting paymentSetting = InitPaymentSetting(orderRequest, gatewayType);
             paymentSetting.Order.Id = invoiceNumber;
 
             QueryResult result = paymentSetting.QueryForResult();
@@ -161,46 +206,23 @@ namespace Mi9Pay.Service
             return Mapper.Map<IEnumerable<GatewayPaymentMethod>, IEnumerable<PaymentMethod>>(paymentMethods);
         }
 
-        private GatewayPaymentApp GetGatewayPaymentApp(string appId)
+        private int ParseStoreId(string invoiceNumber)
         {
-            GatewayPaymentApp app = _repository.AppRepository.Get(x => x.Appid == appId);
-            if (app == null)
-                throw new Exception("无效的appid");
+            int invoice;
 
-            return app;
-        }
+            if (int.TryParse(invoiceNumber, out invoice))
+                return invoice / Multiplicator;
 
-        private IEnumerable<GatewayPaymentMethod> GetGatewayPaymentMethods()
-        {
-            IEnumerable<GatewayPaymentMethod> paymentMethods = _repository.MethodRepository.GetAll();
-            if (paymentMethods == null || paymentMethods.ToList().Count == 0)
-                throw new Exception("未配置支付方式");
-
-            return paymentMethods;
-        }
-
-        private GatewayPaymentAccount GetGatewayPaymentAccount(string appId, GatewayType gatewayType)
-        {
-            GatewayPaymentApp app = GetGatewayPaymentApp(appId);
-
-            string payCode = Enum.GetName(typeof(GatewayType), gatewayType);
-            GatewayPaymentMethod payMethod = GetGatewayPaymentMethods().ToList().FirstOrDefault(m => string.Compare(m.Code, payCode, true) == 0);
-            if (payMethod == null)
-                throw new Exception("支付方式获取失败");
-
-            GatewayPaymentAccount account = app.GatewayPaymentAccount.FirstOrDefault(c => c.GatewayPaymentMethod == payMethod.UniqueId);
-            if (account == null)
-                throw new Exception("对应支付方式账号获取失败");
-
-            return account;
+            return -1;
         }
 
         private PaymentSetting InitPaymentSetting(OrderRequest orderRequest, GatewayType gatewayType)
         {
-            GatewayPaymentAccount account = GetGatewayPaymentAccount(orderRequest.AppId, gatewayType);
+            GatewayPaymentAccount account = GetGatewayPaymentAccount(orderRequest.StoreId, gatewayType);
 
             PaymentSetting paymentSetting = new PaymentSetting(gatewayType);
             paymentSetting.SetGatewayParameterValue("appid", account.Appid);
+            paymentSetting.SetGatewayParameterValue("storeid", orderRequest.StoreId.ToString());
             paymentSetting.Merchant.UserName = account.Mchid;
             paymentSetting.Merchant.Key = account.Mchkey;
             paymentSetting.Merchant.PublicKey = account.Publickey;

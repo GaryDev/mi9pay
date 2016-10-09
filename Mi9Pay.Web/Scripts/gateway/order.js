@@ -45,8 +45,9 @@
 
     radioMethod.click(function (evt) {
         var currentVal = evt.target.value;
-        if (selectMethod == currentVal)
+        if (selectMethod == currentVal) {
             return false;
+        }
         selectMethod = evt.target.value;
 
         confirmBtn.removeClass("btn-disabled");

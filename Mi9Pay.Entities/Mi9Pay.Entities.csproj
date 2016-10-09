@@ -40,13 +40,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OrderItem.cs" />
     <Compile Include="OrderPayment.cs" />
     <Compile Include="OrderPaymentResponse.cs" />
     <Compile Include="OrderRequest.cs" />
     <Compile Include="OrderResponse.cs" />
     <Compile Include="PaymentMethod.cs" />
+    <Compile Include="PaymentOrder.cs" />
+    <Compile Include="PaymentOrderCustomer.cs" />
+    <Compile Include="PaymentOrderDetail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ICanPay\ICanPay.csproj">
+      <Project>{8CC9F719-2537-4B54-BAD7-268057B946FA}</Project>
+      <Name>ICanPay</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
