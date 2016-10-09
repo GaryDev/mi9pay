@@ -11,6 +11,7 @@ namespace Mi9Pay.Entities
     {
         public int StoreId { get; set; }
         public string InvoiceNumber { get; set; }
+        public string TradeNumber { get; set; }
         public string Subject { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal Tax { get; set; }

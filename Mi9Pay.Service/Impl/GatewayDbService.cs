@@ -100,13 +100,17 @@ namespace Mi9Pay.Service
         {
             try
             {
+                DateTime createTime = DateTime.Now;
                 GatewayPaymentCustomer customer = null;
                 if (paymentOrder.Customer != null)
                 {
                     Mapper.Initialize(cfg => cfg.CreateMap<PaymentOrderCustomer, GatewayPaymentCustomer>());
                     customer = Mapper.Map<PaymentOrderCustomer, GatewayPaymentCustomer>(paymentOrder.Customer);
                     if (customer != null)
+                    {
                         customer.UniqueId = Guid.NewGuid();
+                        customer.TSID = createTime;
+                    }
                 }
                 GatewayPaymentOrder order = new GatewayPaymentOrder
                 {
@@ -120,7 +124,8 @@ namespace Mi9Pay.Service
                     ShippingFee = paymentOrder.ShippingFee,
                     OrderType = GetGatewayPaymentOrderType(paymentOrder.OrderType).UniqueId,
                     GatewayPaymentOrderStatus = GetGatewayPaymentOrderStatus(paymentOrder.Status).UniqueId,
-                    GatewayPaymentMethod = GetGatewayPaymentMethodByType(paymentOrder.GatewayType).UniqueId
+                    GatewayPaymentMethod = GetGatewayPaymentMethodByType(paymentOrder.GatewayType).UniqueId,
+                    TSID = createTime
                 };
                 using (var scope = new TransactionScope())
                 {
@@ -138,13 +143,38 @@ namespace Mi9Pay.Service
                         GatewayPaymentOrderDetail orderDetail = Mapper.Map<PaymentOrderDetail, GatewayPaymentOrderDetail>(item);
                         if (orderDetail != null)
                         {
+                            orderDetail.UniqueId = Guid.NewGuid();
                             orderDetail.GatewayPaymentOrder = order.UniqueId;
+                            orderDetail.TSID = createTime;
                             _repository.OrderDetail.Insert(orderDetail);
                         }
                     }
-
                     _repository.Save();
                     scope.Complete();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private void UpdatePaymentOrder(PaymentOrder paymentOrder)
+        {
+            try
+            {
+                using (var scope = new TransactionScope())
+                {
+                    Guid paymentMethod = GetGatewayPaymentMethodByType(paymentOrder.GatewayType).UniqueId;
+                    GatewayPaymentOrder order = _repository.Order.Get(x => x.OrderNumber == paymentOrder.InvoiceNumber && x.GatewayPaymentMethod == paymentMethod);
+                    if (order != null)
+                    {
+                        order.TradeNumber = paymentOrder.TradeNumber;
+                        order.GatewayPaymentOrderStatus = GetGatewayPaymentOrderStatus(paymentOrder.Status).UniqueId;
+                        _repository.Order.Update(order);
+                        _repository.Save();
+                        scope.Complete();
+                    }
                 }
             }
             catch (Exception ex)

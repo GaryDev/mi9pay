@@ -73,7 +73,7 @@ namespace Mi9Pay.Service
                     PhoneNumber = requestParameter.Keys.Contains("s_a_phone") ? requestParameter["s_a_phone"] : string.Empty,
                     Address = requestParameter.Keys.Contains("s_a_district") ? requestParameter["s_a_district"] : string.Empty
                 };
-            }            
+            }
 
             int itemCount = requestParameter.Keys.Count(k => k.StartsWith("item_"));
             for (int i = 0; i < itemCount; i++)
@@ -139,7 +139,16 @@ namespace Mi9Pay.Service
 
             QueryResult result = paymentSetting.QueryForResult();
             if (result != null)
-            {            
+            {
+                PaymentOrder paymentOrder = new PaymentOrder
+                {
+                    InvoiceNumber = invoiceNumber,
+                    GatewayType = gatewayType,
+                    TradeNumber = result.TradeNo,
+                    Status = PaymentOrderStatus.PAID
+                };
+                UpdatePaymentOrder(paymentOrder);
+
                 response = new OrderPaymentResponse
                 {
                     return_code = "SUCCESS",
