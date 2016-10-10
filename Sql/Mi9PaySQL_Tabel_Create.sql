@@ -60,7 +60,13 @@ ALTER TABLE [dbo].[GatewayPaymentStore] CHECK CONSTRAINT [FK_GatewayPaymentStore
 GO
 
 -- 支付网关 - 支付账号
-
+/*
+Appid // 微信wx000000000000000 /支付宝 00000000000000
+Mchid // 微信mch_id / 支付宝 pid
+Mchkey // 微信mch_key / 支付宝 merchant_private_key
+MchPublickey // 微信NULL / 支付宝 merchant_public_key
+Publickey    // 微信NULL / 支付宝 alipay_public_key
+*/
 CREATE TABLE [dbo].[GatewayPaymentAccount](
 	[UniqueId] [uniqueidentifier] NOT NULL,
 	[Name] [nvarchar](50) NULL,

@@ -1,5 +1,5 @@
 ﻿$(function () {
-    var domainPath = "http://localhost/mi9pay";
+    var domainPath = paymentSetting.domainPath;
 
     var interval = null;
     var selectMethod = null;
@@ -34,6 +34,8 @@
                     qrDiv.append("<span>" + data.return_msg + "</span>");
                     if (interval)
                         clearInterval(interval);
+                } else {
+                    confirmBtn.removeClass("btn-disabled");
                 }
             },
             error: function () {

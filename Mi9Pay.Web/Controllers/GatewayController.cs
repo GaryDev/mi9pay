@@ -55,9 +55,9 @@ namespace Mi9Pay.Web.Controllers
             try
             {
                 string imgTag = string.Empty;
-
                 GatewayType type = method.ToEnum<GatewayType>();
                 orderRequest.PayMethod = method;
+
                 MemoryStream ms = _gatewayService.CreatePaymentQRCode(orderRequest, type);
                 if (ms != null)
                 {

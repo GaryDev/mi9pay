@@ -9,15 +9,13 @@ namespace Mi9Pay.Web.Binder
 {
     public class OrderRequestBinder : IModelBinder
     {
-        private const string sessionKey = OrderRequest.SessionKey;
-
         public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
-            OrderRequest request = (OrderRequest)controllerContext.HttpContext.Session[sessionKey];
+            OrderRequest request = (OrderRequest)controllerContext.HttpContext.Session[OrderRequest.SessionKey];
             if (request == null)
             {
                 request = new OrderRequest();
-                controllerContext.HttpContext.Session[sessionKey] = request;
+                controllerContext.HttpContext.Session[OrderRequest.SessionKey] = request;
             }
             return request;
         }

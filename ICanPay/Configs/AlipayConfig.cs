@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,8 @@ namespace ICanPay.Configs
         public static string merchant_public_key = @"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC50ir7qdKkpF7D0hwfZunQfZTiCmno5vYTIM6oGY+52ME0tUBx4hW+NMUnLqXqKhqSeMZrC17+Xqq/2sBmhtDryAUcU2+gTKUcksAc7JXQdzkGqqTgRQYQQM5A5J14Pld49XTuTQIXRTzB06aOISSkqpuym+7oI8AGQF5hmbHVbQIDAQAB";
         public static string appId = "2016090900473027";
 
-        public static string serverUrl = "https://openapi.alipaydev.com/gateway.do";
+        private static string serverUrl = "https://openapi.alipay.com/gateway.do";
+        private static string serverSandBoxUrl = "https://openapi.alipaydev.com/gateway.do";
         public static string mapiUrl = "https://mapi.alipay.com/gateway.do";
         public static string monitorUrl = "http://mcloudmonitor.com/gateway.do";
 
@@ -30,6 +32,26 @@ namespace ICanPay.Configs
         public AlipayConfig()
         {
             //
+        }
+
+        public static string ServerUrl
+        {
+            get
+            {
+                return IsSandBoxEnabled() ? serverSandBoxUrl : serverUrl;
+            }
+        }
+
+        public static bool IsSandBoxEnabled()
+        {
+            bool sandboxEnabled = true;
+            if (ConfigurationManager.AppSettings.AllKeys.Contains("AlipaySandboxEnabled"))
+            {
+                string sandboxEnabledValue = ConfigurationManager.AppSettings.Get("AlipaySandboxEnabled");
+                if (bool.TryParse(sandboxEnabledValue, out sandboxEnabled))
+                    return sandboxEnabled;
+            }
+            return sandboxEnabled;
         }
 
         public static string getMerchantPublicKeyStr()

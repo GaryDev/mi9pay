@@ -230,11 +230,15 @@ namespace Mi9Pay.Service
             GatewayPaymentAccount account = GetGatewayPaymentAccount(orderRequest.StoreId, gatewayType);
 
             PaymentSetting paymentSetting = new PaymentSetting(gatewayType);
+
             paymentSetting.SetGatewayParameterValue("appid", account.Appid);
-            paymentSetting.SetGatewayParameterValue("storeid", orderRequest.StoreId.ToString());
+            if (gatewayType == GatewayType.Alipay)
+                paymentSetting.SetGatewayParameterValue("storeid", orderRequest.StoreId.ToString());
+
             paymentSetting.Merchant.UserName = account.Mchid;
             paymentSetting.Merchant.Key = account.Mchkey;
             paymentSetting.Merchant.PublicKey = account.Publickey;
+
             if (!string.IsNullOrWhiteSpace(orderRequest.NotifyUrl))
                 paymentSetting.Merchant.NotifyUrl = new Uri(orderRequest.NotifyUrl);
 

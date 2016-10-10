@@ -294,13 +294,18 @@ namespace ICanPay.Providers
 
         private void InitF2FPayService()
         {
+            string serverUrl = AlipayConfig.ServerUrl;
+            string appid = GetGatewayParameterValue("appid");
+            string mchKey = Merchant.Key;
+            string publicKey = Merchant.PublicKey;
+
             f2fPayService = F2FBiz.CreateClientInstance(
-                AlipayConfig.serverUrl,
-                GetGatewayParameterValue("appid"), //AlipayConfig.appId, 
-                Merchant.Key, //AlipayConfig.merchant_private_key, 
+                serverUrl,
+                appid, //AlipayConfig.appId, 
+                mchKey, //AlipayConfig.merchant_private_key, 
                 AlipayConfig.version,
                 AlipayConfig.sign_type,
-                Merchant.PublicKey, //AlipayConfig.alipay_public_key, 
+                publicKey, //AlipayConfig.alipay_public_key, 
                 AlipayConfig.charset
            );
         }
@@ -316,7 +321,7 @@ namespace ICanPay.Providers
             builder.subject = Order.Subject;
             builder.time_expire = DateTime.Now.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss");
             builder.store_id = GetGatewayParameterValue("storeid"); //AlipayConfig.storeId;
-            builder.seller_id = AlipayConfig.pid;
+            builder.seller_id = Merchant.UserName; //AlipayConfig.pid;
 
             //List<GoodsInfo> gList = new List<GoodsInfo>();
             //GoodsInfo goods = new GoodsInfo();
