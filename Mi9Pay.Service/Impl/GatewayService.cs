@@ -113,17 +113,20 @@ namespace Mi9Pay.Service
             MemoryStream ms = paymentSetting.PaymentQRCode();
             if (ms != null)
             {
-                Mapper.Initialize(cfg => {
-                    cfg.CreateMap<OrderRequest, PaymentOrder>();
-                });
-                PaymentOrder paymentOrder = Mapper.Map<OrderRequest, PaymentOrder>(orderRequest);
-                if (paymentOrder != null)
+                if (!PaymentOrderExisted(orderRequest.InvoiceNumber, orderRequest.StoreId, gatewayType))
                 {
-                    paymentOrder.OrderType = "MOSAIC";
-                    paymentOrder.Subject = orderSubject;
-                    paymentOrder.GatewayType = gatewayType;
-                    paymentOrder.Status = PaymentOrderStatus.UNPAID;
-                    CreatePaymentOrder(paymentOrder);
+                    Mapper.Initialize(cfg => {
+                        cfg.CreateMap<OrderRequest, PaymentOrder>();
+                    });
+                    PaymentOrder paymentOrder = Mapper.Map<OrderRequest, PaymentOrder>(orderRequest);
+                    if (paymentOrder != null)
+                    {
+                        paymentOrder.OrderType = "MOSAIC";
+                        paymentOrder.Subject = orderSubject;
+                        paymentOrder.GatewayType = gatewayType;
+                        paymentOrder.Status = PaymentOrderStatus.UNPAID;
+                        CreatePaymentOrder(paymentOrder);
+                    }
                 }
             }
             return ms;
@@ -207,9 +210,18 @@ namespace Mi9Pay.Service
             return gatewayTypes;
         }
 
-        public IEnumerable<PaymentMethod> GetPaymentMethods()
+        public IEnumerable<PaymentMethod> GetPaymentMethods(int storeId)
         {
-            IEnumerable<GatewayPaymentMethod> paymentMethods = GetGatewayPaymentMethods();
+            IEnumerable<GatewayPaymentStorePaymentMethod> storePaymentMethods = GetStorePaymentMethods(storeId);
+            IEnumerable<GatewayPaymentMethod> paymentMethodAll = GetGatewayPaymentMethods();
+
+            List<GatewayPaymentMethod> paymentMethods = new List<GatewayPaymentMethod>();
+            foreach (var method in storePaymentMethods)
+            {
+                GatewayPaymentMethod paymentMethod = paymentMethodAll.ToList().SingleOrDefault(x => x.UniqueId == method.GatewayPaymentMethod);
+                if (paymentMethod != null)
+                    paymentMethods.Add(paymentMethod);
+            }
 
             Mapper.Initialize(cfg => cfg.CreateMap<GatewayPaymentMethod, PaymentMethod>());
             return Mapper.Map<IEnumerable<GatewayPaymentMethod>, IEnumerable<PaymentMethod>>(paymentMethods);

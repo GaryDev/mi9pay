@@ -31,6 +31,25 @@ namespace Mi9Pay.Service
             return paymentMethods;
         }
 
+        private GatewayPaymentStore GetGatewayPaymentStore(int storeId)
+        {
+            GatewayPaymentStore store = _repository.Store.Get(x => x.StoreId == storeId);
+            if (store == null)
+                throw new Exception(string.Format("无效的门店ID({0})", storeId));
+
+            return store;
+        }
+
+        private IEnumerable<GatewayPaymentStorePaymentMethod> GetStorePaymentMethods(int storeId)
+        {
+            GatewayPaymentStore store = GetGatewayPaymentStore(storeId);
+            IEnumerable<GatewayPaymentStorePaymentMethod> storePaymentMethods = _repository.StorePaymentMethod.GetMany(x => x.GatewayPaymentStore == store.UniqueId);
+            if (storePaymentMethods == null || storePaymentMethods.ToList().Count == 0)
+                throw new Exception(string.Format("未配置支付方式，门店ID({0})", storeId));
+
+            return storePaymentMethods;
+        }
+
         private GatewayPaymentMethod GetGatewayPaymentMethodByType(GatewayType gatewayType)
         {
             string payCode = Enum.GetName(typeof(GatewayType), gatewayType);
@@ -62,20 +81,11 @@ namespace Mi9Pay.Service
 
         private GatewayPaymentAccount GetGatewayPaymentAccount(int storeId, GatewayType gatewayType)
         {
-            IEnumerable<GatewayPaymentStore> storeAccounts = _repository.Store.GetMany(s => s.StoreId == storeId);
-            if (storeAccounts == null || storeAccounts.ToList().Count == 0)
-                throw new Exception(string.Format("支付账号获取失败，门店ID({0})", storeId));
-
+            GatewayPaymentStore store = GetGatewayPaymentStore(storeId);
             GatewayPaymentMethod payMethod = GetGatewayPaymentMethodByType(gatewayType);
 
-            GatewayPaymentAccount account = null;
-            foreach (var item in storeAccounts.ToList())
-            {
-                account = _repository.Account.Get(c => c.UniqueId == item.GatewayPaymentAccount 
-                                && c.GatewayPaymentMethod == payMethod.UniqueId);
-                if (account != null)
-                    return account;
-            }
+            GatewayPaymentMerchant merchant = _repository.Merchant.Get(m => m.UniqueId == store.GatewayPaymentMerchant);
+            GatewayPaymentAccount account = _repository.Account.Get(c => c.GatewayPaymentMerchant == merchant.UniqueId && c.GatewayPaymentMethod == payMethod.UniqueId);;          
 
             if (account == null)
                 throw new Exception("对应支付方式账号获取失败");
@@ -83,17 +93,17 @@ namespace Mi9Pay.Service
             return account;
         }
 
-        private GatewayPaymentAccount GetGatewayPaymentAccount(string appId, GatewayType gatewayType)
+        private bool PaymentOrderExisted(string invoiceNumber, int storeId, GatewayType gatewayType)
         {
-            GatewayPaymentApp app = GetGatewayPaymentApp(appId);
-
             GatewayPaymentMethod payMethod = GetGatewayPaymentMethodByType(gatewayType);
+            GatewayPaymentOrder order = _repository.Order.Get(o => o.OrderNumber == invoiceNumber 
+                && o.StoreID == storeId 
+                && o.GatewayPaymentMethod == payMethod.UniqueId);
 
-            GatewayPaymentAccount account = app.GatewayPaymentAccount.FirstOrDefault(c => c.GatewayPaymentMethod == payMethod.UniqueId);
-            if (account == null)
-                throw new Exception("对应支付方式账号获取失败");
+            if (order != null && order.UniqueId != Guid.Empty)
+                return true;
 
-            return account;
+            return false;
         }
 
         private void CreatePaymentOrder(PaymentOrder paymentOrder)
@@ -153,9 +163,9 @@ namespace Mi9Pay.Service
                     scope.Complete();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                //throw ex;
             }
         }
 
@@ -166,20 +176,30 @@ namespace Mi9Pay.Service
                 using (var scope = new TransactionScope())
                 {
                     Guid paymentMethod = GetGatewayPaymentMethodByType(paymentOrder.GatewayType).UniqueId;
-                    GatewayPaymentOrder order = _repository.Order.Get(x => x.OrderNumber == paymentOrder.InvoiceNumber && x.GatewayPaymentMethod == paymentMethod);
-                    if (order != null)
+                    List<GatewayPaymentOrder> orderList = _repository.Order.GetMany(x => x.OrderNumber == paymentOrder.InvoiceNumber).ToList();
+                    if (orderList != null && orderList.Count > 0)
                     {
-                        order.TradeNumber = paymentOrder.TradeNumber;
-                        order.GatewayPaymentOrderStatus = GetGatewayPaymentOrderStatus(paymentOrder.Status).UniqueId;
-                        _repository.Order.Update(order);
+                        foreach (GatewayPaymentOrder order in orderList)
+                        {
+                            if (order.GatewayPaymentMethod == paymentMethod)
+                            {
+                                order.TradeNumber = paymentOrder.TradeNumber;
+                                order.GatewayPaymentOrderStatus = GetGatewayPaymentOrderStatus(paymentOrder.Status).UniqueId;
+                            }
+                            else
+                            {
+                                order.GatewayPaymentOrderStatus = GetGatewayPaymentOrderStatus(PaymentOrderStatus.CLOSED).UniqueId;
+                            }
+                            _repository.Order.Update(order);
+                        }
                         _repository.Save();
                         scope.Complete();
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                //throw ex;
             }
         }
     }

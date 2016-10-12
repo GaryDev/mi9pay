@@ -10,9 +10,13 @@ namespace Mi9Pay.DataModel
 
         private GatewayPayEntities _context = null;
         private GenericRepository<GatewayPaymentApp> _appRepository;
-        private GenericRepository<GatewayPaymentMethod> _methodRepository;
+
         private GenericRepository<GatewayPaymentAccount> _accountRepository;
+        private GenericRepository<GatewayPaymentMerchant> _merchantRepository;
         private GenericRepository<GatewayPaymentStore> _storeRepository;
+
+        private GenericRepository<GatewayPaymentMethod> _methodRepository;
+        private GenericRepository<GatewayPaymentStorePaymentMethod> _storePaymentMethodRepository;
 
         private GenericRepository<GatewayPaymentCustomer> _customerRepository;
         private GenericRepository<GatewayPaymentOrder> _orderRepository;        
@@ -69,6 +73,19 @@ namespace Mi9Pay.DataModel
         }
 
         /// <summary>
+        /// Get/Set Property for merchant repository.
+        /// </summary>
+        public GenericRepository<GatewayPaymentMerchant> Merchant
+        {
+            get
+            {
+                if (this._merchantRepository == null)
+                    this._merchantRepository = new GenericRepository<GatewayPaymentMerchant>(_context);
+                return _merchantRepository;
+            }
+        }
+
+        /// <summary>
         /// Get/Set Property for store repository.
         /// </summary>
         public GenericRepository<GatewayPaymentStore> Store
@@ -78,6 +95,19 @@ namespace Mi9Pay.DataModel
                 if (this._storeRepository == null)
                     this._storeRepository = new GenericRepository<GatewayPaymentStore>(_context);
                 return _storeRepository;
+            }
+        }
+
+        /// <summary>
+        /// Get/Set Property for store payment method repository.
+        /// </summary>
+        public GenericRepository<GatewayPaymentStorePaymentMethod> StorePaymentMethod
+        {
+            get
+            {
+                if (this._storePaymentMethodRepository == null)
+                    this._storePaymentMethodRepository = new GenericRepository<GatewayPaymentStorePaymentMethod>(_context);
+                return _storePaymentMethodRepository;
             }
         }
 
