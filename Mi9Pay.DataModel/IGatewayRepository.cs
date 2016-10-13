@@ -8,6 +8,6 @@ namespace Mi9Pay.DataModel
 {
     public interface IGatewayRepository : IDisposable
     {
-
+        void Save();
     }
 }

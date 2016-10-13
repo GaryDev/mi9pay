@@ -85,7 +85,7 @@ namespace Mi9Pay.Web.Controllers
 
                 OrderPaymentResponse result = null;
                 OrderPaymentResponseViewModel vmOrderPayment = new OrderPaymentResponseViewModel();
-                foreach (GatewayType type in _gatewayService.GetGatewayTypes())
+                foreach (GatewayType type in _gatewayService.GetGatewayTypes(invoice))
                 {
                     result = _gatewayService.QueryPayment(app_id, invoice, type);
                     if (result != null && result.IsSuccess())

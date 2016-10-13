@@ -196,9 +196,10 @@ namespace Mi9Pay.Service
             return parameters;
         }
 
-        public IEnumerable<GatewayType> GetGatewayTypes()
+        public IEnumerable<GatewayType> GetGatewayTypes(string invoice)
         {
-            IEnumerable<GatewayPaymentMethod> paymentMethods = GetGatewayPaymentMethods();
+            int storeId = ParseStoreId(invoice);
+            IEnumerable<GatewayPaymentMethod> paymentMethods = GetStorePaymentMethods(storeId);
 
             List<GatewayType> gatewayTypes = new List<GatewayType>();
             paymentMethods.ToList().ForEach(m => {
@@ -212,19 +213,10 @@ namespace Mi9Pay.Service
 
         public IEnumerable<PaymentMethod> GetPaymentMethods(int storeId)
         {
-            IEnumerable<GatewayPaymentStorePaymentMethod> storePaymentMethods = GetStorePaymentMethods(storeId);
-            IEnumerable<GatewayPaymentMethod> paymentMethodAll = GetGatewayPaymentMethods();
-
-            List<GatewayPaymentMethod> paymentMethods = new List<GatewayPaymentMethod>();
-            foreach (var method in storePaymentMethods)
-            {
-                GatewayPaymentMethod paymentMethod = paymentMethodAll.ToList().SingleOrDefault(x => x.UniqueId == method.GatewayPaymentMethod);
-                if (paymentMethod != null)
-                    paymentMethods.Add(paymentMethod);
-            }
+            IEnumerable<GatewayPaymentMethod> storePaymentMethods = GetStorePaymentMethods(storeId);
 
             Mapper.Initialize(cfg => cfg.CreateMap<GatewayPaymentMethod, PaymentMethod>());
-            return Mapper.Map<IEnumerable<GatewayPaymentMethod>, IEnumerable<PaymentMethod>>(paymentMethods);
+            return Mapper.Map<IEnumerable<GatewayPaymentMethod>, IEnumerable<PaymentMethod>>(storePaymentMethods);
         }
 
         private int ParseStoreId(string invoiceNumber)

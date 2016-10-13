@@ -29,6 +29,12 @@ namespace Mi9Pay.DataModel
             this.Context = context;
             this.DbSet = context.Set<TEntity>();
         }
+
+        public DbSet<TEntity> DbTable
+        {
+            get { return DbSet; }
+        }
+
         #endregion
 
         #region Public member methods...

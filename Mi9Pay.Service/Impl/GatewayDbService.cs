@@ -22,28 +22,9 @@ namespace Mi9Pay.Service
             return app;
         }
 
-        private IEnumerable<GatewayPaymentMethod> GetGatewayPaymentMethods()
+        private IEnumerable<GatewayPaymentMethod> GetStorePaymentMethods(int storeId)
         {
-            IEnumerable<GatewayPaymentMethod> paymentMethods = _repository.Method.GetAll();
-            if (paymentMethods == null || paymentMethods.ToList().Count == 0)
-                throw new Exception("未配置支付方式");
-
-            return paymentMethods;
-        }
-
-        private GatewayPaymentStore GetGatewayPaymentStore(int storeId)
-        {
-            GatewayPaymentStore store = _repository.Store.Get(x => x.StoreId == storeId);
-            if (store == null)
-                throw new Exception(string.Format("无效的门店ID({0})", storeId));
-
-            return store;
-        }
-
-        private IEnumerable<GatewayPaymentStorePaymentMethod> GetStorePaymentMethods(int storeId)
-        {
-            GatewayPaymentStore store = GetGatewayPaymentStore(storeId);
-            IEnumerable<GatewayPaymentStorePaymentMethod> storePaymentMethods = _repository.StorePaymentMethod.GetMany(x => x.GatewayPaymentStore == store.UniqueId);
+            IEnumerable<GatewayPaymentMethod> storePaymentMethods = _repository.GetPaymentMethodsByStore(storeId);
             if (storePaymentMethods == null || storePaymentMethods.ToList().Count == 0)
                 throw new Exception(string.Format("未配置支付方式，门店ID({0})", storeId));
 
@@ -52,8 +33,8 @@ namespace Mi9Pay.Service
 
         private GatewayPaymentMethod GetGatewayPaymentMethodByType(GatewayType gatewayType)
         {
-            string payCode = Enum.GetName(typeof(GatewayType), gatewayType);
-            GatewayPaymentMethod payMethod = GetGatewayPaymentMethods().ToList().FirstOrDefault(m => string.Compare(m.Code, payCode, true) == 0);
+            string payMethodCode = Enum.GetName(typeof(GatewayType), gatewayType);
+            GatewayPaymentMethod payMethod = _repository.Method.Get(m => string.Compare(m.Code, payMethodCode, true) == 0);
             if (payMethod == null)
                 throw new Exception("支付方式获取失败");
 
@@ -81,12 +62,8 @@ namespace Mi9Pay.Service
 
         private GatewayPaymentAccount GetGatewayPaymentAccount(int storeId, GatewayType gatewayType)
         {
-            GatewayPaymentStore store = GetGatewayPaymentStore(storeId);
-            GatewayPaymentMethod payMethod = GetGatewayPaymentMethodByType(gatewayType);
-
-            GatewayPaymentMerchant merchant = _repository.Merchant.Get(m => m.UniqueId == store.GatewayPaymentMerchant);
-            GatewayPaymentAccount account = _repository.Account.Get(c => c.GatewayPaymentMerchant == merchant.UniqueId && c.GatewayPaymentMethod == payMethod.UniqueId);;          
-
+            string payMethodCode = Enum.GetName(typeof(GatewayType), gatewayType);
+            GatewayPaymentAccount account = _repository.GetGatewayPaymentAccount(storeId, payMethodCode);
             if (account == null)
                 throw new Exception("对应支付方式账号获取失败");
 
@@ -95,11 +72,8 @@ namespace Mi9Pay.Service
 
         private bool PaymentOrderExisted(string invoiceNumber, int storeId, GatewayType gatewayType)
         {
-            GatewayPaymentMethod payMethod = GetGatewayPaymentMethodByType(gatewayType);
-            GatewayPaymentOrder order = _repository.Order.Get(o => o.OrderNumber == invoiceNumber 
-                && o.StoreID == storeId 
-                && o.GatewayPaymentMethod == payMethod.UniqueId);
-
+            string payMethodCode = Enum.GetName(typeof(GatewayType), gatewayType);
+            GatewayPaymentOrder order = _repository.GetGatewayPaymentOrder(invoiceNumber, storeId, payMethodCode);
             if (order != null && order.UniqueId != Guid.Empty)
                 return true;
 
