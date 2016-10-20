@@ -252,31 +252,7 @@ namespace ICanPay.Providers
         {
             return string.Format("notify_id={0}&partner={1}", GetGatewayParameterValue("notify_id"), Merchant.UserName);
         }
-
-
-        /// <summary>
-        /// 读取结果的XML
-        /// </summary>
-        /// <param name="xml"></param>
-        /// <returns></returns>
-        private void ReadResultXml(string xml)
-        {
-            XmlDocument xmlDocument = new XmlDocument();
-            try
-            {
-                xmlDocument.LoadXml(xml);
-            }
-            catch (XmlException) { }
-
-            foreach (XmlNode rootNode in xmlDocument.ChildNodes)
-            {
-                foreach (XmlNode item in rootNode.ChildNodes)
-                {
-                    SetGatewayParameterValue(item.Name, item.InnerText);
-                }
-            }
-        }
-
+        
 
         /// <summary>
         /// 备份并清除网关的参数

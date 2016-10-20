@@ -4,6 +4,7 @@ using Com.Alipay.Business;
 using Com.Alipay.Domain;
 using Com.Alipay.Model;
 using ICanPay.Configs;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,6 +26,8 @@ namespace ICanPay.Providers
     {
 
         #region ÀΩ”–◊÷∂Œ
+
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         const string payGatewayUrl = "https://mapi.alipay.com/gateway.do";
         const string emailRegexString = @"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";
@@ -313,30 +316,27 @@ namespace ICanPay.Providers
         private AlipayTradePrecreateContentBuilder BuildPrecreateContent()
         {
             AlipayTradePrecreateContentBuilder builder = new AlipayTradePrecreateContentBuilder();
+
             builder.out_trade_no = Order.Id;
             builder.body = Order.Subject;
             builder.total_amount = Order.Amount.ToString();
-            builder.undiscountable_amount = "0";
+            builder.discountable_amount = Order.DiscountAmount.ToString();
+            builder.undiscountable_amount = (Order.Amount - Order.DiscountAmount).ToString();
             builder.operator_id = AlipayConfig.operId;
             builder.subject = Order.Subject;
             builder.time_expire = DateTime.Now.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss");
             builder.store_id = GetGatewayParameterValue("storeid"); //AlipayConfig.storeId;
             builder.seller_id = Merchant.UserName; //AlipayConfig.pid;
-
-            //List<GoodsInfo> gList = new List<GoodsInfo>();
-            //GoodsInfo goods = new GoodsInfo();
-            //goods.goods_id = "goods id";
-            //goods.goods_name = "goods name";
-            //goods.price = "0.01";
-            //goods.quantity = "1";
-            //gList.Add(goods);
-            //builder.goods_detail = gList;
-
+            
             return builder;
         }
 
         private string GetAlipayPaymentUrl(AlipayF2FPrecreateResult result)
         {
+            if (result.Status != ResultEnum.SUCCESS)
+            {
+                WriteErrorLog("GetAlipayPaymentUrl", result.response);
+            }
             return result.Status == ResultEnum.SUCCESS ? result.response.QrCode : string.Empty;
         }
 
@@ -377,7 +377,33 @@ namespace ICanPay.Providers
 
         private bool IsQuerySuccess(AlipayF2FQueryResult queryResult)
         {
+            if (queryResult != null && queryResult.Status != ResultEnum.SUCCESS)
+            {
+                WriteErrorLog("IsQuerySuccess", queryResult.response, false);
+            }
             return queryResult != null && queryResult.Status == ResultEnum.SUCCESS;
+        }
+
+        private void WriteErrorLog(string method, AopResponse response, bool showAccountInfo = true)
+        {
+            logger.Info(string.Format("{0} ==> Msg: {1}", method, response.Msg) + Environment.NewLine);
+            logger.Info(string.Format("{0} ==> SubMsg: {1}", method, response.SubMsg) + Environment.NewLine);
+
+            if (showAccountInfo)
+            {
+                string serverUrl = AlipayConfig.ServerUrl;
+                string appid = GetGatewayParameterValue("appid");
+                string mchKey = Merchant.Key;
+                string publicKey = Merchant.PublicKey;
+
+                logger.Info(string.Format("<============{0}============>", "÷ß∏∂’À∫≈–≈œ¢") + Environment.NewLine);
+                logger.Info(string.Format("Õ¯πÿµÿ÷∑£∫{0}", serverUrl) + Environment.NewLine);
+                logger.Info(string.Format("÷ß∏∂’À∫≈Appid£∫{0}", appid) + Environment.NewLine);
+                logger.Info(string.Format("÷ß∏∂’À∫≈mchKey£∫{0}", mchKey) + Environment.NewLine);
+                logger.Info(string.Format("÷ß∏∂’À∫≈publicKey£∫{0}", publicKey) + Environment.NewLine);
+                logger.Info("<=======================================>" + Environment.NewLine);
+            }
+            
         }
 
         #endregion

@@ -11,6 +11,7 @@ namespace ICanPay
         #region 私有字段
 
         double amount;
+        double discountAmt;
         string id;
         string subject;
 
@@ -59,6 +60,19 @@ namespace ICanPay
                 }
 
                 amount = value;
+            }
+        }
+
+        public double DiscountAmount
+        {
+            get
+            {
+                return discountAmt;
+            }
+
+            set
+            {
+                discountAmt = value;
             }
         }
 

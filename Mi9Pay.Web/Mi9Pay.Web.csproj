@@ -144,6 +144,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionFilters\CustomRequireHttpsAttribute.cs" />
     <Compile Include="ActionFilters\LoggingFilterAttribute.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\AssemblyHelper.cs" />
     <Compile Include="Helpers\FormHelper.cs" />
     <Compile Include="Helpers\NLogHelper.cs" />
     <Compile Include="Helpers\TimeHelper.cs" />

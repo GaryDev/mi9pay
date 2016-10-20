@@ -10,6 +10,7 @@ namespace Mi9Pay.Web
         {
             filters.Add(new HandleErrorAttribute());
             filters.Add(new LoggingFilterAttribute());
+            filters.Add(new CustomRequireHttpsAttribute());
         }
     }
 }

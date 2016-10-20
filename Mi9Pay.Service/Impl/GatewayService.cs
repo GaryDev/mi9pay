@@ -105,10 +105,12 @@ namespace Mi9Pay.Service
         public MemoryStream CreatePaymentQRCode(OrderRequest orderRequest, GatewayType gatewayType)
         {
             PaymentSetting paymentSetting = InitPaymentSetting(orderRequest, gatewayType);
-            paymentSetting.Order.Amount = (double)orderRequest.TotalAmount;
             paymentSetting.Order.Id = orderRequest.InvoiceNumber;
             string orderSubject = "MPOS订单编号" + orderRequest.InvoiceNumber;
             paymentSetting.Order.Subject = orderSubject;
+
+            paymentSetting.Order.Amount = (double)orderRequest.TotalAmount;
+            paymentSetting.Order.DiscountAmount = (double)orderRequest.Discount;
 
             MemoryStream ms = paymentSetting.PaymentQRCode();
             if (ms != null)

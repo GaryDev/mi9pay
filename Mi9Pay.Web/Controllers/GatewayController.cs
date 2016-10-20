@@ -21,6 +21,14 @@ namespace Mi9Pay.Web.Controllers
             _gatewayService = gatewayService;
         }
 
+        [Route("version")]
+        [HttpGet]
+        public JsonResult GatewayInfo()
+        {
+            AssemblyHelper assemblyHelper = new AssemblyHelper(GetType().Assembly);
+            return Json(new { version = assemblyHelper.FileVersion }, JsonRequestBehavior.AllowGet);
+        }
+
         [Route("order")]
         [HttpPost]
         public ActionResult Order(FormCollection form)

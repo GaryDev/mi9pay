@@ -1,4 +1,5 @@
 using ICanPay.Configs;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,6 +20,8 @@ namespace ICanPay.Providers
     {
 
         #region Ë½ÓÐ×Ö¶Î
+
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         const string payGatewayUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
         const string queryGatewayUrl = "https://api.mch.weixin.qq.com/pay/orderquery";
@@ -228,6 +231,10 @@ namespace ICanPay.Providers
             {
                 return GetGatewayParameterValue("code_url");
             }
+            else
+            {
+                WriteErrorLog("GetWeixinPaymentUrl", resultXml);
+            }
 
             return string.Empty;
         }
@@ -314,6 +321,11 @@ namespace ICanPay.Providers
                 result.Currency = GetGatewayParameterValue("fee_type");
                 return result;
             }
+            else
+            {
+                WriteErrorLog("ParseQueryResult", resultXml);
+            }
+
             return null;
         }
 
@@ -354,6 +366,14 @@ namespace ICanPay.Providers
             ClearGatewayParameterData();
             InitProcessSuccessParameter();
             HttpContext.Current.Response.Write(ConvertGatewayParameterDataToXml());
+        }
+
+        private void WriteErrorLog(string method, string xml)
+        {
+            logger.Info(method + Environment.NewLine);
+            logger.Info(string.Format("<============{0}============>", "XMLÐÅÏ¢") + Environment.NewLine);
+            logger.Info(string.Format("{0}", xml) + Environment.NewLine);
+            logger.Info("<==================================>" + Environment.NewLine);
         }
     }
 }
