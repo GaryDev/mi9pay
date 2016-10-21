@@ -16,7 +16,7 @@ namespace ICanPay.Providers
     /// <remarks>
     /// 使用模式二实现微信支付
     /// </remarks>
-    public sealed class WeChatPaymentGataway : GatewayBase, IPaymentQRCode, IQueryNow
+    public sealed class WeChatPaymentGataway : GatewayBase, IPaymentWithCode, IQueryNow
     {
 
         #region 私有字段
@@ -78,13 +78,18 @@ namespace ICanPay.Providers
             return GetWeixinPaymentUrl(PostOrder(ConvertGatewayParameterDataToXml(), payGatewayUrl));
         }
 
+        public PaymentResult BarcodePayment()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool QueryNow()
         {
             InitQueryOrderParameter();
             return CheckQueryResult(PostOrder(ConvertGatewayParameterDataToXml(), queryGatewayUrl));
         }
 
-        public QueryResult QueryForResult()
+        public PaymentResult QueryForResult()
         {
             InitQueryOrderParameter();
             return ParseQueryResult(PostOrder(ConvertGatewayParameterDataToXml(), queryGatewayUrl));
@@ -310,11 +315,11 @@ namespace ICanPay.Providers
             return false;
         }
 
-        private QueryResult ParseQueryResult(string resultXml)
+        private PaymentResult ParseQueryResult(string resultXml)
         {
             if (CheckQueryResult(resultXml))
             {
-                QueryResult result = new QueryResult();
+                PaymentResult result = new PaymentResult();
                 result.TradeNo = GetGatewayParameterValue("transaction_id");
                 result.Amount = GetGatewayParameterValue("total_fee");
                 result.PaidAmount = GetGatewayParameterValue("total_fee");

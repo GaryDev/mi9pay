@@ -14,6 +14,6 @@ namespace ICanPay
         /// </remarks>
         bool QueryNow();
 
-        QueryResult QueryForResult();
+        PaymentResult QueryForResult();
     }
 }

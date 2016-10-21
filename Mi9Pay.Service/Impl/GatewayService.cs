@@ -105,12 +105,7 @@ namespace Mi9Pay.Service
         public MemoryStream CreatePaymentQRCode(OrderRequest orderRequest, GatewayType gatewayType)
         {
             PaymentSetting paymentSetting = InitPaymentSetting(orderRequest, gatewayType);
-            paymentSetting.Order.Id = orderRequest.InvoiceNumber;
-            string orderSubject = "MPOS订单编号" + orderRequest.InvoiceNumber;
-            paymentSetting.Order.Subject = orderSubject;
-
-            paymentSetting.Order.Amount = (double)orderRequest.TotalAmount;
-            paymentSetting.Order.DiscountAmount = (double)orderRequest.Discount;
+            SetPaymentSettingOrder(paymentSetting, orderRequest);
 
             MemoryStream ms = paymentSetting.PaymentQRCode();
             if (ms != null)
@@ -124,7 +119,7 @@ namespace Mi9Pay.Service
                     if (paymentOrder != null)
                     {
                         paymentOrder.OrderType = "MOSAIC";
-                        paymentOrder.Subject = orderSubject;
+                        paymentOrder.Subject = paymentSetting.Order.Subject;
                         paymentOrder.GatewayType = gatewayType;
                         paymentOrder.Status = PaymentOrderStatus.UNPAID;
                         CreatePaymentOrder(paymentOrder);
@@ -132,6 +127,35 @@ namespace Mi9Pay.Service
                 }
             }
             return ms;
+        }
+
+        public OrderPaymentResponse BarcodePayment(OrderRequest orderRequest, GatewayType gatewayType, string barcode)
+        {
+            OrderPaymentResponse response = new OrderPaymentResponse();
+
+            PaymentSetting paymentSetting = InitPaymentSetting(orderRequest, gatewayType);
+            SetPaymentSettingOrder(paymentSetting, orderRequest);
+            paymentSetting.SetGatewayParameterValue("barcode", barcode);
+
+            PaymentResult result = paymentSetting.BarcodePayment();
+            if (result != null)
+            {
+                response = new OrderPaymentResponse
+                {
+                    return_code = "SUCCESS",
+                    order = new OrderPayment
+                    {
+                        uuid = result.TradeNo,
+                        invoice = orderRequest.InvoiceNumber,
+                        status = "PAID",
+                        paid_amount = result.PaidAmount,
+                        amount = result.Amount,
+                        currency = result.Currency
+                    }
+                };
+            }
+
+            return response;
         }
 
         public OrderPaymentResponse QueryPayment(string appId, string invoiceNumber, GatewayType gatewayType)
@@ -142,7 +166,7 @@ namespace Mi9Pay.Service
             PaymentSetting paymentSetting = InitPaymentSetting(orderRequest, gatewayType);
             paymentSetting.Order.Id = invoiceNumber;
 
-            QueryResult result = paymentSetting.QueryForResult();
+            PaymentResult result = paymentSetting.QueryForResult();
             if (result != null)
             {
                 PaymentOrder paymentOrder = new PaymentOrder
@@ -267,5 +291,12 @@ namespace Mi9Pay.Service
             return paymentSetting;
         }
 
+        private void SetPaymentSettingOrder(PaymentSetting paymentSetting, OrderRequest orderRequest)
+        {
+            paymentSetting.Order.Id = orderRequest.InvoiceNumber;
+            paymentSetting.Order.Subject = "MPOS订单编号" + orderRequest.InvoiceNumber;
+            paymentSetting.Order.Amount = (double)orderRequest.TotalAmount;
+            paymentSetting.Order.DiscountAmount = (double)orderRequest.Discount;
+        }
     }
 }

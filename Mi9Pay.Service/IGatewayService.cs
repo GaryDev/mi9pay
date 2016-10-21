@@ -15,6 +15,7 @@ namespace Mi9Pay.Service
         OrderRequest RecieveRequestForm(Dictionary<string, string> requestParameter);
 
         MemoryStream CreatePaymentQRCode(OrderRequest orderRequest, GatewayType gatewayType);
+        OrderPaymentResponse BarcodePayment(OrderRequest orderRequest, GatewayType gatewayType, string barcode);
 
         IEnumerable<GatewayType> GetGatewayTypes(string invoice);
         IEnumerable<PaymentMethod> GetPaymentMethods(int storeId);

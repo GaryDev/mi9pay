@@ -92,7 +92,7 @@
     <Compile Include="GatewayParameterType.cs" />
     <Compile Include="GatewayType.cs" />
     <Compile Include="IPaymentForm.cs" />
-    <Compile Include="IPaymentQRCode.cs" />
+    <Compile Include="IPaymentWithCode.cs" />
     <Compile Include="IPaymentUrl.cs" />
     <Compile Include="IQueryForm.cs" />
     <Compile Include="IQueryNow.cs" />
@@ -104,6 +104,7 @@
     <Compile Include="PaymentEventArgs.cs" />
     <Compile Include="PaymentFailedEventArgs.cs" />
     <Compile Include="PaymentNotifyMethod.cs" />
+    <Compile Include="PaymentResult.cs" />
     <Compile Include="PaymentResultType.cs" />
     <Compile Include="PaymentSetting.cs" />
     <Compile Include="PaymentNotify.cs" />

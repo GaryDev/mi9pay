@@ -22,7 +22,7 @@ namespace ICanPay.Providers
     /// <remarks>
     /// 当前支付宝的实现仅支持MD5密钥。
     /// </remarks>
-    public sealed class AlipayGateway : GatewayBase, IPaymentForm, IPaymentUrl, IPaymentQRCode, IQueryNow
+    public sealed class AlipayGateway : GatewayBase, IPaymentForm, IPaymentUrl, IPaymentWithCode, IQueryNow
     {
 
         #region 私有字段
@@ -93,6 +93,7 @@ namespace ICanPay.Providers
 
         #region 方法
 
+        #region 原框架代码
         public string BuildPaymentForm()
         {
             ValidatePaymentOrderParameter();
@@ -287,13 +288,7 @@ namespace ICanPay.Providers
 
             return Regex.IsMatch(emailAddress, emailRegexString);
         }
-
-        public string GetPaymentQRCodeContent()
-        {
-            InitF2FPayService();
-            AlipayTradePrecreateContentBuilder builder = BuildPrecreateContent();
-            return GetAlipayPaymentUrl(PostOrder(builder));
-        }
+        #endregion
 
         private void InitF2FPayService()
         {
@@ -311,6 +306,14 @@ namespace ICanPay.Providers
                 publicKey, //AlipayConfig.alipay_public_key, 
                 AlipayConfig.charset
            );
+        }
+
+        #region 二维码预支付
+        public string GetPaymentQRCodeContent()
+        {
+            InitF2FPayService();
+            AlipayTradePrecreateContentBuilder builder = BuildPrecreateContent();
+            return GetAlipayPaymentUrl(PostOrder(builder));
         }
 
         private AlipayTradePrecreateContentBuilder BuildPrecreateContent()
@@ -345,7 +348,62 @@ namespace ICanPay.Providers
             AlipayF2FPrecreateResult precreateResult = f2fPayService.tradePrecreate(builder);
             return precreateResult;
         }
+        #endregion
 
+        #region 条码支付
+        public PaymentResult BarcodePayment()
+        {
+            InitF2FPayService();
+            AlipayTradePayContentBuilder builder = BuildPayContent();
+            PaymentResult result = GetPaymentResult(PostOrder(builder));
+            return result;
+        }
+
+        private AlipayTradePayContentBuilder BuildPayContent()
+        {
+            AlipayTradePayContentBuilder builder = new AlipayTradePayContentBuilder();
+
+            builder.out_trade_no = Order.Id;
+            builder.body = Order.Subject;
+            builder.total_amount = Order.Amount.ToString();
+            builder.discountable_amount = Order.DiscountAmount.ToString();
+            builder.undiscountable_amount = (Order.Amount - Order.DiscountAmount).ToString();
+            builder.operator_id = AlipayConfig.operId;
+            builder.subject = Order.Subject;
+            builder.timeout_express = DateTime.Now.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss");
+            builder.store_id = GetGatewayParameterValue("storeid"); //AlipayConfig.storeId;
+            builder.seller_id = Merchant.UserName; //AlipayConfig.pid;
+            builder.auth_code = GetGatewayParameterValue("barcode");
+
+            return builder;
+        }
+
+        private AlipayF2FPayResult PostOrder(AlipayTradePayContentBuilder builder)
+        {
+            AlipayF2FPayResult payResult = f2fPayService.tradePay(builder);
+            return payResult;
+        }
+
+        private PaymentResult GetPaymentResult(AlipayF2FPayResult result)
+        {
+            PaymentResult paymentResult = null;
+            if (result.Status == ResultEnum.SUCCESS)
+            {
+                paymentResult = new PaymentResult();
+                paymentResult.TradeNo = result.response.TradeNo;
+                paymentResult.Amount = (Convert.ToDecimal(result.response.TotalAmount) * 100).ToString("0");
+                paymentResult.PaidAmount = (Convert.ToDecimal(result.response.BuyerPayAmount) * 100).ToString("0");
+            }
+            else
+            {
+                WriteErrorLog("VerifyPaymentResult", result.response);
+            }
+            return paymentResult;
+        }
+
+        #endregion
+
+        #region 订单查询
         public bool QueryNow()
         {
             InitF2FPayService();
@@ -353,14 +411,14 @@ namespace ICanPay.Providers
             return IsQuerySuccess(queryResult);
         }
 
-        public QueryResult QueryForResult()
+        public PaymentResult QueryForResult()
         {
             InitF2FPayService();
-            QueryResult result = null;
+            PaymentResult result = null;
             AlipayF2FQueryResult queryResult = DoQuery();
             if (IsQuerySuccess(queryResult))
             {
-                result = new QueryResult();
+                result = new PaymentResult();
                 result.TradeNo = queryResult.response.TradeNo;
                 result.Amount = (Convert.ToDecimal(queryResult.response.TotalAmount) * 100).ToString("0");
                 result.PaidAmount = (Convert.ToDecimal(queryResult.response.BuyerPayAmount) * 100).ToString("0");
@@ -383,6 +441,7 @@ namespace ICanPay.Providers
             }
             return queryResult != null && queryResult.Status == ResultEnum.SUCCESS;
         }
+        #endregion
 
         private void WriteErrorLog(string method, AopResponse response, bool showAccountInfo = true)
         {
@@ -405,7 +464,6 @@ namespace ICanPay.Providers
             }
             
         }
-
         #endregion
 
     }

@@ -180,7 +180,7 @@ namespace ICanPay
                 return;
             }
 
-            IPaymentQRCode paymentQRCode = gateway as IPaymentQRCode;
+            IPaymentWithCode paymentQRCode = gateway as IPaymentWithCode;
             if (paymentQRCode != null)
             {
                 MemoryStream ms = BuildQRCodeImage(paymentQRCode.GetPaymentQRCodeContent());
@@ -194,10 +194,10 @@ namespace ICanPay
 
         public MemoryStream PaymentQRCode()
         {
-            IPaymentQRCode paymentQRCode = gateway as IPaymentQRCode;
-            if (paymentQRCode != null)
+            IPaymentWithCode codePayment = gateway as IPaymentWithCode;
+            if (codePayment != null)
             {
-                string qrCode = paymentQRCode.GetPaymentQRCodeContent();
+                string qrCode = codePayment.GetPaymentQRCodeContent();
 
                 if (string.IsNullOrEmpty(qrCode))
                     return null;
@@ -205,6 +205,16 @@ namespace ICanPay
                 return BuildQRCodeImage(qrCode);
             }
 
+            throw new NotSupportedException(gateway.GatewayType + " 没有实现支付接口");
+        }
+
+        public PaymentResult BarcodePayment()
+        {
+            IPaymentWithCode codePayment = gateway as IPaymentWithCode;
+            if (codePayment != null)
+            {
+                return codePayment.BarcodePayment();
+            }
             throw new NotSupportedException(gateway.GatewayType + " 没有实现支付接口");
         }
 
@@ -250,7 +260,7 @@ namespace ICanPay
         /// 查询订单，立即获得订单的查询结果
         /// </summary>
         /// <returns></returns>
-        public QueryResult QueryForResult()
+        public PaymentResult QueryForResult()
         {
             IQueryNow queryNow = gateway as IQueryNow;
             if (queryNow != null)

@@ -83,6 +83,29 @@ namespace Mi9Pay.Web.Controllers
             }
         }
 
+        [Route("barcode")]
+        [HttpPost]
+        public JsonResult BarcodePayment(OrderRequest request, string barcode)
+        {
+            try
+            {
+                GatewayType type = request.PayMethod.ToEnum<GatewayType>();
+                OrderPaymentResponse result = _gatewayService.BarcodePayment(request, type, barcode);
+
+                string returnUrl = string.Empty;
+                if (result.IsSuccess())
+                {
+                    returnUrl = _gatewayService.BuildReturnUrl(request, result);
+                }
+
+                return Json(new { return_code = result.return_code, return_url = returnUrl, return_msg = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { return_code = "FAIL", img = string.Empty, return_msg = ex.Message });
+            }
+        }
+
         [Route("order/query")]
         [HttpGet]
         public JsonResult QueryPaymentStatus(string app_id, string invoice, string sign)
@@ -123,12 +146,12 @@ namespace Mi9Pay.Web.Controllers
 
         [Route("order/polling")]
         [HttpGet]
-        public JsonResult LongPolling(OrderRequest request, string invoice)
+        public JsonResult LongPolling(OrderRequest request)
         {
             try
             {
                 GatewayType type = request.PayMethod.ToEnum<GatewayType>();
-                OrderPaymentResponse result = _gatewayService.QueryPayment(request.AppId, invoice, type);
+                OrderPaymentResponse result = _gatewayService.QueryPayment(request.AppId, request.InvoiceNumber, type);
 
                 string returnUrl = string.Empty;
                 if (result.IsSuccess())

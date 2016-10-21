@@ -213,7 +213,7 @@ namespace ICanPay.Providers
             }
         }
 
-        public QueryResult QueryForResult()
+        public PaymentResult QueryForResult()
         {
             throw new NotImplementedException();
         }

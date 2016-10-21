@@ -310,7 +310,7 @@ namespace ICanPay.Providers
             return string.Format("out_trade_no={0}&partner={1}", Order.Id, Merchant.UserName);
         }
 
-        public QueryResult QueryForResult()
+        public PaymentResult QueryForResult()
         {
             throw new NotImplementedException();
         }

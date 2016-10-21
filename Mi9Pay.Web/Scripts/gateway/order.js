@@ -88,8 +88,33 @@
     barcodeTxt.bind('input propertychange', function () {
         var barcode = $(this).val();
         //console.log(barcode.length + ' characters');
-        if (barcode.length == 18) {
+        if (barcode.length == 1) {
             container.showLoading();
+            $.ajax({
+                url: domainPath + "/gateway/barcode",
+                type: "POST",
+                data: { barcode: barcode },
+                dataType: 'json',
+                success: function (data) {
+                    container.hideLoading();
+                    if (data && data.return_code == "SUCCESS") {
+                        if (data.return_url && data.return_url != null)
+                            window.location = data.return_url;
+                        else
+                            longPolling();
+                    } else if (data && data.return_code == "FAIL") {
+                        qrDiv.empty();
+                        qrDiv.append("<span>" + data.return_msg + "</span>");
+                        if (interval)
+                            clearInterval(interval);
+                    } else {
+                        longPolling();
+                    }
+                },
+                error: function () {
+                    container.hideLoading();
+                }
+            });
         }
     });
     
@@ -99,7 +124,6 @@
                 url: domainPath + "/gateway/order/polling",
                 type: "GET",
                 data: {
-                    "invoice": $("#invoice").val()
                 },
                 dataType: "json",
                 timeout: 5000,

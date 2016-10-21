@@ -4,7 +4,7 @@ namespace ICanPay
     /// <summary>
     /// 订单是使用二维码支付时创建订单的支付二维码
     /// </summary>
-    internal interface IPaymentQRCode
+    internal interface IPaymentWithCode
     {
 
         /// <summary>
@@ -12,5 +12,7 @@ namespace ICanPay
         /// </summary>
         /// <returns>订单的支付二维码内容</returns>
         string GetPaymentQRCodeContent();
+
+        PaymentResult BarcodePayment();
     }
 }

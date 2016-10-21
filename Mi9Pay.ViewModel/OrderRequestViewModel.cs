@@ -14,6 +14,7 @@ namespace Mi9Pay.ViewModel
 
         public string PaymentMethod { get; set; }
         public string ScanMode { get; set; }
+        public string Barcode { get; set; }
 
         public IEnumerable<PaymentMethodViewModel> PaymentMethodList { get; set; }
         public IEnumerable<ScanModeViewModel> ScanModeList { get; set; }
