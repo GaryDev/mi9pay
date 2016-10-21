@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mi9Pay.Entities
+namespace Mi9Pay.ViewModel
 {
-    public class PaymentMethod
+    public class ScanModeViewModel
     {
         public string Name { get; set; }
-        public string Description { get; set; }
         public string Code { get; set; }
         public bool IsDefault { get; set; }
     }

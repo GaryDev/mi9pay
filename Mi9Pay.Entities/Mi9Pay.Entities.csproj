@@ -49,6 +49,7 @@
     <Compile Include="PaymentOrderCustomer.cs" />
     <Compile Include="PaymentOrderDetail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScanMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ICanPay\ICanPay.csproj">

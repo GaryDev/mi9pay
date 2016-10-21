@@ -3,13 +3,19 @@
 
     var interval = null;
     var selectMethod = null;
+    var selectScanMode = null;
 
-    var container = $("#payOrderContainer");
-    var qrDiv = $("#qrCodeImg");
+    var container = $("div.container");
+    var qrDiv = $("#displayArea");
     var confirmBtn = $("#confirm");
+    var barcodeTxt = $("#barcode");
     var radioMethod = $('input[name="PaymentMethod"]');
+    var radioScanMode = $('input[name="ScanMode"]');
 
     confirmBtn.addClass("btn-disabled");
+    confirmBtn.hide();
+    barcodeTxt.hide();
+
     confirmBtn.click(function () {
         if (confirmBtn.hasClass("btn-disabled"))
             return false;
@@ -58,13 +64,42 @@
             clearInterval(interval);
     });
 
+    radioScanMode.click(function (evt) {
+        var currentVal = evt.target.value;
+        if (selectScanMode == currentVal) {
+            return false;
+        }
+        selectScanMode = evt.target.value;
+
+        qrDiv.empty();
+        if (interval)
+            clearInterval(interval);
+
+        if (selectScanMode == "qrcode") {
+            barcodeTxt.hide();
+            confirmBtn.show();
+        } else if (selectScanMode == "barcode") {
+            confirmBtn.hide();
+            barcodeTxt.show().focus();
+        }        
+    });
+    radioScanMode.filter(":checked").trigger("click");
+
+    barcodeTxt.bind('input propertychange', function () {
+        var barcode = $(this).val();
+        //console.log(barcode.length + ' characters');
+        if (barcode.length == 18) {
+            container.showLoading();
+        }
+    });
+    
     function longPolling() {
         interval = setTimeout(function () {
             $.ajax({
                 url: domainPath + "/gateway/order/polling",
                 type: "GET",
                 data: {
-                    "invoice": $("#invoice").text()
+                    "invoice": $("#invoice").val()
                 },
                 dataType: "json",
                 timeout: 5000,

@@ -18,6 +18,7 @@ namespace Mi9Pay.Service
 
         IEnumerable<GatewayType> GetGatewayTypes(string invoice);
         IEnumerable<PaymentMethod> GetPaymentMethods(int storeId);
+        IEnumerable<ScanMode> GetScanModeList();
 
         OrderPaymentResponse QueryPayment(string appId, string invoiceNumber, GatewayType gatewayType);
 

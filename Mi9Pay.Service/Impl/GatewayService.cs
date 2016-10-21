@@ -218,7 +218,23 @@ namespace Mi9Pay.Service
             IEnumerable<GatewayPaymentMethod> storePaymentMethods = GetStorePaymentMethods(storeId);
 
             Mapper.Initialize(cfg => cfg.CreateMap<GatewayPaymentMethod, PaymentMethod>());
-            return Mapper.Map<IEnumerable<GatewayPaymentMethod>, IEnumerable<PaymentMethod>>(storePaymentMethods);
+            IEnumerable<PaymentMethod> listPaymentMethod = Mapper.Map<IEnumerable<GatewayPaymentMethod>, IEnumerable<PaymentMethod>>(storePaymentMethods);
+            // temp solution
+            if (listPaymentMethod.Any())
+            {
+                listPaymentMethod.First().IsDefault = true;
+            }
+            return listPaymentMethod;
+        }
+
+        public IEnumerable<ScanMode> GetScanModeList()
+        {
+            List<ScanMode> listScanMode = new List<ScanMode>();
+
+            listScanMode.Add(new ScanMode { Code = "qrcode", Name = "二维码", IsDefault = true });
+            listScanMode.Add(new ScanMode { Code = "barcode", Name = "支付条码", IsDefault = false });
+
+            return listScanMode;
         }
 
         private int ParseStoreId(string invoiceNumber)
@@ -250,5 +266,6 @@ namespace Mi9Pay.Service
 
             return paymentSetting;
         }
+
     }
 }

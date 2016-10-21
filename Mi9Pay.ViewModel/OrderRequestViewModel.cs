@@ -11,7 +11,11 @@ namespace Mi9Pay.ViewModel
     {
         public string InvoiceNumber { get; set; }
         public decimal TotalAmount { get; set; }
+
         public string PaymentMethod { get; set; }
+        public string ScanMode { get; set; }
+
         public IEnumerable<PaymentMethodViewModel> PaymentMethodList { get; set; }
+        public IEnumerable<ScanModeViewModel> ScanModeList { get; set; }
     }
 }

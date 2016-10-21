@@ -4,21 +4,66 @@
     ViewBag.Title = "GateWay";
 }
 
-<div id="payOrderContainer" style="padding: 8px; width: 720px; height: 280px;">
-    <div id="payOrder" style="padding: 12px; float: left; width: 400px; height: 260px;">
-        <div style="padding: 8px; font-size: 12pt;">订单编号: <span id="invoice" style="margin-left: 12px;">@Model.InvoiceNumber</span></div>
-        <div style="padding: 8px; font-size: 12pt;">订单金额: <span id="amount" style="margin-left: 12px; font-size: 18pt; font-weight: bold">@Model.TotalAmount.ToString("c")</span></div>
-        <div style="padding: 8px; font-size: 12pt;">
-            请选择支付方式：<br />
-            @foreach (var item in Model.PaymentMethodList)
-            {
-                <div style="padding: 4px;">
-                    @Html.RadioButtonFor(m => m.PaymentMethod, @item.Code.ToLower()) @item.Name
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-7">
+            <div role="form" class="padding-8">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-3"><label for="invoice">订单编号</label></div>
+                        <div class="col-sm-7"><span id="invoice">@Model.InvoiceNumber</span></div>
+                    </div>
                 </div>
-            }
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-3"><label for="amount" class="padding-top-7">订单金额</label></div>
+                        <div class="col-sm-7"><span id="amount" class="lead">@Model.TotalAmount.ToString("c")</span></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="PaymentMethod">请选择支付方式</label>
+                    @foreach (var item in Model.PaymentMethodList)
+                    {
+                        <div class="radio">
+                            <label>
+                                @if (item.IsDefault)
+                                {
+                                    @Html.RadioButtonFor(m => m.PaymentMethod, @item.Code.ToLower(), new { @checked = "checked" })
+                                }
+                                else
+                                {
+                                    @Html.RadioButtonFor(m => m.PaymentMethod, @item.Code.ToLower())
+                                }
+                                @item.Name
+                            </label>
+                        </div>
+                    }
+                </div>
+                <div class="form-group">
+                    <label for="ScanMode">请选择扫码方式</label>
+                    @foreach (var item in Model.ScanModeList)
+                    {
+                        <div class="radio">
+                            <label>
+                                @if (item.IsDefault)
+                                {
+                                    @Html.RadioButtonFor(m => m.ScanMode, @item.Code.ToLower(), new { @checked = "checked" })
+                                }
+                                else
+                                {
+                                    @Html.RadioButtonFor(m => m.ScanMode, @item.Code.ToLower())
+                                }
+                                @item.Name
+                            </label>
+                        </div>
+                    }
+                </div>
+                <a class="btn btn-primary" id="confirm">生成支付二维码</a>
+                <input type="text" class="form-control" id="barcode" placeholder="支付条码">
+            </div>
         </div>
-        <div style="padding: 8px;"><a class="btn btn-primary btn-lg" id="confirm">生成支付二维码</a></div>
+        <div id="displayArea" class="col-sm-4">
+        </div>
     </div>
-    <div id="qrCodeImg" style="padding-top: 30px; float: right; width: 260px; height: 260px; text-align:center;"></div>
-    <div style="clear:both;"></div>
 </div>
