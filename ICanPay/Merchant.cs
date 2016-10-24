@@ -11,6 +11,7 @@ namespace ICanPay
 
         #region 私有字段
 
+        string appId;
         string userName;
         string key;
         string publicKey;
@@ -38,6 +39,8 @@ namespace ICanPay
 
 
         #region 属性
+
+        public string AppId { get; set; }
 
         /// <summary>
         /// 商户帐号

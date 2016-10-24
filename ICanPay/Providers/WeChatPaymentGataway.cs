@@ -87,6 +87,14 @@ namespace ICanPay.Providers
             return GetBarcodePaymentResult(PostOrder(ConvertGatewayParameterDataToXml(), microPayGatewayUrl));
         }
 
+        public bool CancelOrder(int retries = 0)
+        {
+            if (retries > 10) return false;
+
+            InitQueryOrderParameter();
+            return CheckCancelResult(PostOrder(ConvertGatewayParameterDataToXml(), reverseGatewayUrl), retries);
+        }
+
         public bool QueryNow()
         {
             InitQueryOrderParameter();
@@ -99,20 +107,12 @@ namespace ICanPay.Providers
             return ParseQueryResult(PostOrder(ConvertGatewayParameterDataToXml(), queryGatewayUrl));
         }
 
-        public bool CancelOrder(int retries = 0)
-        {
-            if (retries > 10) return false;
-
-            InitQueryOrderParameter();
-            return CheckCancelResult(PostOrder(ConvertGatewayParameterDataToXml(), reverseGatewayUrl), retries);
-        }
-
         /// <summary>
         /// 初始化支付订单的参数
         /// </summary>
         private void InitPaymentOrderParameter()
         {          
-            //SetGatewayParameterValue("appid", WechatConfig.app_id);
+            SetGatewayParameterValue("appid", Merchant.AppId);
             SetGatewayParameterValue("mch_id", Merchant.UserName);
             SetGatewayParameterValue("nonce_str", GenerateNonceString());
             SetGatewayParameterValue("body", Order.Subject);
@@ -127,12 +127,25 @@ namespace ICanPay.Providers
 
         private void InitBarcodePaymentParameter()
         {
+            SetGatewayParameterValue("appid", Merchant.AppId);
             SetGatewayParameterValue("mch_id", Merchant.UserName);
             SetGatewayParameterValue("nonce_str", GenerateNonceString());
             SetGatewayParameterValue("body", Order.Subject);
             SetGatewayParameterValue("out_trade_no", Order.Id);
             SetGatewayParameterValue("total_fee", (Order.Amount * 100).ToString());
             SetGatewayParameterValue("spbill_create_ip", "127.0.0.1");
+            SetGatewayParameterValue("sign", GetSign());    // 签名需要在最后设置，以免缺少参数。
+        }
+
+        /// <summary>
+        /// 初始化查询订单参数
+        /// </summary>
+        private void InitQueryOrderParameter()
+        {
+            SetGatewayParameterValue("appid", Merchant.AppId);
+            SetGatewayParameterValue("mch_id", Merchant.UserName);
+            SetGatewayParameterValue("out_trade_no", Order.Id);
+            SetGatewayParameterValue("nonce_str", GenerateNonceString());
             SetGatewayParameterValue("sign", GetSign());    // 签名需要在最后设置，以免缺少参数。
         }
 
@@ -338,6 +351,27 @@ namespace ICanPay.Providers
         }
 
         /// <summary>
+        /// 检查支付结果
+        /// </summary>
+        /// <param name="resultXml">支付结果的XML</param>
+        /// <returns></returns>
+        private bool CheckPaymentResult(string resultXml)
+        {
+            // 需要先清除之前查询订单的参数，否则会对接收到的参数造成干扰。
+            ClearGatewayParameterData();
+            ReadResultXml(resultXml);
+            if (IsSuccessResult())
+            {
+                if (string.Compare(Order.Id, GetGatewayParameterValue("out_trade_no")) == 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// 检查撤销结果
         /// </summary>
         /// <param name="resultXml">撤销结果的XML</param>
@@ -357,7 +391,7 @@ namespace ICanPay.Providers
             }
             else if (GetGatewayParameterValue("recall") == "Y")
             {
-                CancelOrder(++retries);
+                return CancelOrder(++retries);
             }
 
             return false;
@@ -392,11 +426,9 @@ namespace ICanPay.Providers
 
         private PaymentResult GetBarcodePaymentResult(string resultXml)
         {
-            PaymentResult result = null;
-
-            if (CheckQueryResult(resultXml))
+            if (CheckPaymentResult(resultXml))
             {
-                result = new PaymentResult();
+                PaymentResult result = new PaymentResult();
                 result.TradeNo = GetGatewayParameterValue("transaction_id");
                 result.Amount = GetGatewayParameterValue("total_fee");
                 result.PaidAmount = GetGatewayParameterValue("total_fee");
@@ -405,19 +437,29 @@ namespace ICanPay.Providers
             }
             else
             {
+                WriteErrorLog("GetBarcodePaymentResult", resultXml);
+
+                if (GetGatewayParameterValue("return_code") == "FAIL")
+                    throw new Exception(GetGatewayParameterValue("return_msg"));
+
                 string errorCode = GetGatewayParameterValue("err_code");
-                if (errorCode == "USERPAYING")
+                string errorMsg = GetGatewayParameterValue("err_code_des");
+                if (errorCode == "USERPAYING" || errorCode == "SYSTEMERROR")
                 {
                     PaymentResult queryResult = LoopQuery();
-                    if (queryResult == null)
+                    if (queryResult != null)
                     {
-
+                        return queryResult;
+                    }
+                    else
+                    {
+                        if (!CancelOrder())
+                            throw new Exception(resultXml);
                     }
                 }
-                WriteErrorLog("GetBarcodePaymentResult", resultXml);
-            }
 
-            return result;
+                throw new Exception(errorMsg);
+            }
         }
 
         private PaymentResult LoopQuery()
@@ -429,10 +471,10 @@ namespace ICanPay.Providers
             while (queryTimes-- > 0)
             {
                 PaymentResult result = QueryForResult();
-                //如果需要继续查询，则等待2s后继续
+                //如果需要继续查询，则等待3s后继续
                 if (result != null && result.SuccessFlag == 2)
                 {
-                    Thread.Sleep(2000);
+                    Thread.Sleep(3000);
                     continue;
                 }
                 //查询成功,返回订单查询接口返回的数据
@@ -449,19 +491,6 @@ namespace ICanPay.Providers
 
             return null;
         }
-
-        /// <summary>
-        /// 初始化查询订单参数
-        /// </summary>
-        private void InitQueryOrderParameter()
-        {
-            //SetGatewayParameterValue("appid", WechatConfig.app_id);
-            SetGatewayParameterValue("mch_id", Merchant.UserName);
-            SetGatewayParameterValue("out_trade_no", Order.Id);
-            SetGatewayParameterValue("nonce_str", GenerateNonceString());
-            SetGatewayParameterValue("sign", GetSign());    // 签名需要在最后设置，以免缺少参数。
-        }
-
 
         /// <summary>
         /// 清除网关的数据

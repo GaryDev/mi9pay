@@ -100,6 +100,7 @@
                 dataType: 'json',
                 success: function (data) {
                     container.hideLoading();
+                    barcodeTxt.val("").focus();
                     if (data && data.return_code == "SUCCESS") {
                         if (data.return_url && data.return_url != null)
                             window.location = data.return_url;
@@ -110,6 +111,7 @@
                 },
                 error: function () {
                     container.hideLoading();
+                    barcodeTxt.val("").focus();
                 }
             });
         }

@@ -121,7 +121,7 @@ namespace Mi9Pay.Service
 
             PaymentSetting paymentSetting = InitPaymentSetting(orderRequest, gatewayType);
             SetPaymentSettingOrder(paymentSetting, orderRequest);
-            paymentSetting.SetGatewayParameterValue("barcode", barcode);
+            paymentSetting.SetGatewayParameterValue("auth_code", barcode);
 
             CreatePaymentOrder(orderRequest, gatewayType, paymentSetting.Order.Subject);
 
@@ -259,17 +259,17 @@ namespace Mi9Pay.Service
             GatewayPaymentAccount account = GetGatewayPaymentAccount(orderRequest.StoreId, gatewayType);
 
             PaymentSetting paymentSetting = new PaymentSetting(gatewayType);
-
-            paymentSetting.SetGatewayParameterValue("appid", account.Appid);
-            if (gatewayType == GatewayType.Alipay)
-                paymentSetting.SetGatewayParameterValue("storeid", orderRequest.StoreId.ToString());
-
+            //paymentSetting.SetGatewayParameterValue("appid", account.Appid);
+            paymentSetting.Merchant.AppId = account.Appid;
             paymentSetting.Merchant.UserName = account.Mchid;
             paymentSetting.Merchant.Key = account.Mchkey;
             paymentSetting.Merchant.PublicKey = account.Publickey;
 
             if (!string.IsNullOrWhiteSpace(orderRequest.NotifyUrl))
                 paymentSetting.Merchant.NotifyUrl = new Uri(orderRequest.NotifyUrl);
+
+            if (gatewayType == GatewayType.Alipay)
+                paymentSetting.SetGatewayParameterValue("storeid", orderRequest.StoreId.ToString());
 
             return paymentSetting;
         }

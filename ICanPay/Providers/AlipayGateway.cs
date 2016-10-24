@@ -293,7 +293,7 @@ namespace ICanPay.Providers
         private void InitF2FPayService()
         {
             string serverUrl = AlipayConfig.ServerUrl;
-            string appid = GetGatewayParameterValue("appid");
+            string appid = Merchant.AppId;
             string mchKey = Merchant.Key;
             string publicKey = Merchant.PublicKey;
 
@@ -373,7 +373,7 @@ namespace ICanPay.Providers
             builder.timeout_express = "5m";
             builder.store_id = GetGatewayParameterValue("storeid"); //AlipayConfig.storeId;
             builder.seller_id = Merchant.UserName; //AlipayConfig.pid;
-            builder.auth_code = GetGatewayParameterValue("barcode");
+            builder.auth_code = GetGatewayParameterValue("auth_code");
             builder.scene = "bar_code";
 
             return builder;
@@ -453,7 +453,7 @@ namespace ICanPay.Providers
             if (showAccountInfo)
             {
                 string serverUrl = AlipayConfig.ServerUrl;
-                string appid = GetGatewayParameterValue("appid");
+                string appid = Merchant.AppId;
                 string mchKey = Merchant.Key;
                 string publicKey = Merchant.PublicKey;
 
