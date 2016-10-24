@@ -370,10 +370,11 @@ namespace ICanPay.Providers
             builder.undiscountable_amount = (Order.Amount - Order.DiscountAmount).ToString();
             builder.operator_id = AlipayConfig.operId;
             builder.subject = Order.Subject;
-            builder.timeout_express = DateTime.Now.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss");
+            builder.timeout_express = "5m";
             builder.store_id = GetGatewayParameterValue("storeid"); //AlipayConfig.storeId;
             builder.seller_id = Merchant.UserName; //AlipayConfig.pid;
             builder.auth_code = GetGatewayParameterValue("barcode");
+            builder.scene = "bar_code";
 
             return builder;
         }
@@ -396,7 +397,8 @@ namespace ICanPay.Providers
             }
             else
             {
-                WriteErrorLog("VerifyPaymentResult", result.response);
+                WriteErrorLog("GetPaymentResult", result.response);
+                throw new Exception(result.response.SubMsg);
             }
             return paymentResult;
         }

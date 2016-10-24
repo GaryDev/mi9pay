@@ -85,11 +85,13 @@ namespace Mi9Pay.Web.Controllers
 
         [Route("barcode")]
         [HttpPost]
-        public JsonResult BarcodePayment(OrderRequest request, string barcode)
+        public JsonResult BarcodePayment(OrderRequest request, string method, string barcode)
         {
             try
             {
-                GatewayType type = request.PayMethod.ToEnum<GatewayType>();
+                GatewayType type = method.ToEnum<GatewayType>();
+                request.PayMethod = method;
+
                 OrderPaymentResponse result = _gatewayService.BarcodePayment(request, type, barcode);
 
                 string returnUrl = string.Empty;

@@ -12,7 +12,7 @@
     var radioMethod = $('input[name="PaymentMethod"]');
     var radioScanMode = $('input[name="ScanMode"]');
 
-    confirmBtn.addClass("btn-disabled");
+    //confirmBtn.addClass("btn-disabled");
     confirmBtn.hide();
     barcodeTxt.hide();
 
@@ -88,27 +88,24 @@
     barcodeTxt.bind('input propertychange', function () {
         var barcode = $(this).val();
         //console.log(barcode.length + ' characters');
-        if (barcode.length == 1) {
+        if (barcode.length == 18) {
             container.showLoading();
             $.ajax({
                 url: domainPath + "/gateway/barcode",
                 type: "POST",
-                data: { barcode: barcode },
+                data: {
+                    "barcode": barcode,
+                    "method": $('input[name="PaymentMethod"]:checked').val()
+                },
                 dataType: 'json',
                 success: function (data) {
                     container.hideLoading();
                     if (data && data.return_code == "SUCCESS") {
                         if (data.return_url && data.return_url != null)
                             window.location = data.return_url;
-                        else
-                            longPolling();
                     } else if (data && data.return_code == "FAIL") {
                         qrDiv.empty();
                         qrDiv.append("<span>" + data.return_msg + "</span>");
-                        if (interval)
-                            clearInterval(interval);
-                    } else {
-                        longPolling();
                     }
                 },
                 error: function () {

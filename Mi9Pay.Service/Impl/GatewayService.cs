@@ -110,21 +110,7 @@ namespace Mi9Pay.Service
             MemoryStream ms = paymentSetting.PaymentQRCode();
             if (ms != null)
             {
-                if (!PaymentOrderExisted(orderRequest.InvoiceNumber, orderRequest.StoreId, gatewayType))
-                {
-                    Mapper.Initialize(cfg => {
-                        cfg.CreateMap<OrderRequest, PaymentOrder>();
-                    });
-                    PaymentOrder paymentOrder = Mapper.Map<OrderRequest, PaymentOrder>(orderRequest);
-                    if (paymentOrder != null)
-                    {
-                        paymentOrder.OrderType = "MOSAIC";
-                        paymentOrder.Subject = paymentSetting.Order.Subject;
-                        paymentOrder.GatewayType = gatewayType;
-                        paymentOrder.Status = PaymentOrderStatus.UNPAID;
-                        CreatePaymentOrder(paymentOrder);
-                    }
-                }
+                CreatePaymentOrder(orderRequest, gatewayType, paymentSetting.Order.Subject);
             }
             return ms;
         }
@@ -137,9 +123,13 @@ namespace Mi9Pay.Service
             SetPaymentSettingOrder(paymentSetting, orderRequest);
             paymentSetting.SetGatewayParameterValue("barcode", barcode);
 
+            CreatePaymentOrder(orderRequest, gatewayType, paymentSetting.Order.Subject);
+
             PaymentResult result = paymentSetting.BarcodePayment();
             if (result != null)
             {
+                UpdatePaymentOrder(orderRequest.InvoiceNumber, gatewayType, result.TradeNo);
+
                 response = new OrderPaymentResponse
                 {
                     return_code = "SUCCESS",
@@ -169,14 +159,7 @@ namespace Mi9Pay.Service
             PaymentResult result = paymentSetting.QueryForResult();
             if (result != null)
             {
-                PaymentOrder paymentOrder = new PaymentOrder
-                {
-                    InvoiceNumber = invoiceNumber,
-                    GatewayType = gatewayType,
-                    TradeNumber = result.TradeNo,
-                    Status = PaymentOrderStatus.PAID
-                };
-                UpdatePaymentOrder(paymentOrder);
+                UpdatePaymentOrder(invoiceNumber, gatewayType, result.TradeNo);
 
                 response = new OrderPaymentResponse
                 {
@@ -297,6 +280,37 @@ namespace Mi9Pay.Service
             paymentSetting.Order.Subject = "MPOS订单编号" + orderRequest.InvoiceNumber;
             paymentSetting.Order.Amount = (double)orderRequest.TotalAmount;
             paymentSetting.Order.DiscountAmount = (double)orderRequest.Discount;
+        }
+
+        private void CreatePaymentOrder(OrderRequest orderRequest, GatewayType gatewayType, string orderSubject)
+        {
+            if (!PaymentOrderExisted(orderRequest.InvoiceNumber, orderRequest.StoreId, gatewayType))
+            {
+                Mapper.Initialize(cfg => {
+                    cfg.CreateMap<OrderRequest, PaymentOrder>();
+                });
+                PaymentOrder paymentOrder = Mapper.Map<OrderRequest, PaymentOrder>(orderRequest);
+                if (paymentOrder != null)
+                {
+                    paymentOrder.OrderType = "MOSAIC";
+                    paymentOrder.Subject = orderSubject;
+                    paymentOrder.GatewayType = gatewayType;
+                    paymentOrder.Status = PaymentOrderStatus.UNPAID;
+                    CreatePaymentOrder(paymentOrder);
+                }
+            }
+        }
+
+        private void UpdatePaymentOrder(string invoiceNumber, GatewayType gatewayType, string tradeNo)
+        {
+            PaymentOrder paymentOrder = new PaymentOrder
+            {
+                InvoiceNumber = invoiceNumber,
+                GatewayType = gatewayType,
+                TradeNumber = tradeNo,
+                Status = PaymentOrderStatus.PAID
+            };
+            UpdatePaymentOrder(paymentOrder);
         }
     }
 }

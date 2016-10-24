@@ -12,5 +12,7 @@ namespace ICanPay
         public string PaidAmount { get; set; }
         public string PaymentDate { get; set; }
         public string Currency { get; set; }
+
+        public int SuccessFlag { get; set; }
     }
 }

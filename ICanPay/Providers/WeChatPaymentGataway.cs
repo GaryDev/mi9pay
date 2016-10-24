@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Web;
 using System.Xml;
 
@@ -25,6 +26,8 @@ namespace ICanPay.Providers
 
         const string payGatewayUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
         const string queryGatewayUrl = "https://api.mch.weixin.qq.com/pay/orderquery";
+        const string microPayGatewayUrl = "https://api.mch.weixin.qq.com/pay/micropay";
+        const string reverseGatewayUrl = "https://api.mch.weixin.qq.com/secapi/pay/reverse";
 
         #endregion
 
@@ -80,7 +83,8 @@ namespace ICanPay.Providers
 
         public PaymentResult BarcodePayment()
         {
-            throw new NotImplementedException();
+            InitBarcodePaymentParameter();
+            return GetBarcodePaymentResult(PostOrder(ConvertGatewayParameterDataToXml(), microPayGatewayUrl));
         }
 
         public bool QueryNow()
@@ -95,11 +99,19 @@ namespace ICanPay.Providers
             return ParseQueryResult(PostOrder(ConvertGatewayParameterDataToXml(), queryGatewayUrl));
         }
 
+        public bool CancelOrder(int retries = 0)
+        {
+            if (retries > 10) return false;
+
+            InitQueryOrderParameter();
+            return CheckCancelResult(PostOrder(ConvertGatewayParameterDataToXml(), reverseGatewayUrl), retries);
+        }
+
         /// <summary>
         /// 初始化支付订单的参数
         /// </summary>
         private void InitPaymentOrderParameter()
-        {
+        {          
             //SetGatewayParameterValue("appid", WechatConfig.app_id);
             SetGatewayParameterValue("mch_id", Merchant.UserName);
             SetGatewayParameterValue("nonce_str", GenerateNonceString());
@@ -113,6 +125,16 @@ namespace ICanPay.Providers
             SetGatewayParameterValue("sign", GetSign());    // 签名需要在最后设置，以免缺少参数。
         }
 
+        private void InitBarcodePaymentParameter()
+        {
+            SetGatewayParameterValue("mch_id", Merchant.UserName);
+            SetGatewayParameterValue("nonce_str", GenerateNonceString());
+            SetGatewayParameterValue("body", Order.Subject);
+            SetGatewayParameterValue("out_trade_no", Order.Id);
+            SetGatewayParameterValue("total_fee", (Order.Amount * 100).ToString());
+            SetGatewayParameterValue("spbill_create_ip", "127.0.0.1");
+            SetGatewayParameterValue("sign", GetSign());    // 签名需要在最后设置，以免缺少参数。
+        }
 
         private void ReadNotifyOrderParameter()
         {
@@ -315,11 +337,40 @@ namespace ICanPay.Providers
             return false;
         }
 
+        /// <summary>
+        /// 检查撤销结果
+        /// </summary>
+        /// <param name="resultXml">撤销结果的XML</param>
+        /// <returns></returns>
+        private bool CheckCancelResult(string resultXml, int retries)
+        {
+            // 需要先清除之前查询订单的参数，否则会对接收到的参数造成干扰。
+            ClearGatewayParameterData();
+            ReadResultXml(resultXml);
+
+            if (GetGatewayParameterValue("return_code") != "SUCCESS")
+                return false;
+
+            if (GetGatewayParameterValue("result_code") == "SUCCESS" && GetGatewayParameterValue("recall") == "N")
+            {
+                return true;
+            }
+            else if (GetGatewayParameterValue("recall") == "Y")
+            {
+                CancelOrder(++retries);
+            }
+
+            return false;
+        }
+
         private PaymentResult ParseQueryResult(string resultXml)
         {
+            PaymentResult result = new PaymentResult();
+            result.SuccessFlag = 2;
+
             if (CheckQueryResult(resultXml))
             {
-                PaymentResult result = new PaymentResult();
+                result.SuccessFlag = 1;
                 result.TradeNo = GetGatewayParameterValue("transaction_id");
                 result.Amount = GetGatewayParameterValue("total_fee");
                 result.PaidAmount = GetGatewayParameterValue("total_fee");
@@ -328,7 +379,72 @@ namespace ICanPay.Providers
             }
             else
             {
+                string errorCode = GetGatewayParameterValue("err_code");
+                if (errorCode == "ORDERNOTEXIST")
+                {
+                    result.SuccessFlag = 0;
+                }
                 WriteErrorLog("ParseQueryResult", resultXml);
+            }
+
+            return null;
+        }
+
+        private PaymentResult GetBarcodePaymentResult(string resultXml)
+        {
+            PaymentResult result = null;
+
+            if (CheckQueryResult(resultXml))
+            {
+                result = new PaymentResult();
+                result.TradeNo = GetGatewayParameterValue("transaction_id");
+                result.Amount = GetGatewayParameterValue("total_fee");
+                result.PaidAmount = GetGatewayParameterValue("total_fee");
+                result.Currency = GetGatewayParameterValue("fee_type");
+                return result;
+            }
+            else
+            {
+                string errorCode = GetGatewayParameterValue("err_code");
+                if (errorCode == "USERPAYING")
+                {
+                    PaymentResult queryResult = LoopQuery();
+                    if (queryResult == null)
+                    {
+
+                    }
+                }
+                WriteErrorLog("GetBarcodePaymentResult", resultXml);
+            }
+
+            return result;
+        }
+
+        private PaymentResult LoopQuery()
+        {
+            Order.Id = GetGatewayParameterValue("out_trade_no");
+            
+            //确认支付是否成功,每隔一段时间查询一次订单，共查询10次
+            int queryTimes = 10;//查询次数计数器
+            while (queryTimes-- > 0)
+            {
+                PaymentResult result = QueryForResult();
+                //如果需要继续查询，则等待2s后继续
+                if (result != null && result.SuccessFlag == 2)
+                {
+                    Thread.Sleep(2000);
+                    continue;
+                }
+                //查询成功,返回订单查询接口返回的数据
+                else if (result != null && result.SuccessFlag == 1)
+                {
+                    return result;
+                }
+                //订单交易失败，直接返回刷卡支付接口返回的结果，失败原因会在err_code中描述
+                else
+                {
+                    return null;
+                }
             }
 
             return null;
