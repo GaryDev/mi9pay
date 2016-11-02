@@ -173,7 +173,8 @@ namespace Mi9Pay.Web.Controllers
             Exception ex = filterContext.Exception;
             filterContext.ExceptionHandled = true;
 
-            if (filterContext.HttpContext.Request.HttpMethod == "GET")
+            //if (filterContext.HttpContext.Request.HttpMethod == "GET")
+            if (filterContext.HttpContext.Request.IsAjaxRequest())
             {
                 filterContext.HttpContext.Response.StatusCode = 200;
                 filterContext.Result = new JsonResult

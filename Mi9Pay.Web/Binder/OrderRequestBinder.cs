@@ -14,8 +14,9 @@ namespace Mi9Pay.Web.Binder
             OrderRequest request = (OrderRequest)controllerContext.HttpContext.Session[OrderRequest.SessionKey];
             if (request == null)
             {
-                request = new OrderRequest();
-                controllerContext.HttpContext.Session[OrderRequest.SessionKey] = request;
+                //request = new OrderRequest();
+                //controllerContext.HttpContext.Session[OrderRequest.SessionKey] = request;
+                throw new Exception("未授权请求");
             }
             return request;
         }

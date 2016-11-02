@@ -58,7 +58,12 @@
         }
         selectMethod = evt.target.value;
 
-        confirmBtn.removeClass("btn-disabled");
+        if (confirmBtn.is(":visible"))
+            confirmBtn.removeClass("btn-disabled");
+        else if (barcodeTxt.is(":visible")) {
+            barcodeTxt.val("").focus();
+        }
+
         qrDiv.empty();
         if (interval)
             clearInterval(interval);

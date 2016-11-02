@@ -327,7 +327,7 @@ namespace ICanPay.Providers
             builder.undiscountable_amount = (Order.Amount - Order.DiscountAmount).ToString();
             builder.operator_id = AlipayConfig.operId;
             builder.subject = Order.Subject;
-            builder.time_expire = DateTime.Now.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss");
+            builder.time_expire = "5m";
             builder.store_id = GetGatewayParameterValue("storeid"); //AlipayConfig.storeId;
             builder.seller_id = Merchant.UserName; //AlipayConfig.pid;
             
@@ -447,8 +447,11 @@ namespace ICanPay.Providers
 
         private void WriteErrorLog(string method, AopResponse response, bool showAccountInfo = true)
         {
-            logger.Info(string.Format("{0} ==> Msg: {1}", method, response.Msg) + Environment.NewLine);
-            logger.Info(string.Format("{0} ==> SubMsg: {1}", method, response.SubMsg) + Environment.NewLine);
+            if (response != null)
+            {
+                logger.Info(string.Format("{0} ==> Msg: {1}", method, response.Msg) + Environment.NewLine);
+                logger.Info(string.Format("{0} ==> SubMsg: {1}", method, response.SubMsg) + Environment.NewLine);
+            }
 
             if (showAccountInfo)
             {
