@@ -22,13 +22,13 @@ namespace Mi9Pay.Service
             return app;
         }
 
-        private IEnumerable<GatewayPaymentMethod> GetStorePaymentMethods(int storeId)
+        private IEnumerable<GatewayPaymentMethodTypeJoinResult> GetPaymentMethodCombinations(int storeId)
         {
-            IEnumerable<GatewayPaymentMethod> storePaymentMethods = _repository.GetPaymentMethodsByStore(storeId);
-            if (storePaymentMethods == null || storePaymentMethods.ToList().Count == 0)
+            IEnumerable<GatewayPaymentMethodTypeJoinResult> paymentMethodCombinations = _repository.GetPaymentMethodCombinationByStore(storeId);
+            if (paymentMethodCombinations == null || paymentMethodCombinations.ToList().Count == 0)
                 throw new Exception(string.Format("未配置支付方式，门店ID({0})", storeId));
 
-            return storePaymentMethods;
+            return paymentMethodCombinations;
         }
 
         private GatewayPaymentMethod GetGatewayPaymentMethodByType(GatewayType gatewayType)
@@ -60,6 +60,16 @@ namespace Mi9Pay.Service
             return status;
         }
 
+        private GatewayPaymentStorePaymentMethod GetGatewayPaymentStorePaymentMethod(int storeId, Guid paymentCombine)
+        {
+            GatewayPaymentStorePaymentMethod storePaymentMethod = _repository.StorePaymentMethod.Get(x => 
+                        x.GatewayPaymentMethodTypeJoin == paymentCombine && x.GatewayPaymentStore1.StoreId == storeId);
+            if (storePaymentMethod == null)
+                throw new Exception("门店支付方式获取失败");
+
+            return storePaymentMethod;
+        }
+
         private GatewayPaymentAccount GetGatewayPaymentAccount(int storeId, GatewayType gatewayType)
         {
             string payMethodCode = Enum.GetName(typeof(GatewayType), gatewayType);
@@ -70,10 +80,10 @@ namespace Mi9Pay.Service
             return account;
         }
 
-        private bool PaymentOrderExisted(string invoiceNumber, int storeId, GatewayType gatewayType)
+        private bool PaymentOrderExisted(string invoiceNumber, int storeId, GatewayType gatewayType, string cid)
         {
             string payMethodCode = Enum.GetName(typeof(GatewayType), gatewayType);
-            GatewayPaymentOrder order = _repository.GetGatewayPaymentOrder(invoiceNumber, storeId, payMethodCode);
+            GatewayPaymentOrder order = _repository.GetGatewayPaymentOrder(invoiceNumber, storeId, Guid.Parse(cid));
             if (order != null && order.UniqueId != Guid.Empty)
                 return true;
 
@@ -108,7 +118,8 @@ namespace Mi9Pay.Service
                     ShippingFee = paymentOrder.ShippingFee,
                     OrderType = GetGatewayPaymentOrderType(paymentOrder.OrderType).UniqueId,
                     GatewayPaymentOrderStatus = GetGatewayPaymentOrderStatus(paymentOrder.Status).UniqueId,
-                    GatewayPaymentMethod = GetGatewayPaymentMethodByType(paymentOrder.GatewayType).UniqueId,
+                    GatewayPaymentStorePaymentMethod = GetGatewayPaymentStorePaymentMethod(paymentOrder.StoreId, paymentOrder.PaymentCombine).UniqueId,
+                    //GatewayPaymentMethod = GetGatewayPaymentMethodByType(paymentOrder.GatewayType).UniqueId,
                     TSID = createTime
                 };
                 using (var scope = new TransactionScope())
@@ -137,7 +148,7 @@ namespace Mi9Pay.Service
                     scope.Complete();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //throw ex;
             }
@@ -155,7 +166,8 @@ namespace Mi9Pay.Service
                     {
                         foreach (GatewayPaymentOrder order in orderList)
                         {
-                            if (order.GatewayPaymentMethod == paymentMethod)
+                            //if (order.GatewayPaymentMethod == paymentMethod)
+                            if (true)
                             {
                                 order.TradeNumber = paymentOrder.TradeNumber;
                                 order.GatewayPaymentOrderStatus = GetGatewayPaymentOrderStatus(paymentOrder.Status).UniqueId;

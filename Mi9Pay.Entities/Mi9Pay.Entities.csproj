@@ -44,12 +44,13 @@
     <Compile Include="OrderPaymentResponse.cs" />
     <Compile Include="OrderRequest.cs" />
     <Compile Include="OrderResponse.cs" />
+    <Compile Include="PaymentCombine.cs" />
     <Compile Include="PaymentMethod.cs" />
     <Compile Include="PaymentOrder.cs" />
     <Compile Include="PaymentOrderCustomer.cs" />
     <Compile Include="PaymentOrderDetail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScanMode.cs" />
+    <Compile Include="PaymentScanMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ICanPay\ICanPay.csproj">

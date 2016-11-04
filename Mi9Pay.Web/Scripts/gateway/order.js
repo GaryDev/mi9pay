@@ -4,13 +4,15 @@
     var interval = null;
     var selectMethod = null;
     var selectScanMode = null;
+    var selectCombine = null;
 
     var container = $("div.container");
     var qrDiv = $("#displayArea");
     var confirmBtn = $("#confirm");
     var barcodeTxt = $("#barcode");
-    var radioMethod = $('input[name="PaymentMethod"]');
-    var radioScanMode = $('input[name="ScanMode"]');
+    //var radioMethod = $('input[name="PaymentMethod"]');
+    //var radioScanMode = $('input[name="ScanMode"]');
+    var radioCombine = $('input[name="PaymentCombine"]');
 
     //confirmBtn.addClass("btn-disabled");
     confirmBtn.hide();
@@ -27,7 +29,8 @@
             url: domainPath + "/gateway/qrcode",
             type: "GET",
             data: {
-                "method": $('input[name="PaymentMethod"]:checked').val()
+                "method": selectMethod,
+                "cid": selectCombine
             },
             dataType: 'json',
             success: function (data) {
@@ -51,45 +54,6 @@
         });
     });
 
-    radioMethod.click(function (evt) {
-        var currentVal = evt.target.value;
-        if (selectMethod == currentVal) {
-            return false;
-        }
-        selectMethod = evt.target.value;
-
-        if (confirmBtn.is(":visible"))
-            confirmBtn.removeClass("btn-disabled");
-        else if (barcodeTxt.is(":visible")) {
-            barcodeTxt.val("").focus();
-        }
-
-        qrDiv.empty();
-        if (interval)
-            clearInterval(interval);
-    });
-
-    radioScanMode.click(function (evt) {
-        var currentVal = evt.target.value;
-        if (selectScanMode == currentVal) {
-            return false;
-        }
-        selectScanMode = evt.target.value;
-
-        qrDiv.empty();
-        if (interval)
-            clearInterval(interval);
-
-        if (selectScanMode == "qrcode") {
-            barcodeTxt.hide();
-            confirmBtn.show();
-        } else if (selectScanMode == "barcode") {
-            confirmBtn.hide();
-            barcodeTxt.show().focus();
-        }        
-    });
-    radioScanMode.filter(":checked").trigger("click");
-
     barcodeTxt.bind('input propertychange', function () {
         var barcode = $(this).val();
         //console.log(barcode.length + ' characters');
@@ -100,7 +64,8 @@
                 type: "POST",
                 data: {
                     "barcode": barcode,
-                    "method": $('input[name="PaymentMethod"]:checked').val()
+                    "method": selectMethod,
+                    "cid": selectCombine
                 },
                 dataType: 'json',
                 success: function (data) {
@@ -121,6 +86,72 @@
             });
         }
     });
+
+    radioCombine.click(function (evt) {
+        var currentVal = evt.target.value;
+        if (selectCombine == currentVal) {
+            return false;
+        }
+        selectCombine = evt.target.value;
+
+        qrDiv.empty();
+        if (interval)
+            clearInterval(interval);
+
+        selectMethod = $(this).attr("paymethod");
+        selectScanMode = $(this).attr("paymode");
+
+        if (selectScanMode == "qrcode") {
+            barcodeTxt.hide();
+            confirmBtn.removeClass("btn-disabled").show();
+        } else if (selectScanMode == "barcode") {
+            confirmBtn.hide();
+            barcodeTxt.val("").show().focus();
+        }
+    });
+    radioCombine.filter(":checked").trigger("click");
+
+    /*
+    radioMethod.click(function (evt) {
+        var currentVal = evt.target.value;
+        if (selectMethod == currentVal) {
+            return false;
+        }
+        selectMethod = evt.target.value;
+
+        if (confirmBtn.is(":visible"))
+            confirmBtn.removeClass("btn-disabled");
+        else if (barcodeTxt.is(":visible")) {
+            barcodeTxt.val("").focus();
+        }
+
+        qrDiv.empty();
+        if (interval)
+            clearInterval(interval);
+    });
+
+    
+    radioScanMode.click(function (evt) {
+        var currentVal = evt.target.value;
+        if (selectScanMode == currentVal) {
+            return false;
+        }
+        selectScanMode = evt.target.value;
+
+        qrDiv.empty();
+        if (interval)
+            clearInterval(interval);
+
+        if (selectScanMode == "qrcode") {
+            barcodeTxt.hide();
+            confirmBtn.show();
+        } else if (selectScanMode == "barcode") {
+            confirmBtn.hide();
+            barcodeTxt.show().focus();
+        }        
+    });
+    radioScanMode.filter(":checked").trigger("click");
+    */
     
     function longPolling() {
         interval = setTimeout(function () {

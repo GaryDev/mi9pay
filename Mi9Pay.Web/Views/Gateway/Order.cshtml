@@ -23,42 +23,27 @@
                 </div>
                 <div class="form-group">
                     <label for="PaymentMethod">请选择支付方式</label>
-                    @foreach (var item in Model.PaymentMethodList)
+                    @foreach (var item in Model.PaymentCombineList)
                     {
                         <div class="radio">
                             <label>
                                 @if (item.IsDefault)
                                 {
-                                    @Html.RadioButtonFor(m => m.PaymentMethod, @item.Code.ToLower(), new { @checked = "checked" })
+                                    @Html.RadioButtonFor(m => m.PaymentCombine,
+                                        item.CombineId,
+                                        new { @checked = "checked", paymethod = item.PaymentMethod.Code.ToLower(), paymode = item.PaymentScanMode.Code.ToLower() })
                                 }
                                 else
                                 {
-                                    @Html.RadioButtonFor(m => m.PaymentMethod, @item.Code.ToLower())
+                                    @Html.RadioButtonFor(m => m.PaymentCombine,
+                                        item.CombineId,
+                                        new { paymethod = item.PaymentMethod.Code.ToLower(), paymode = item.PaymentScanMode.Code.ToLower() })
                                 }
                                 @item.Name
                             </label>
                         </div>
                     }
-                </div>
-                <div class="form-group">
-                    <label for="ScanMode">请选择扫码方式</label>
-                    @foreach (var item in Model.ScanModeList)
-                    {
-                        <div class="radio">
-                            <label>
-                                @if (item.IsDefault)
-                                {
-                                    @Html.RadioButtonFor(m => m.ScanMode, @item.Code.ToLower(), new { @checked = "checked" })
-                                }
-                                else
-                                {
-                                    @Html.RadioButtonFor(m => m.ScanMode, @item.Code.ToLower())
-                                }
-                                @item.Name
-                            </label>
-                        </div>
-                    }
-                </div>
+                </div>                
                 <a class="btn btn-primary btn-lg" id="confirm">生成支付二维码</a>
                 @Html.TextBoxFor(m => m.Barcode, new { @class = "form-control input-lg", id = "barcode", placeholder = "请扫描支付条码" })
             </div>

@@ -102,7 +102,7 @@ namespace Mi9Pay.Service
             return request;
         }
 
-        public MemoryStream CreatePaymentQRCode(OrderRequest orderRequest, GatewayType gatewayType)
+        public MemoryStream CreatePaymentQRCode(OrderRequest orderRequest, GatewayType gatewayType, string cid)
         {
             PaymentSetting paymentSetting = InitPaymentSetting(orderRequest, gatewayType);
             SetPaymentSettingOrder(paymentSetting, orderRequest);
@@ -110,12 +110,12 @@ namespace Mi9Pay.Service
             MemoryStream ms = paymentSetting.PaymentQRCode();
             if (ms != null)
             {
-                CreatePaymentOrder(orderRequest, gatewayType, paymentSetting.Order.Subject);
+                CreatePaymentOrder(orderRequest, gatewayType, paymentSetting.Order.Subject, cid);
             }
             return ms;
         }
 
-        public OrderPaymentResponse BarcodePayment(OrderRequest orderRequest, GatewayType gatewayType, string barcode)
+        public OrderPaymentResponse BarcodePayment(OrderRequest orderRequest, GatewayType gatewayType, string barcode, string cid)
         {
             OrderPaymentResponse response = new OrderPaymentResponse();
 
@@ -123,7 +123,7 @@ namespace Mi9Pay.Service
             SetPaymentSettingOrder(paymentSetting, orderRequest);
             paymentSetting.SetGatewayParameterValue("auth_code", barcode);
 
-            CreatePaymentOrder(orderRequest, gatewayType, paymentSetting.Order.Subject);
+            CreatePaymentOrder(orderRequest, gatewayType, paymentSetting.Order.Subject, cid);
 
             PaymentResult result = paymentSetting.BarcodePayment();
             if (result != null)
@@ -208,7 +208,7 @@ namespace Mi9Pay.Service
         public IEnumerable<GatewayType> GetGatewayTypes(string invoice)
         {
             int storeId = ParseStoreId(invoice);
-            IEnumerable<GatewayPaymentMethod> paymentMethods = GetStorePaymentMethods(storeId);
+            IEnumerable<PaymentMethod> paymentMethods = GetPaymentMethodList(storeId);
 
             List<GatewayType> gatewayTypes = new List<GatewayType>();
             paymentMethods.ToList().ForEach(m => {
@@ -220,28 +220,46 @@ namespace Mi9Pay.Service
             return gatewayTypes;
         }
 
-        public IEnumerable<PaymentMethod> GetPaymentMethods(int storeId)
+        public IEnumerable<PaymentMethod> GetPaymentMethodList(int storeId)
         {
-            IEnumerable<GatewayPaymentMethod> storePaymentMethods = GetStorePaymentMethods(storeId);
+            List<GatewayPaymentMethodTypeJoinResult> paymentMethodCombinations = GetPaymentMethodCombinations(storeId).ToList();
+            List<GatewayPaymentMethod> storePaymentMethods = new List<GatewayPaymentMethod>();
+            paymentMethodCombinations.ForEach(x => {
+                storePaymentMethods.Add(x.PaymentCombine.GatewayPaymentMethod1);
+            });
 
             Mapper.Initialize(cfg => cfg.CreateMap<GatewayPaymentMethod, PaymentMethod>());
-            IEnumerable<PaymentMethod> listPaymentMethod = Mapper.Map<IEnumerable<GatewayPaymentMethod>, IEnumerable<PaymentMethod>>(storePaymentMethods);
-            // temp solution
-            if (listPaymentMethod.Any())
-            {
-                listPaymentMethod.First().IsDefault = true;
-            }
+            List<PaymentMethod> listPaymentMethod = Mapper.Map<List<GatewayPaymentMethod>, List<PaymentMethod>>(storePaymentMethods);
             return listPaymentMethod;
         }
 
-        public IEnumerable<ScanMode> GetScanModeList()
+        public IEnumerable<PaymentScanMode> GetPaymentScanModeList()
         {
-            List<ScanMode> listScanMode = new List<ScanMode>();
+            List<PaymentScanMode> listScanMode = new List<PaymentScanMode>();
 
-            listScanMode.Add(new ScanMode { Code = "qrcode", Name = "二维码", IsDefault = true });
-            listScanMode.Add(new ScanMode { Code = "barcode", Name = "支付条码", IsDefault = false });
+            listScanMode.Add(new PaymentScanMode { Code = "qrcode", Name = "二维码", IsDefault = true });
+            listScanMode.Add(new PaymentScanMode { Code = "barcode", Name = "支付条码", IsDefault = false });
 
             return listScanMode;
+        }
+
+        public IEnumerable<PaymentCombine> GetPaymentCombineList(int storeId)
+        {
+            List<GatewayPaymentMethodTypeJoinResult> paymentMethodCombinations = GetPaymentMethodCombinations(storeId).ToList();
+            
+            List<PaymentCombine> listPaymentCombine = new List<PaymentCombine>();
+            paymentMethodCombinations.ForEach(x => {
+                PaymentCombine pc = new PaymentCombine
+                {
+                    CombineId = x.PaymentCombine.UniqueId.ToString(),
+                    PaymentMethod = new PaymentMethod { Code = x.PaymentCombine.GatewayPaymentMethod1.Code, Name = x.PaymentCombine.GatewayPaymentMethod1.Name },
+                    PaymentScanMode = new PaymentScanMode { Code = x.PaymentCombine.GatewayPaymentMethodType1.Code, Name = x.PaymentCombine.GatewayPaymentMethodType1.Name },
+                    IsDefault = x.IsDefault
+                };
+                listPaymentCombine.Add(pc);
+            });
+
+            return listPaymentCombine.OrderBy(x => x.PaymentMethod.Code + x.PaymentScanMode.Code);
         }
 
         private int ParseStoreId(string invoiceNumber)
@@ -282,9 +300,9 @@ namespace Mi9Pay.Service
             paymentSetting.Order.DiscountAmount = (double)orderRequest.Discount;
         }
 
-        private void CreatePaymentOrder(OrderRequest orderRequest, GatewayType gatewayType, string orderSubject)
+        private void CreatePaymentOrder(OrderRequest orderRequest, GatewayType gatewayType, string orderSubject, string cid)
         {
-            if (!PaymentOrderExisted(orderRequest.InvoiceNumber, orderRequest.StoreId, gatewayType))
+            if (!PaymentOrderExisted(orderRequest.InvoiceNumber, orderRequest.StoreId, gatewayType, cid))
             {
                 Mapper.Initialize(cfg => {
                     cfg.CreateMap<OrderRequest, PaymentOrder>();
@@ -295,6 +313,7 @@ namespace Mi9Pay.Service
                     paymentOrder.OrderType = "MOSAIC";
                     paymentOrder.Subject = orderSubject;
                     paymentOrder.GatewayType = gatewayType;
+                    paymentOrder.PaymentCombine = Guid.Parse(cid);
                     paymentOrder.Status = PaymentOrderStatus.UNPAID;
                     CreatePaymentOrder(paymentOrder);
                 }

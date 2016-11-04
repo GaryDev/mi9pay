@@ -43,9 +43,10 @@
     <Compile Include="OrderRequestViewModel.cs" />
     <Compile Include="OrderPaymentResponseViewModel.cs" />
     <Compile Include="OrderPaymentViewModel.cs" />
+    <Compile Include="PaymentCombineViewModel.cs" />
     <Compile Include="PaymentMethodViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScanModeViewModel.cs" />
+    <Compile Include="PaymentScanModeViewModel.cs" />
     <Compile Include="Utility\SignatureUtil.cs" />
   </ItemGroup>
   <ItemGroup>

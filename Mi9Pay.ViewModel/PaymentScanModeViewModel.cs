@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mi9Pay.Entities
+namespace Mi9Pay.ViewModel
 {
-    public class ScanMode
+    public class PaymentScanModeViewModel
     {
         public string Name { get; set; }
         public string Code { get; set; }

@@ -26,18 +26,18 @@ namespace Mi9Pay.DataModel
         public Nullable<decimal> Discount { get; set; }
         public Nullable<decimal> Tax { get; set; }
         public Nullable<decimal> ShippingFee { get; set; }
-        public System.Guid GatewayPaymentMethod { get; set; }
         public System.Guid GatewayPaymentOrderStatus { get; set; }
         public System.DateTime TSID { get; set; }
         public string OrderNumber { get; set; }
         public string TradeNumber { get; set; }
         public System.Guid OrderType { get; set; }
         public Nullable<System.Guid> GatewayPaymentCustomer { get; set; }
+        public Nullable<System.Guid> GatewayPaymentStorePaymentMethod { get; set; }
     
         public virtual GatewayPaymentCustomer GatewayPaymentCustomer1 { get; set; }
-        public virtual GatewayPaymentMethod GatewayPaymentMethod1 { get; set; }
         public virtual GatewayPaymentOrderStatus GatewayPaymentOrderStatus1 { get; set; }
         public virtual GatewayPaymentOrderType GatewayPaymentOrderType { get; set; }
         public virtual ICollection<GatewayPaymentOrderDetail> GatewayPaymentOrderDetail { get; set; }
+        public virtual GatewayPaymentStorePaymentMethod GatewayPaymentStorePaymentMethod1 { get; set; }
     }
 }

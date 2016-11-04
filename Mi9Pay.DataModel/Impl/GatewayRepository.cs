@@ -113,11 +113,6 @@ namespace Mi9Pay.DataModel
             }
         }
 
-        public DbSet<GatewayPaymentStorePaymentMethod> TblStorePaymentMethod
-        {
-            get { return _context.GatewayPaymentStorePaymentMethod; }
-        }
-
         /// <summary>
         /// Get/Set Property for customer repository.
         /// </summary>
@@ -186,18 +181,21 @@ namespace Mi9Pay.DataModel
         #endregion
 
         #region Public member methods...
-        
-        public IEnumerable<GatewayPaymentMethod> GetPaymentMethodsByStore(int storeId)
+
+        public IEnumerable<GatewayPaymentMethodTypeJoinResult> GetPaymentMethodCombinationByStore(int storeId)
         {
-            var queryResult = from gpmd in _context.GatewayPaymentMethod
-                              join gpspm in _context.GatewayPaymentStorePaymentMethod on gpmd.UniqueId equals gpspm.GatewayPaymentMethod
+            var queryResult = from gpmd in _context.GatewayPaymentMethodTypeJoin
+                              join gpspm in _context.GatewayPaymentStorePaymentMethod on gpmd.UniqueId equals gpspm.GatewayPaymentMethodTypeJoin
                               join gps in _context.GatewayPaymentStore on gpspm.GatewayPaymentStore equals gps.UniqueId
                               where gps.StoreId == storeId
-                              select gpmd;
-
+                              select new GatewayPaymentMethodTypeJoinResult
+                              {
+                                  PaymentCombine = gpmd,
+                                  IsDefault = gpspm.PaymentMethodDefault.HasValue ? gpspm.PaymentMethodDefault.Value : false
+                              };
             return queryResult;
         }
-
+        
         public GatewayPaymentAccount GetGatewayPaymentAccount(int storeId, string payMethodCode)
         {
             GatewayPaymentAccount account = (from gpa in _context.GatewayPaymentAccount
@@ -209,11 +207,11 @@ namespace Mi9Pay.DataModel
             return account;
         }
 
-        public GatewayPaymentOrder GetGatewayPaymentOrder(string invoiceNumber, int storeId, string payMethodCode)
+        public GatewayPaymentOrder GetGatewayPaymentOrder(string invoiceNumber, int storeId, Guid payMethodJoin)
         {
             GatewayPaymentOrder order = (from gpo in _context.GatewayPaymentOrder
-                                         join gpmd in _context.GatewayPaymentMethod on gpo.GatewayPaymentMethod equals gpmd.UniqueId
-                                         where gpo.OrderNumber == invoiceNumber && gpo.StoreID == storeId && string.Compare(gpmd.Code, payMethodCode, true) == 0
+                                         join gpmd in _context.GatewayPaymentStorePaymentMethod on gpo.GatewayPaymentStorePaymentMethod equals gpmd.UniqueId
+                                         where gpo.OrderNumber == invoiceNumber && gpo.StoreID == storeId && gpmd.GatewayPaymentMethodTypeJoin == payMethodJoin
                                          select gpo).SingleOrDefault();
             return order;
         }

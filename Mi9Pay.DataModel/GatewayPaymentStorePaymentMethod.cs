@@ -14,11 +14,18 @@ namespace Mi9Pay.DataModel
     
     public partial class GatewayPaymentStorePaymentMethod
     {
+        public GatewayPaymentStorePaymentMethod()
+        {
+            this.GatewayPaymentOrder = new HashSet<GatewayPaymentOrder>();
+        }
+    
         public System.Guid UniqueId { get; set; }
         public System.Guid GatewayPaymentStore { get; set; }
-        public System.Guid GatewayPaymentMethod { get; set; }
+        public Nullable<bool> PaymentMethodDefault { get; set; }
+        public Nullable<System.Guid> GatewayPaymentMethodTypeJoin { get; set; }
     
-        public virtual GatewayPaymentMethod GatewayPaymentMethod1 { get; set; }
+        public virtual GatewayPaymentMethodTypeJoin GatewayPaymentMethodTypeJoin1 { get; set; }
+        public virtual ICollection<GatewayPaymentOrder> GatewayPaymentOrder { get; set; }
         public virtual GatewayPaymentStore GatewayPaymentStore1 { get; set; }
     }
 }

@@ -16,9 +16,8 @@ namespace Mi9Pay.DataModel
     {
         public GatewayPaymentMethod()
         {
-            this.GatewayPaymentOrder = new HashSet<GatewayPaymentOrder>();
-            this.GatewayPaymentStorePaymentMethod = new HashSet<GatewayPaymentStorePaymentMethod>();
             this.GatewayPaymentAccount = new HashSet<GatewayPaymentAccount>();
+            this.GatewayPaymentMethodTypeJoin = new HashSet<GatewayPaymentMethodTypeJoin>();
         }
     
         public System.Guid UniqueId { get; set; }
@@ -26,8 +25,7 @@ namespace Mi9Pay.DataModel
         public string Description { get; set; }
         public string Code { get; set; }
     
-        public virtual ICollection<GatewayPaymentOrder> GatewayPaymentOrder { get; set; }
-        public virtual ICollection<GatewayPaymentStorePaymentMethod> GatewayPaymentStorePaymentMethod { get; set; }
         public virtual ICollection<GatewayPaymentAccount> GatewayPaymentAccount { get; set; }
+        public virtual ICollection<GatewayPaymentMethodTypeJoin> GatewayPaymentMethodTypeJoin { get; set; }
     }
 }

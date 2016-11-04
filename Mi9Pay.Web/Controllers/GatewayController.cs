@@ -44,13 +44,21 @@ namespace Mi9Pay.Web.Controllers
                 Mapper.Initialize(cfg => cfg.CreateMap<OrderRequest, OrderRequestViewModel>());
                 OrderRequestViewModel order = Mapper.Map<OrderRequest, OrderRequestViewModel>(orderRequest);
 
-                IEnumerable<PaymentMethod> paymentMethods = _gatewayService.GetPaymentMethods(orderRequest.StoreId);
-                Mapper.Initialize(cfg => cfg.CreateMap<PaymentMethod, PaymentMethodViewModel>());
-                order.PaymentMethodList = Mapper.Map<IEnumerable<PaymentMethod>, IEnumerable<PaymentMethodViewModel>>(paymentMethods);
+                IEnumerable<PaymentCombine> paymentCombineList = _gatewayService.GetPaymentCombineList(orderRequest.StoreId);
+                Mapper.Initialize(cfg => {
+                    cfg.CreateMap<PaymentCombine, PaymentCombineViewModel>();
+                    cfg.CreateMap<PaymentMethod, PaymentMethodViewModel>();
+                    cfg.CreateMap<PaymentScanMode, PaymentScanModeViewModel>();
+                });
+                order.PaymentCombineList = Mapper.Map<IEnumerable<PaymentCombine>, IEnumerable<PaymentCombineViewModel>>(paymentCombineList);
 
-                IEnumerable<ScanMode> scanModeList = _gatewayService.GetScanModeList();
-                Mapper.Initialize(cfg => cfg.CreateMap<ScanMode, ScanModeViewModel>());
-                order.ScanModeList = Mapper.Map<IEnumerable<ScanMode>, IEnumerable<ScanModeViewModel>>(scanModeList);
+                //IEnumerable<PaymentMethod> paymentMethods = _gatewayService.GetPaymentMethods(orderRequest.StoreId);
+                //Mapper.Initialize(cfg => cfg.CreateMap<PaymentMethod, PaymentMethodViewModel>());
+                //order.PaymentMethodList = Mapper.Map<IEnumerable<PaymentMethod>, IEnumerable<PaymentMethodViewModel>>(paymentMethods);
+
+                //IEnumerable<ScanMode> scanModeList = _gatewayService.GetScanModeList();
+                //Mapper.Initialize(cfg => cfg.CreateMap<ScanMode, ScanModeViewModel>());
+                //order.ScanModeList = Mapper.Map<IEnumerable<ScanMode>, IEnumerable<ScanModeViewModel>>(scanModeList);
 
                 return View(order);
             }
@@ -62,7 +70,7 @@ namespace Mi9Pay.Web.Controllers
 
         [Route("qrcode")]
         [HttpGet]
-        public JsonResult PaymentQRCode(OrderRequest orderRequest, string method)
+        public JsonResult PaymentQRCode(OrderRequest orderRequest, string method, string cid)
         {
             try
             {
@@ -70,7 +78,7 @@ namespace Mi9Pay.Web.Controllers
                 GatewayType type = method.ToEnum<GatewayType>();
                 orderRequest.PayMethod = method;
 
-                MemoryStream ms = _gatewayService.CreatePaymentQRCode(orderRequest, type);
+                MemoryStream ms = _gatewayService.CreatePaymentQRCode(orderRequest, type, cid);
                 if (ms != null)
                 {
                     imgTag = string.Format("<img src='data:image/png;base64,{0}' />", Convert.ToBase64String(ms.ToArray()));
@@ -85,14 +93,14 @@ namespace Mi9Pay.Web.Controllers
 
         [Route("barcode")]
         [HttpPost]
-        public JsonResult BarcodePayment(OrderRequest request, string method, string barcode)
+        public JsonResult BarcodePayment(OrderRequest request, string method, string barcode, string cid)
         {
             try
             {
                 GatewayType type = method.ToEnum<GatewayType>();
                 request.PayMethod = method;
 
-                OrderPaymentResponse result = _gatewayService.BarcodePayment(request, type, barcode);
+                OrderPaymentResponse result = _gatewayService.BarcodePayment(request, type, barcode, cid);
 
                 string returnUrl = string.Empty;
                 if (result.IsSuccess())

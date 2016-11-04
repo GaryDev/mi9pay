@@ -31,11 +31,14 @@ namespace Mi9Pay.DataModel
         public DbSet<GatewayPaymentOrderStatus> GatewayPaymentOrderStatus { get; set; }
         public DbSet<GatewayPaymentOrderType> GatewayPaymentOrderType { get; set; }
         public DbSet<GatewayPaymentCustomer> GatewayPaymentCustomer { get; set; }
-        public DbSet<GatewayPaymentOrder> GatewayPaymentOrder { get; set; }
         public DbSet<GatewayPaymentMerchant> GatewayPaymentMerchant { get; set; }
-        public DbSet<GatewayPaymentStorePaymentMethod> GatewayPaymentStorePaymentMethod { get; set; }
-        public DbSet<GatewayPaymentUser> GatewayPaymentUser { get; set; }
         public DbSet<GatewayPaymentAccount> GatewayPaymentAccount { get; set; }
         public DbSet<GatewayPaymentStore> GatewayPaymentStore { get; set; }
+        public DbSet<GatewayPaymentMethodType> GatewayPaymentMethodType { get; set; }
+        public DbSet<GatewayPaymentMethodTypeJoin> GatewayPaymentMethodTypeJoin { get; set; }
+        public DbSet<GatewayPaymentPosition> GatewayPaymentPosition { get; set; }
+        public DbSet<GatewayPaymentOrder> GatewayPaymentOrder { get; set; }
+        public DbSet<GatewayPaymentStorePaymentMethod> GatewayPaymentStorePaymentMethod { get; set; }
+        public DbSet<GatewayPaymentUser> GatewayPaymentUser { get; set; }
     }
 }

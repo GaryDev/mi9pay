@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mi9Pay.ViewModel
+namespace Mi9Pay.DataModel
 {
-    public class ScanModeViewModel
+    public class GatewayPaymentMethodTypeJoinResult
     {
-        public string Name { get; set; }
-        public string Code { get; set; }
+        public GatewayPaymentMethodTypeJoin PaymentCombine { get; set; }
         public bool IsDefault { get; set; }
     }
 }

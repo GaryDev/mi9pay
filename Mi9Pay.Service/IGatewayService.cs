@@ -14,14 +14,15 @@ namespace Mi9Pay.Service
         void ValidateRequestParameter(Dictionary<string, string> requestParameter);
         OrderRequest RecieveRequestForm(Dictionary<string, string> requestParameter);
 
-        MemoryStream CreatePaymentQRCode(OrderRequest orderRequest, GatewayType gatewayType);
-        OrderPaymentResponse BarcodePayment(OrderRequest orderRequest, GatewayType gatewayType, string barcode);
+        MemoryStream CreatePaymentQRCode(OrderRequest orderRequest, GatewayType gatewayType, string cid);
+        OrderPaymentResponse BarcodePayment(OrderRequest orderRequest, GatewayType gatewayType, string barcode, string cid);
+        OrderPaymentResponse QueryPayment(string appId, string invoiceNumber, GatewayType gatewayType);
 
         IEnumerable<GatewayType> GetGatewayTypes(string invoice);
-        IEnumerable<PaymentMethod> GetPaymentMethods(int storeId);
-        IEnumerable<ScanMode> GetScanModeList();
 
-        OrderPaymentResponse QueryPayment(string appId, string invoiceNumber, GatewayType gatewayType);
+        IEnumerable<PaymentMethod> GetPaymentMethodList(int storeId);
+        IEnumerable<PaymentScanMode> GetPaymentScanModeList();
+        IEnumerable<PaymentCombine> GetPaymentCombineList(int storeId);
 
         string BuildReturnUrl(OrderRequest request, OrderPaymentResponse response);
     }

@@ -327,7 +327,7 @@ namespace ICanPay.Providers
             builder.undiscountable_amount = (Order.Amount - Order.DiscountAmount).ToString();
             builder.operator_id = AlipayConfig.operId;
             builder.subject = Order.Subject;
-            builder.time_expire = "5m";
+            builder.time_expire = DateTime.Now.AddMinutes(5).ToString();
             builder.store_id = GetGatewayParameterValue("storeid"); //AlipayConfig.storeId;
             builder.seller_id = Merchant.UserName; //AlipayConfig.pid;
             
