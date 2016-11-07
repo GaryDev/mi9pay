@@ -135,7 +135,7 @@ namespace ICanPay
                         return new AlipayGateway();
                     }
 
-                case GatewayType.WeChatPayment:
+                case GatewayType.WeChat:
                     {
                         return new WeChatPaymentGataway();
                     }
@@ -299,7 +299,7 @@ namespace ICanPay
                 image.Save(ms, ImageFormat.Png);
 
                 string logo = string.Empty;
-                if (_gatewayType == GatewayType.WeChatPayment)
+                if (_gatewayType == GatewayType.WeChat)
                     logo = "wx";
                 else if (_gatewayType == GatewayType.Alipay)
                     logo = "alipay";

@@ -191,6 +191,7 @@ namespace Mi9Pay.DataModel
                               select new GatewayPaymentMethodTypeJoinResult
                               {
                                   PaymentCombine = gpmd,
+                                  StorePaymentMethod = gpspm.UniqueId,
                                   IsDefault = gpspm.PaymentMethodDefault.HasValue ? gpspm.PaymentMethodDefault.Value : false
                               };
             return queryResult;

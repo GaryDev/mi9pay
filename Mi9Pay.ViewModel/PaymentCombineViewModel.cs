@@ -24,6 +24,7 @@ namespace Mi9Pay.ViewModel
             }
         }
 
+        public string StorePaymentMethod { get; set; }
         public bool IsDefault { get; set; }
 
 

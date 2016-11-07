@@ -128,7 +128,7 @@ namespace Mi9Pay.Service
             PaymentResult result = paymentSetting.BarcodePayment();
             if (result != null)
             {
-                UpdatePaymentOrder(orderRequest.InvoiceNumber, gatewayType, result.TradeNo);
+                UpdatePaymentOrder(orderRequest.InvoiceNumber, gatewayType, result.TradeNo, cid);
 
                 response = new OrderPaymentResponse
                 {
@@ -148,7 +148,7 @@ namespace Mi9Pay.Service
             return response;
         }
 
-        public OrderPaymentResponse QueryPayment(string appId, string invoiceNumber, GatewayType gatewayType)
+        public OrderPaymentResponse QueryPayment(string appId, string invoiceNumber, GatewayType gatewayType, string cid)
         {
             OrderPaymentResponse response = new OrderPaymentResponse();
 
@@ -159,7 +159,7 @@ namespace Mi9Pay.Service
             PaymentResult result = paymentSetting.QueryForResult();
             if (result != null)
             {
-                UpdatePaymentOrder(invoiceNumber, gatewayType, result.TradeNo);
+                UpdatePaymentOrder(invoiceNumber, gatewayType, result.TradeNo, cid);
 
                 response = new OrderPaymentResponse
                 {
@@ -252,6 +252,7 @@ namespace Mi9Pay.Service
                 PaymentCombine pc = new PaymentCombine
                 {
                     CombineId = x.PaymentCombine.UniqueId.ToString(),
+                    StorePaymentMethod = x.StorePaymentMethod.ToString(),
                     PaymentMethod = new PaymentMethod { Code = x.PaymentCombine.GatewayPaymentMethod1.Code, Name = x.PaymentCombine.GatewayPaymentMethod1.Name },
                     PaymentScanMode = new PaymentScanMode { Code = x.PaymentCombine.GatewayPaymentMethodType1.Code, Name = x.PaymentCombine.GatewayPaymentMethodType1.Name },
                     IsDefault = x.IsDefault
@@ -313,19 +314,20 @@ namespace Mi9Pay.Service
                     paymentOrder.OrderType = "MOSAIC";
                     paymentOrder.Subject = orderSubject;
                     paymentOrder.GatewayType = gatewayType;
-                    paymentOrder.PaymentCombine = Guid.Parse(cid);
+                    paymentOrder.StorePaymentMethod = Guid.Parse(cid);
                     paymentOrder.Status = PaymentOrderStatus.UNPAID;
                     CreatePaymentOrder(paymentOrder);
                 }
             }
         }
 
-        private void UpdatePaymentOrder(string invoiceNumber, GatewayType gatewayType, string tradeNo)
+        private void UpdatePaymentOrder(string invoiceNumber, GatewayType gatewayType, string tradeNo, string cid)
         {
             PaymentOrder paymentOrder = new PaymentOrder
             {
                 InvoiceNumber = invoiceNumber,
                 GatewayType = gatewayType,
+                StorePaymentMethod = Guid.Parse(cid),
                 TradeNumber = tradeNo,
                 Status = PaymentOrderStatus.PAID
             };

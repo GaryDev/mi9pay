@@ -9,6 +9,7 @@ namespace Mi9Pay.Entities
     public class PaymentCombine
     {
         public string CombineId { get; set; }
+        public string StorePaymentMethod { get; set; }
         public bool IsDefault { get; set; }
 
         public PaymentMethod PaymentMethod { get; set; }

@@ -21,7 +21,7 @@ namespace Mi9Pay.Entities
 
         public GatewayType GatewayType { get; set; }
         public PaymentOrderStatus Status { get; set; }
-        public Guid PaymentCombine { get; set; }
+        public Guid StorePaymentMethod { get; set; }
 
         public PaymentOrderCustomer Customer { get; set; }
         public List<PaymentOrderDetail> PayItems { get; set; }

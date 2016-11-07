@@ -77,6 +77,7 @@ namespace Mi9Pay.Web.Controllers
                 string imgTag = string.Empty;
                 GatewayType type = method.ToEnum<GatewayType>();
                 orderRequest.PayMethod = method;
+                orderRequest.PaymentCombine = cid;
 
                 MemoryStream ms = _gatewayService.CreatePaymentQRCode(orderRequest, type, cid);
                 if (ms != null)
@@ -99,6 +100,7 @@ namespace Mi9Pay.Web.Controllers
             {
                 GatewayType type = method.ToEnum<GatewayType>();
                 request.PayMethod = method;
+                request.PaymentCombine = cid;
 
                 OrderPaymentResponse result = _gatewayService.BarcodePayment(request, type, barcode, cid);
 
@@ -130,9 +132,11 @@ namespace Mi9Pay.Web.Controllers
 
                 OrderPaymentResponse result = null;
                 OrderPaymentResponseViewModel vmOrderPayment = new OrderPaymentResponseViewModel();
-                foreach (GatewayType type in _gatewayService.GetGatewayTypes(invoice))
+                int storeId = 0;
+                foreach (PaymentCombine payCombine in _gatewayService.GetPaymentCombineList(storeId))
                 {
-                    result = _gatewayService.QueryPayment(app_id, invoice, type);
+                    GatewayType type = payCombine.PaymentMethod.Code.ToEnum<GatewayType>();
+                    result = _gatewayService.QueryPayment(app_id, invoice, type, payCombine.StorePaymentMethod);
                     if (result != null && result.IsSuccess())
                     {
                         Mapper.Initialize(cfg => {
@@ -161,7 +165,7 @@ namespace Mi9Pay.Web.Controllers
             try
             {
                 GatewayType type = request.PayMethod.ToEnum<GatewayType>();
-                OrderPaymentResponse result = _gatewayService.QueryPayment(request.AppId, request.InvoiceNumber, type);
+                OrderPaymentResponse result = _gatewayService.QueryPayment(request.AppId, request.InvoiceNumber, type, request.PaymentCombine);
 
                 string returnUrl = string.Empty;
                 if (result.IsSuccess())

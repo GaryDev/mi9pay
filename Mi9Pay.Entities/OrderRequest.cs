@@ -25,6 +25,7 @@ namespace Mi9Pay.Entities
         public decimal ShippingFee { get; set; }
 
         public string PayMethod { get; set; }
+        public string PaymentCombine { get; set; }
         public List<PaymentOrderDetail> PayItems { get; set; }
 
         public PaymentOrderCustomer Customer { get; set; }

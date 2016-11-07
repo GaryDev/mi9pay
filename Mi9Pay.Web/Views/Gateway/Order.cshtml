@@ -30,13 +30,13 @@
                                 @if (item.IsDefault)
                                 {
                                     @Html.RadioButtonFor(m => m.PaymentCombine,
-                                        item.CombineId,
+                                        item.StorePaymentMethod,
                                         new { @checked = "checked", paymethod = item.PaymentMethod.Code.ToLower(), paymode = item.PaymentScanMode.Code.ToLower() })
                                 }
                                 else
                                 {
                                     @Html.RadioButtonFor(m => m.PaymentCombine,
-                                        item.CombineId,
+                                        item.StorePaymentMethod,
                                         new { paymethod = item.PaymentMethod.Code.ToLower(), paymode = item.PaymentScanMode.Code.ToLower() })
                                 }
                                 @item.Name

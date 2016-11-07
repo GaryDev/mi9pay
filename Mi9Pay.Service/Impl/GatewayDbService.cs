@@ -118,7 +118,7 @@ namespace Mi9Pay.Service
                     ShippingFee = paymentOrder.ShippingFee,
                     OrderType = GetGatewayPaymentOrderType(paymentOrder.OrderType).UniqueId,
                     GatewayPaymentOrderStatus = GetGatewayPaymentOrderStatus(paymentOrder.Status).UniqueId,
-                    GatewayPaymentStorePaymentMethod = GetGatewayPaymentStorePaymentMethod(paymentOrder.StoreId, paymentOrder.PaymentCombine).UniqueId,
+                    GatewayPaymentStorePaymentMethod = paymentOrder.StorePaymentMethod,
                     //GatewayPaymentMethod = GetGatewayPaymentMethodByType(paymentOrder.GatewayType).UniqueId,
                     TSID = createTime
                 };
@@ -160,14 +160,12 @@ namespace Mi9Pay.Service
             {
                 using (var scope = new TransactionScope())
                 {
-                    Guid paymentMethod = GetGatewayPaymentMethodByType(paymentOrder.GatewayType).UniqueId;
                     List<GatewayPaymentOrder> orderList = _repository.Order.GetMany(x => x.OrderNumber == paymentOrder.InvoiceNumber).ToList();
                     if (orderList != null && orderList.Count > 0)
                     {
                         foreach (GatewayPaymentOrder order in orderList)
                         {
-                            //if (order.GatewayPaymentMethod == paymentMethod)
-                            if (true)
+                            if (order.GatewayPaymentStorePaymentMethod == paymentOrder.StorePaymentMethod)
                             {
                                 order.TradeNumber = paymentOrder.TradeNumber;
                                 order.GatewayPaymentOrderStatus = GetGatewayPaymentOrderStatus(paymentOrder.Status).UniqueId;

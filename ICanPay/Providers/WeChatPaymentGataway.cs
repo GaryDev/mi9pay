@@ -56,7 +56,7 @@ namespace ICanPay.Providers
 
         public override GatewayType GatewayType
         {
-            get { return GatewayType.WeChatPayment; }
+            get { return GatewayType.WeChat; }
         }
 
         public override PaymentNotifyMethod PaymentNotifyMethod
