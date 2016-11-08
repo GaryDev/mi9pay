@@ -15,5 +15,7 @@ namespace ICanPay
         bool QueryNow();
 
         PaymentResult QueryForResult();
+
+        string QueryBill();
     }
 }

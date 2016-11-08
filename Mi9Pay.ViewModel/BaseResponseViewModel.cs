@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Mi9Pay.ViewModel
 {
-    public class OrderPaymentResponseViewModel : BaseResponseViewModel
+    public class BaseResponseViewModel
     {
-        public OrderPaymentViewModel order { get; set; }
+        public string return_code { get; set; }
+        public string return_msg { get; set; }
     }
 }

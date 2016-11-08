@@ -41,7 +41,8 @@ namespace Mi9Pay.Web.App_Start
             // container.RegisterType<IProductRepository, ProductRepository>();
 
             container.RegisterType<IGatewayService, GatewayService>()
-                     .RegisterType<IGatewayRepository, GatewayRepository>();
+                     .RegisterType<IGatewayRepository, GatewayRepository>()
+            ;
         }
     }
 }

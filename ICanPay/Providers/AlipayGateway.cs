@@ -1,9 +1,12 @@
 using Aop.Api;
+using Aop.Api.Request;
+using Aop.Api.Response;
 using Com.Alipay;
 using Com.Alipay.Business;
 using Com.Alipay.Domain;
 using Com.Alipay.Model;
 using ICanPay.Configs;
+using ICanPay.Providers.Extended;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -34,6 +37,7 @@ namespace ICanPay.Providers
         static Encoding pageEncoding = Encoding.GetEncoding("gb2312");
 
         private IAlipayTradeService f2fPayService;
+        private IAopClient aopClient;
 
         #endregion
 
@@ -308,6 +312,25 @@ namespace ICanPay.Providers
            );
         }
 
+        public void InitAopClient()
+        {
+            string serverUrl = AlipayConfig.ServerUrl;
+            string appid = Merchant.AppId;
+            string mchKey = Merchant.Key;
+            string publicKey = Merchant.PublicKey;
+
+            aopClient = new DefaultAopClient(
+                serverUrl,
+                appid, //AlipayConfig.appId, 
+                mchKey, //AlipayConfig.merchant_private_key, 
+                "json",
+                AlipayConfig.version,
+                AlipayConfig.sign_type,
+                publicKey, //AlipayConfig.alipay_public_key, 
+                AlipayConfig.charset
+           );
+        }
+
         #region 二维码预支付
         public string GetPaymentQRCodeContent()
         {
@@ -443,6 +466,30 @@ namespace ICanPay.Providers
             }
             return queryResult != null && queryResult.Status == ResultEnum.SUCCESS;
         }
+        #endregion
+
+        #region 账单查询
+
+        public string QueryBill()
+        {
+            InitAopClient();
+
+            AlipayBillDownloadContentBuilder builder = new AlipayBillDownloadContentBuilder();
+            builder.bill_type = "trade";
+            builder.bill_date = Bill.BillDate;
+
+            AlipayDataDataserviceBillDownloadurlQueryRequest request = new AlipayDataDataserviceBillDownloadurlQueryRequest();
+            request.BizContent = builder.BuildJson();
+            AlipayDataDataserviceBillDownloadurlQueryResponse response = aopClient.Execute(request);
+
+            if (response.IsError)
+            {
+                WriteErrorLog("QueryBill", response);
+            }
+
+            return !response.IsError ? response.BillDownloadUrl : string.Empty;
+        }
+
         #endregion
 
         private void WriteErrorLog(string method, AopResponse response, bool showAccountInfo = true)

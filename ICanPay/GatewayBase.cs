@@ -15,6 +15,7 @@ namespace ICanPay
 
         Merchant merchant;
         Order order;
+        PaymentBill bill;
         List<GatewayParameter> gatewayParameterData;
         const string formItem = "<input type='hidden' name='{0}' value='{1}'>";
 
@@ -90,6 +91,27 @@ namespace ICanPay
         public abstract GatewayType GatewayType
         {
             get;
+        }
+
+        /// <summary>
+        /// ÕËµ¥Êý¾Ý
+        /// </summary>
+        public PaymentBill Bill
+        {
+            get
+            {
+                if (bill == null)
+                {
+                    bill = new PaymentBill();
+                }
+
+                return bill;
+            }
+
+            set
+            {
+                bill = value;
+            }
         }
 
 

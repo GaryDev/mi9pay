@@ -28,6 +28,7 @@ namespace ICanPay.Providers
         const string queryGatewayUrl = "https://api.mch.weixin.qq.com/pay/orderquery";
         const string microPayGatewayUrl = "https://api.mch.weixin.qq.com/pay/micropay";
         const string reverseGatewayUrl = "https://api.mch.weixin.qq.com/secapi/pay/reverse";
+        const string downloadBillUrl = "https://api.mch.weixin.qq.com/pay/downloadbill";
 
         #endregion
 
@@ -107,6 +108,12 @@ namespace ICanPay.Providers
             return ParseQueryResult(PostOrder(ConvertGatewayParameterDataToXml(), queryGatewayUrl));
         }
 
+        public string QueryBill()
+        {
+            InitQueryBillParameter();
+            return ParseBillResult(PostOrder(ConvertGatewayParameterDataToXml(), downloadBillUrl));
+        }
+
         /// <summary>
         /// 初始化支付订单的参数
         /// </summary>
@@ -145,6 +152,19 @@ namespace ICanPay.Providers
             SetGatewayParameterValue("appid", Merchant.AppId);
             SetGatewayParameterValue("mch_id", Merchant.UserName);
             SetGatewayParameterValue("out_trade_no", Order.Id);
+            SetGatewayParameterValue("nonce_str", GenerateNonceString());
+            SetGatewayParameterValue("sign", GetSign());    // 签名需要在最后设置，以免缺少参数。
+        }
+
+        /// <summary>
+        /// 初始化查询订单参数
+        /// </summary>
+        private void InitQueryBillParameter()
+        {
+            SetGatewayParameterValue("appid", Merchant.AppId);
+            SetGatewayParameterValue("mch_id", Merchant.UserName);
+            SetGatewayParameterValue("bill_date", string.IsNullOrEmpty(Bill.BillDate) ? DateTime.Now.ToString("yyyyMMdd") : Bill.BillDate.Replace("-", ""));
+            SetGatewayParameterValue("bill_type", "ALL");
             SetGatewayParameterValue("nonce_str", GenerateNonceString());
             SetGatewayParameterValue("sign", GetSign());    // 签名需要在最后设置，以免缺少参数。
         }
@@ -490,6 +510,14 @@ namespace ICanPay.Providers
             }
 
             return null;
+        }
+
+        private string ParseBillResult(string resultXml)
+        {
+            if (resultXml.IndexOf("<xml>") != -1)
+                return string.Empty;
+
+            return resultXml;
         }
 
         /// <summary>

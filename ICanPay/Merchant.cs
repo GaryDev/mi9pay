@@ -11,7 +11,6 @@ namespace ICanPay
 
         #region Ë½ÓÐ×Ö¶Î
 
-        string appId;
         string userName;
         string key;
         string publicKey;

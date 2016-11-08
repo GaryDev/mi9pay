@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseResponseViewModel.cs" />
     <Compile Include="OrderRequestViewModel.cs" />
     <Compile Include="OrderPaymentResponseViewModel.cs" />
     <Compile Include="OrderPaymentViewModel.cs" />

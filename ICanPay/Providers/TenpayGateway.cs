@@ -315,6 +315,10 @@ namespace ICanPay.Providers
             throw new NotImplementedException();
         }
 
+        public string QueryBill()
+        {
+            return string.Empty;
+        }
 
         #endregion
 

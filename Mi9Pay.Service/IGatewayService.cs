@@ -25,5 +25,8 @@ namespace Mi9Pay.Service
         IEnumerable<PaymentCombine> GetPaymentCombineList(int storeId);
 
         string BuildReturnUrl(OrderRequest request, OrderPaymentResponse response);
+        void PaymentNotify(OrderRequest request, OrderPaymentResponse response);
+
+        int DownloadBill(string storeId, string billDate, GatewayType type);
     }
 }

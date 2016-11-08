@@ -97,6 +97,22 @@ namespace ICanPay
             }
         }
 
+        /// <summary>
+        /// 账单数据
+        /// </summary>
+        public PaymentBill Bill
+        {
+            get
+            {
+                return gateway.Bill;
+            }
+
+            set
+            {
+                gateway.Bill = value;
+            }
+        }
+
 
         public bool CanQueryNotify
         {
@@ -266,6 +282,17 @@ namespace ICanPay
             if (queryNow != null)
             {
                 return queryNow.QueryForResult();
+            }
+
+            throw new NotSupportedException(gateway.GatewayType + " 没有实现 IQueryNow 查询接口");
+        }
+
+        public string QueryBill()
+        {
+            IQueryNow queryNow = gateway as IQueryNow;
+            if (queryNow != null)
+            {
+                return queryNow.QueryBill();
             }
 
             throw new NotSupportedException(gateway.GatewayType + " 没有实现 IQueryNow 查询接口");

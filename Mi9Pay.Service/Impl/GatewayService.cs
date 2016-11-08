@@ -48,7 +48,10 @@ namespace Mi9Pay.Service
             request.AppId = requestParameter["app_id"];
             //request.InvoiceNumber = DateTime.Now.ToString("yyyyMMddHHmmss") + "0000" + (new Random()).Next(1, 10000).ToString(); // For test
             request.InvoiceNumber = requestParameter["invoice"];
-            request.StoreId = ParseStoreId(requestParameter["invoice"]);
+            if (requestParameter.Keys.Contains("store_id"))
+                request.StoreId = Convert.ToInt32(requestParameter["store_id"]);
+            else
+                request.StoreId = ParseStoreId(requestParameter["invoice"]);
             request.Currency = requestParameter["currency"];
             request.TotalAmount = Convert.ToDecimal(requestParameter["amount"]) / AmountMultiplicator;
             if (requestParameter.Keys.Contains("discount"))
@@ -188,6 +191,11 @@ namespace Mi9Pay.Service
 
             string queryString = SignatureUtil.CreateSortedParams(parameters);
             return string.Format("{0}?{1}", request.DoneUrl, queryString);
+        }
+
+        public void PaymentNotify(OrderRequest request, OrderPaymentResponse response)
+        {
+
         }
 
         private Dictionary<string, string> BuildUrlParameter(OrderRequest request, OrderPaymentResponse response)

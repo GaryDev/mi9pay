@@ -101,6 +101,7 @@
     <Compile Include="NotifyProcess.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="GatewayBase.cs" />
+    <Compile Include="PaymentBill.cs" />
     <Compile Include="PaymentEventArgs.cs" />
     <Compile Include="PaymentFailedEventArgs.cs" />
     <Compile Include="PaymentNotifyMethod.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="PaymentSucceedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\AlipayGateway.cs" />
+    <Compile Include="Providers\Extended\AlipayBillDownloadContentBuilder.cs" />
     <Compile Include="Providers\NullGateway.cs" />
     <Compile Include="Providers\TenpayGateway.cs" />
     <Compile Include="Providers\WeChatPaymentGataway.cs" />

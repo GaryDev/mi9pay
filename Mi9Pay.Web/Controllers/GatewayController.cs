@@ -12,13 +12,10 @@ using System.Web.Mvc;
 namespace Mi9Pay.Web.Controllers
 {
     [RoutePrefix("gateway")]
-    public class GatewayController : Controller
+    public class GatewayController : BaseController
     {
-        private readonly IGatewayService _gatewayService;
-
-        public GatewayController(IGatewayService gatewayService)
+        public GatewayController(IGatewayService gatewayService) : base(gatewayService)
         {
-            _gatewayService = gatewayService;
         }
 
         [Route("version")]
@@ -108,6 +105,7 @@ namespace Mi9Pay.Web.Controllers
                 if (result.IsSuccess())
                 {
                     returnUrl = _gatewayService.BuildReturnUrl(request, result);
+                    _gatewayService.PaymentNotify(request, result);
                 }
 
                 return Json(new { return_code = result.return_code, return_url = returnUrl, return_msg = "OK" });
@@ -171,6 +169,7 @@ namespace Mi9Pay.Web.Controllers
                 if (result.IsSuccess())
                 {
                     returnUrl = _gatewayService.BuildReturnUrl(request, result);
+                    _gatewayService.PaymentNotify(request, result);
                 }
                 return Json(new { return_code = result.return_code, return_url = returnUrl, return_msg = "OK" }, JsonRequestBehavior.AllowGet);
             }
@@ -180,30 +179,6 @@ namespace Mi9Pay.Web.Controllers
             }
         }
 
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            Exception ex = filterContext.Exception;
-            filterContext.ExceptionHandled = true;
-
-            //if (filterContext.HttpContext.Request.HttpMethod == "GET")
-            if (filterContext.HttpContext.Request.IsAjaxRequest())
-            {
-                filterContext.HttpContext.Response.StatusCode = 200;
-                filterContext.Result = new JsonResult
-                {
-                    Data = new { return_code = "FAIL", return_msg = ex.Message },
-                    JsonRequestBehavior = JsonRequestBehavior.AllowGet
-                };
-            }
-            else
-            {
-                var model = new HandleErrorInfo(filterContext.Exception, "Controller", "Action");
-                filterContext.Result = new ViewResult()
-                {
-                    ViewName = "Error",
-                    ViewData = new ViewDataDictionary(model)
-                };
-            }
-        }
+        
     }
 }
