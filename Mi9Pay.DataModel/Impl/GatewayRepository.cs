@@ -26,6 +26,8 @@ namespace Mi9Pay.DataModel
         private GenericRepository<GatewayPaymentOrderType> _orderTypeRepository;
         private GenericRepository<GatewayPaymentOrderStatus> _orderStatusRepository;
 
+        private GenericRepository<GatewayPaymentBillWechat> _billWechatRepository;
+
         #endregion
 
         public GatewayRepository()
@@ -175,6 +177,19 @@ namespace Mi9Pay.DataModel
                 if (this._orderStatusRepository == null)
                     this._orderStatusRepository = new GenericRepository<GatewayPaymentOrderStatus>(_context);
                 return _orderStatusRepository;
+            }
+        }
+
+        /// <summary>
+        /// Get/Set Property for wechat bill repository.
+        /// </summary>
+        public GenericRepository<GatewayPaymentBillWechat> BillWechat
+        {
+            get
+            {
+                if (this._billWechatRepository == null)
+                    this._billWechatRepository = new GenericRepository<GatewayPaymentBillWechat>(_context);
+                return _billWechatRepository;
             }
         }
 

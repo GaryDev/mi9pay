@@ -22,14 +22,16 @@ namespace Mi9Pay.Web.Controllers
         {
             try
             {
-                int retCount = _gatewayService.DownloadBill("3", "2016-11-07", GatewayType.Alipay);
+                string storeId = "3";
+                string[] storeIdArray = storeId.Split(",".ToCharArray());
+                string billDate = "2016-10-10";
 
-                string message = retCount > 0 ? "OK" : "订单数据不存在";
-                return Json(new BaseResponseViewModel { return_code = "SUCCESS", return_msg = message });
+                int retCount = _gatewayService.DownloadBill(storeIdArray, billDate, GatewayType.WeChat);
+                return Json(new BillDownloadResponse { return_code = "SUCCESS", return_msg = "OK", process_count = retCount });
             }
             catch (Exception ex)
             {
-                return Json(new BaseResponseViewModel { return_code = "FAIL", return_msg = ex.Message });
+                return Json(new BaseResponse { return_code = "FAIL", return_msg = ex.Message });
             }
         }
     }

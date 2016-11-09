@@ -148,7 +148,7 @@ namespace Mi9Pay.Service
                     scope.Complete();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //throw ex;
             }

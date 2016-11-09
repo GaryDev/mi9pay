@@ -119,6 +119,44 @@ namespace Mi9Pay.Web.Helpers
             return new DateTime(yr, mo, dy, hr, mm, sc);
         }
 
+        private static DateTime GetServerTime()
+        {
+            DateTime server = DateTime.MinValue;
+            WebRequest request = WebRequest.Create("http://www.114time.com/api/clock.php");
+            request.Method = "GET";
+
+            using (var response = (HttpWebResponse)request.GetResponse())
+            {
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    string resContent = string.Empty;
+                    // grab the response
+                    using (var responseStream = response.GetResponseStream())
+                    {
+                        if (responseStream != null)
+                        {
+                            using (var reader = new StreamReader(responseStream))
+                            {
+                                resContent = reader.ReadToEnd();
+                                TimeServer cfg = JsonConvert.DeserializeObject<TimeServer>(resContent);
+                                if (cfg != null && !string.IsNullOrWhiteSpace(cfg.SysTime))
+                                {
+                                    DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+                                    double d = double.Parse(cfg.SysTime);
+                                    server = startTime.AddMilliseconds(d);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (server == DateTime.MinValue)
+                throw new Exception("时间获取失败，请检查网络后重试 (server)");
+
+            return server;
+        }
+
         private static DateTime GetExpireTime()
         {
             DateTime expire = DateTime.MinValue;
@@ -155,13 +193,20 @@ namespace Mi9Pay.Web.Helpers
 
         public static bool IsValid()
         {
-            DateTime now = GetUtcTime().ToLocalTime();
+            //DateTime now = GetUtcTime().ToLocalTime();
+            DateTime now = GetServerTime();
             DateTime exp = GetExpireTime();
             if (DateTime.Compare(now, exp) <= 0)
                 return true;
 
             return false;
         }
+    }
+
+    public class TimeServer
+    {
+        [JsonProperty("times")]
+        public string SysTime { get; set; }
     }
 
     public class TimeConfig

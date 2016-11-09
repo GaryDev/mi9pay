@@ -40,14 +40,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseResponseViewModel.cs" />
-    <Compile Include="OrderRequestViewModel.cs" />
-    <Compile Include="OrderPaymentResponseViewModel.cs" />
-    <Compile Include="OrderPaymentViewModel.cs" />
-    <Compile Include="PaymentCombineViewModel.cs" />
-    <Compile Include="PaymentMethodViewModel.cs" />
+    <Compile Include="Response\BaseResponse.cs" />
+    <Compile Include="Response\BillDownloadResponse.cs" />
+    <Compile Include="View\OrderRequestViewModel.cs" />
+    <Compile Include="Response\OrderPaymentResponse.cs" />
+    <Compile Include="Response\OrderPayment.cs" />
+    <Compile Include="View\PaymentCombineViewModel.cs" />
+    <Compile Include="View\PaymentMethodViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PaymentScanModeViewModel.cs" />
+    <Compile Include="View\PaymentScanModeViewModel.cs" />
     <Compile Include="Utility\SignatureUtil.cs" />
   </ItemGroup>
   <ItemGroup>

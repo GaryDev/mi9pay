@@ -27,6 +27,6 @@ namespace Mi9Pay.Service
         string BuildReturnUrl(OrderRequest request, OrderPaymentResponse response);
         void PaymentNotify(OrderRequest request, OrderPaymentResponse response);
 
-        int DownloadBill(string storeId, string billDate, GatewayType type);
+        int DownloadBill(string[] storeIdArray, string billDate, GatewayType type);
     }
 }

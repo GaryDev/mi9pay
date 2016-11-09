@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Mi9Pay.ViewModel
 {
-    public class OrderPaymentViewModel
+    public class OrderPayment
     {
         public string uuid { get; set; }
         public string invoice { get; set; }

@@ -27,6 +27,38 @@
           <Property Name="Appid" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="Appkey" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="GatewayPaymentBillWechat">
+          <Key>
+            <PropertyRef Name="UniqueId" />
+          </Key>
+          <Property Name="UniqueId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="StoreId" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="TradeTime" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="GHId" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="MchId" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="SubMch" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="DeviceId" Type="nvarchar" MaxLength="16" Nullable="false" />
+          <Property Name="TradeNo" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="OrderNumber" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="OpenId" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="TradeType" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="TradeStatus" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="Bank" Type="nvarchar" MaxLength="16" Nullable="false" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="TotalAmount" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="PromoAmount" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="RefundTradeNo" Type="nvarchar" MaxLength="10" />
+          <Property Name="RefundOrderNo" Type="nvarchar" MaxLength="10" />
+          <Property Name="RefundAmount" Type="nvarchar" MaxLength="20" />
+          <Property Name="RefundPromoAmount" Type="nvarchar" MaxLength="20" />
+          <Property Name="RefundType" Type="nvarchar" MaxLength="10" />
+          <Property Name="RefundStatus" Type="nvarchar" MaxLength="10" />
+          <Property Name="ProductName" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="DataPackage" Type="nvarchar" MaxLength="10" />
+          <Property Name="Fee" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="Rate" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="TSID" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="GatewayPaymentCustomer">
           <Key>
             <PropertyRef Name="UniqueId" />
@@ -342,6 +374,7 @@
         <EntityContainer Name="GatewayPaymentModelStoreContainer">
           <EntitySet Name="GatewayPaymentAccount" EntityType="Self.GatewayPaymentAccount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GatewayPaymentApp" EntityType="Self.GatewayPaymentApp" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GatewayPaymentBillWechat" EntityType="Self.GatewayPaymentBillWechat" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GatewayPaymentCustomer" EntityType="Self.GatewayPaymentCustomer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GatewayPaymentMerchant" EntityType="Self.GatewayPaymentMerchant" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GatewayPaymentMethod" EntityType="Self.GatewayPaymentMethod" Schema="dbo" store:Type="Tables" />
@@ -516,6 +549,7 @@
             <End Role="GatewayPaymentStore" EntitySet="GatewayPaymentStore" />
             <End Role="GatewayPaymentUser" EntitySet="GatewayPaymentUser" />
           </AssociationSet>
+          <EntitySet Name="GatewayPaymentBillWechat" EntityType="GatewayPaymentModel.GatewayPaymentBillWechat" />
         </EntityContainer>
         <EntityType Name="GatewayPaymentOrderDetail">
           <Key>
@@ -861,6 +895,38 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="GatewayPaymentBillWechat">
+          <Key>
+            <PropertyRef Name="UniqueId" />
+          </Key>
+          <Property Name="UniqueId" Type="Guid" Nullable="false" />
+          <Property Name="TradeTime" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="GHId" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MchId" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="SubMch" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceId" Type="String" Nullable="false" MaxLength="16" FixedLength="false" Unicode="true" />
+          <Property Name="TradeNo" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="OrderNumber" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="OpenId" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="TradeType" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="TradeStatus" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Bank" Type="String" Nullable="false" MaxLength="16" FixedLength="false" Unicode="true" />
+          <Property Name="Currency" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="TotalAmount" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="PromoAmount" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RefundTradeNo" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="RefundOrderNo" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="RefundAmount" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RefundPromoAmount" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RefundType" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="RefundStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ProductName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DataPackage" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Fee" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Rate" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="TSID" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="StoreId" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1032,6 +1098,39 @@
                 <ScalarProperty Name="PassWord" ColumnName="PassWord" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="UserCode" ColumnName="UserCode" />
+                <ScalarProperty Name="UniqueId" ColumnName="UniqueId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GatewayPaymentBillWechat">
+            <EntityTypeMapping TypeName="GatewayPaymentModel.GatewayPaymentBillWechat">
+              <MappingFragment StoreEntitySet="GatewayPaymentBillWechat">
+                <ScalarProperty Name="StoreId" ColumnName="StoreId" />
+                <ScalarProperty Name="TSID" ColumnName="TSID" />
+                <ScalarProperty Name="Rate" ColumnName="Rate" />
+                <ScalarProperty Name="Fee" ColumnName="Fee" />
+                <ScalarProperty Name="DataPackage" ColumnName="DataPackage" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="RefundStatus" ColumnName="RefundStatus" />
+                <ScalarProperty Name="RefundType" ColumnName="RefundType" />
+                <ScalarProperty Name="RefundPromoAmount" ColumnName="RefundPromoAmount" />
+                <ScalarProperty Name="RefundAmount" ColumnName="RefundAmount" />
+                <ScalarProperty Name="RefundOrderNo" ColumnName="RefundOrderNo" />
+                <ScalarProperty Name="RefundTradeNo" ColumnName="RefundTradeNo" />
+                <ScalarProperty Name="PromoAmount" ColumnName="PromoAmount" />
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="Bank" ColumnName="Bank" />
+                <ScalarProperty Name="TradeStatus" ColumnName="TradeStatus" />
+                <ScalarProperty Name="TradeType" ColumnName="TradeType" />
+                <ScalarProperty Name="OpenId" ColumnName="OpenId" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="TradeNo" ColumnName="TradeNo" />
+                <ScalarProperty Name="DeviceId" ColumnName="DeviceId" />
+                <ScalarProperty Name="SubMch" ColumnName="SubMch" />
+                <ScalarProperty Name="MchId" ColumnName="MchId" />
+                <ScalarProperty Name="GHId" ColumnName="GHId" />
+                <ScalarProperty Name="TradeTime" ColumnName="TradeTime" />
                 <ScalarProperty Name="UniqueId" ColumnName="UniqueId" />
               </MappingFragment>
             </EntityTypeMapping>

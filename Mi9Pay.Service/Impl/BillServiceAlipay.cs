@@ -11,9 +11,14 @@ using System.Threading.Tasks;
 
 namespace Mi9Pay.Service
 {
-    public class BillServiceAlipay : IBillService
+    public class BillServiceAlipay : BillService
     {
-        public int ImportData(GatewayRepository repository, string dataAddress)
+        public override bool ClearData()
+        {
+            return false;
+        }
+
+        public override int ImportData(string dataAddress)
         {
             string appDir = null;
             if (string.IsNullOrEmpty(AppDomain.CurrentDomain.BaseDirectory))

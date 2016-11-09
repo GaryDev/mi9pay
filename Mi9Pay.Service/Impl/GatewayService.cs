@@ -281,16 +281,18 @@ namespace Mi9Pay.Service
             return -1;
         }
 
-        private PaymentSetting InitPaymentSetting(OrderRequest orderRequest, GatewayType gatewayType)
+        private PaymentSetting InitPaymentSetting(OrderRequest orderRequest, GatewayType gatewayType, GatewayPaymentAccount account = null)
         {
-            GatewayPaymentAccount account = GetGatewayPaymentAccount(orderRequest.StoreId, gatewayType);
+            GatewayPaymentAccount paymentAccount = account;
+            if (paymentAccount == null)
+                paymentAccount = GetGatewayPaymentAccount(orderRequest.StoreId, gatewayType);
 
             PaymentSetting paymentSetting = new PaymentSetting(gatewayType);
             //paymentSetting.SetGatewayParameterValue("appid", account.Appid);
-            paymentSetting.Merchant.AppId = account.Appid;
-            paymentSetting.Merchant.UserName = account.Mchid;
-            paymentSetting.Merchant.Key = account.Mchkey;
-            paymentSetting.Merchant.PublicKey = account.Publickey;
+            paymentSetting.Merchant.AppId = paymentAccount.Appid;
+            paymentSetting.Merchant.UserName = paymentAccount.Mchid;
+            paymentSetting.Merchant.Key = paymentAccount.Mchkey;
+            paymentSetting.Merchant.PublicKey = paymentAccount.Publickey;
 
             if (!string.IsNullOrWhiteSpace(orderRequest.NotifyUrl))
                 paymentSetting.Merchant.NotifyUrl = new Uri(orderRequest.NotifyUrl);

@@ -14,6 +14,7 @@ GO
 
 CREATE TABLE [dbo].[GatewayPaymentBillWechat](
 	[UniqueId] [uniqueidentifier] NOT NULL,
+	[StoreId] [nvarchar](20) NOT NULL,
 	[TradeTime] [nvarchar](20) NOT NULL,
 	[GHId] [nvarchar](20) NOT NULL,
 	[MchId] [nvarchar](20) NOT NULL,

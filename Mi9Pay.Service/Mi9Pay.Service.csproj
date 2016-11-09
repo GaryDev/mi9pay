@@ -53,8 +53,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IBillService.cs" />
     <Compile Include="IGatewayService.cs" />
+    <Compile Include="Impl\BillService.cs" />
     <Compile Include="Impl\BillServiceAlipay.cs" />
     <Compile Include="Impl\BillServiceWechat.cs" />
     <Compile Include="Impl\GatewayDbService.cs" />

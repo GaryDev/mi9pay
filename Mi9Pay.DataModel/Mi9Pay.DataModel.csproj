@@ -68,6 +68,9 @@
     <Compile Include="GatewayPaymentApp.cs">
       <DependentUpon>GatewayPayDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="GatewayPaymentBillWechat.cs">
+      <DependentUpon>GatewayPayDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="GatewayPaymentCustomer.cs">
       <DependentUpon>GatewayPayDataModel.tt</DependentUpon>
     </Compile>

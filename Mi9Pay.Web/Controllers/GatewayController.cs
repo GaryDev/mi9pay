@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Web.Mvc;
+using VmOrderPaymentResponse = Mi9Pay.ViewModel.OrderPaymentResponse;
+using VmOrderPayment = Mi9Pay.ViewModel.OrderPayment;
 
 namespace Mi9Pay.Web.Controllers
 {
@@ -99,7 +101,7 @@ namespace Mi9Pay.Web.Controllers
                 request.PayMethod = method;
                 request.PaymentCombine = cid;
 
-                OrderPaymentResponse result = _gatewayService.BarcodePayment(request, type, barcode, cid);
+                Entities.OrderPaymentResponse result = _gatewayService.BarcodePayment(request, type, barcode, cid);
 
                 string returnUrl = string.Empty;
                 if (result.IsSuccess())
@@ -128,8 +130,8 @@ namespace Mi9Pay.Web.Controllers
                 parameters.Add("sign", sign);
                 _gatewayService.ValidateRequestParameter(parameters);
 
-                OrderPaymentResponse result = null;
-                OrderPaymentResponseViewModel vmOrderPayment = new OrderPaymentResponseViewModel();
+                Entities.OrderPaymentResponse result = null;
+                VmOrderPaymentResponse vmOrderPayment = new VmOrderPaymentResponse();
                 int storeId = 0;
                 foreach (PaymentCombine payCombine in _gatewayService.GetPaymentCombineList(storeId))
                 {
@@ -138,10 +140,10 @@ namespace Mi9Pay.Web.Controllers
                     if (result != null && result.IsSuccess())
                     {
                         Mapper.Initialize(cfg => {
-                            cfg.CreateMap<OrderPaymentResponse, OrderPaymentResponseViewModel>();
-                            cfg.CreateMap<OrderPayment, OrderPaymentViewModel>();
+                            cfg.CreateMap<Entities.OrderPaymentResponse, VmOrderPaymentResponse>();
+                            cfg.CreateMap<Entities.OrderPayment, VmOrderPayment>();
                         });
-                        vmOrderPayment = Mapper.Map<OrderPaymentResponse, OrderPaymentResponseViewModel>(result);
+                        vmOrderPayment = Mapper.Map<Entities.OrderPaymentResponse, VmOrderPaymentResponse>(result);
                         vmOrderPayment.return_msg = "OK";
                         break;
                     }
@@ -151,7 +153,7 @@ namespace Mi9Pay.Web.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new OrderPaymentResponseViewModel() { return_code = "FAIL", return_msg = ex.Message }, JsonRequestBehavior.AllowGet);
+                return Json(new BaseResponse() { return_code = "FAIL", return_msg = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -163,7 +165,7 @@ namespace Mi9Pay.Web.Controllers
             try
             {
                 GatewayType type = request.PayMethod.ToEnum<GatewayType>();
-                OrderPaymentResponse result = _gatewayService.QueryPayment(request.AppId, request.InvoiceNumber, type, request.PaymentCombine);
+                Entities.OrderPaymentResponse result = _gatewayService.QueryPayment(request.AppId, request.InvoiceNumber, type, request.PaymentCombine);
 
                 string returnUrl = string.Empty;
                 if (result.IsSuccess())
