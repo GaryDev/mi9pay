@@ -47,7 +47,7 @@ namespace Mi9Pay.Service
                     {
                         string row = dataRow[i];
                         string[] rowValues = row.Split(",".ToCharArray());
-                        rowValues = rowValues.Select(r => r.Replace("`", "")).ToArray();
+                        rowValues = rowValues.Select(r => string.IsNullOrWhiteSpace(r) ? string.Empty : r.Replace("`", "")).ToArray();
 
                         GatewayPaymentBillWechat bill = new GatewayPaymentBillWechat
                         {
@@ -80,12 +80,13 @@ namespace Mi9Pay.Service
                             ,TSID = createTime
                         };
                         Repository.BillWechat.Insert(bill);
-
                         count++;
                     }
-
-                    Repository.Save();
-                    scope.Complete();
+                    if (count > 0)
+                    {
+                        Repository.Save();
+                        scope.Complete();
+                    }
                 }
             }
             catch (Exception)

@@ -36,6 +36,7 @@
         <AssociationConnector Association="GatewayPaymentModel.FK_GatewayPaymentUser_GatewayPaymentPosition" />
         <AssociationConnector Association="GatewayPaymentModel.FK_GatewayPaymentUser_GatewayPaymentStore" />
         <EntityTypeShape EntityType="GatewayPaymentModel.GatewayPaymentBillWechat" Width="2.75" PointX="0.5" PointY="14.25" />
+        <EntityTypeShape EntityType="GatewayPaymentModel.GatewayPaymentBillAlipay" Width="2.25" PointX="3.375" PointY="14.25" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

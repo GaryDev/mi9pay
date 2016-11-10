@@ -37,19 +37,19 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/04/2016 10:56:48</publishTime>
     </File>
     <File Include="bin/Mi9Pay.DataModel.dll">
-      <publishTime>11/09/2016 16:35:23</publishTime>
+      <publishTime>11/10/2016 15:43:45</publishTime>
     </File>
     <File Include="bin/Mi9Pay.Entities.dll">
       <publishTime>11/09/2016 16:35:24</publishTime>
     </File>
     <File Include="bin/Mi9Pay.Service.dll">
-      <publishTime>11/09/2016 16:37:11</publishTime>
+      <publishTime>11/10/2016 15:43:45</publishTime>
     </File>
     <File Include="bin/Mi9Pay.ViewModel.dll">
-      <publishTime>11/09/2016 16:35:23</publishTime>
+      <publishTime>11/10/2016 15:43:45</publishTime>
     </File>
     <File Include="bin/Mi9PayWeb.dll">
-      <publishTime>11/09/2016 16:37:18</publishTime>
+      <publishTime>11/10/2016 15:43:50</publishTime>
     </File>
     <File Include="bin/Microsoft.Practices.ServiceLocation.dll">
       <publishTime>05/05/2014 11:25:44</publishTime>

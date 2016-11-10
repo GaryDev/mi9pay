@@ -41,5 +41,6 @@ namespace Mi9Pay.DataModel
         public DbSet<GatewayPaymentStorePaymentMethod> GatewayPaymentStorePaymentMethod { get; set; }
         public DbSet<GatewayPaymentUser> GatewayPaymentUser { get; set; }
         public DbSet<GatewayPaymentBillWechat> GatewayPaymentBillWechat { get; set; }
+        public DbSet<GatewayPaymentBillAlipay> GatewayPaymentBillAlipay { get; set; }
     }
 }

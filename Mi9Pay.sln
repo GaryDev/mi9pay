@@ -17,10 +17,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DLLs", "DLLs", "{01DA51B4-7
 	ProjectSection(SolutionItems) = preProject
 		DLLs\Alipay.AopSdk.dll = DLLs\Alipay.AopSdk.dll
 		DLLs\Alipay.F2FPay.dll = DLLs\Alipay.F2FPay.dll
+		DLLs\TaskScheduler.dll = DLLs\TaskScheduler.dll
 		DLLs\ThoughtWorks.QRCode.dll = DLLs\ThoughtWorks.QRCode.dll
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mi9Pay.DataModel", "Mi9Pay.DataModel\Mi9Pay.DataModel.csproj", "{8D8D4996-2FB4-4089-BE60-9B81606A2ABC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiPay.BillTask", "MiPay.BillTask\MiPay.BillTask.csproj", "{655627D6-36E9-4B69-B051-38BFABF682F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +55,10 @@ Global
 		{8D8D4996-2FB4-4089-BE60-9B81606A2ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D8D4996-2FB4-4089-BE60-9B81606A2ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D8D4996-2FB4-4089-BE60-9B81606A2ABC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{655627D6-36E9-4B69-B051-38BFABF682F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{655627D6-36E9-4B69-B051-38BFABF682F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{655627D6-36E9-4B69-B051-38BFABF682F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{655627D6-36E9-4B69-B051-38BFABF682F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

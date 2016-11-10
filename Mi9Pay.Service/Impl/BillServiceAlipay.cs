@@ -8,6 +8,7 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Mi9Pay.Service
 {
@@ -15,11 +16,32 @@ namespace Mi9Pay.Service
     {
         public override bool ClearData()
         {
-            return false;
+            bool success = false;
+            try
+            {
+                var billData = Repository.BillAlipay.GetMany(b => b.StoreId == StoreId && b.StartTime.StartsWith(BillDate));
+                if (billData.Count() > 0)
+                {
+                    using (var scope = new TransactionScope())
+                    {
+                        Repository.BillAlipay.Delete(b => b.StoreId == StoreId && b.StartTime.StartsWith(BillDate));
+                        Repository.Save();
+                        scope.Complete();
+                    }
+                }
+                success = true;
+            }
+            catch (Exception)
+            {
+
+            }
+            return success;
         }
 
         public override int ImportData(string dataAddress)
         {
+            int count = 0;
+
             string appDir = null;
             if (string.IsNullOrEmpty(AppDomain.CurrentDomain.BaseDirectory))
                 appDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -45,13 +67,65 @@ namespace Mi9Pay.Service
                         string csvFileName = tempDir + csvFile.FileName;
                         if (File.Exists(csvFileName))
                         {
-                            string[] contents = File.ReadAllLines(csvFileName, Encoding.Default);
-                            for (int i = 4; i < contents.Length - 4; i++)
+                            DateTime createTime = DateTime.Now;
+                            try
                             {
-                                string row = contents[i];
-                                if (string.IsNullOrWhiteSpace(row)) continue;
+                                using (var scope = new TransactionScope())
+                                {
+                                    string[] contents = File.ReadAllLines(csvFileName, Encoding.Default);
+                                    for (int i = 5; i < contents.Length - 4; i++)
+                                    {
+                                        string row = contents[i];
+                                        if (string.IsNullOrWhiteSpace(row)) continue;
 
-                                string[] rowValues = row.Split(",".ToCharArray());
+                                        string[] rowValues = row.Split(",".ToCharArray());
+                                        rowValues = rowValues.Select(r => string.IsNullOrWhiteSpace(r) ? string.Empty : r).ToArray();
+
+                                        GatewayPaymentBillAlipay bill = new GatewayPaymentBillAlipay
+                                        {
+                                            UniqueId = Guid.NewGuid()
+                                            ,StoreId = StoreId
+                                            ,TradeNo = rowValues[0]
+                                            ,OrderNumber = rowValues[1]
+                                            ,TradeType = rowValues[2]
+                                            ,ProductName = rowValues[3]
+                                            ,StartTime = rowValues[4]
+                                            ,EndTime = rowValues[5]
+                                            ,StoreNumber = rowValues[6]
+                                            ,StoreName = rowValues[7]
+                                            ,Operator = rowValues[8]
+                                            ,Terminal = rowValues[9]
+                                            ,MchAccount = rowValues[10]
+                                            ,TotalAmount = rowValues[11]
+                                            ,ReceiveAmount = rowValues[12]
+                                            ,AlipayRPAmount = rowValues[13]
+                                            ,AlipayJFAmount = rowValues[14]
+                                            ,AlipayPromoAmount = rowValues[15]
+                                            ,MchPromoAmount = rowValues[16]
+                                            ,CouponAmount = rowValues[17]
+                                            ,CouponName = rowValues[18]
+                                            ,MchRPAmount = rowValues[19]
+                                            ,CardAmount = rowValues[20]
+                                            ,RefundNumber = rowValues[21]
+                                            ,Fee = rowValues[22]
+                                            ,Profit = rowValues[23]
+                                            ,Note = rowValues[24]
+                                            ,TSID = createTime
+                                        };
+
+                                        Repository.BillAlipay.Insert(bill);
+                                        count++;
+                                    }
+                                    if (count > 0)
+                                    {
+                                        Repository.Save();
+                                        scope.Complete();
+                                    }                                    
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                count = -1;
                             }
                             File.Delete(csvFileName);
                         }
@@ -60,12 +134,12 @@ namespace Mi9Pay.Service
                 File.Delete(fileName);
             }
 
-            return 0;
+            return count;
         }
 
         private string RandomFileName()
         {
-            return DateTime.Now.ToString("yyyyMMddHHmmss") + "0000" + (new Random()).Next(1, 10000).ToString();
+            return Guid.NewGuid().ToString().Replace("-", "");
         }
     }
 }

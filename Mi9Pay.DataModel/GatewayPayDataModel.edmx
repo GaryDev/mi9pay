@@ -27,6 +27,39 @@
           <Property Name="Appid" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="Appkey" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="GatewayPaymentBillAlipay">
+          <Key>
+            <PropertyRef Name="UniqueId" />
+          </Key>
+          <Property Name="UniqueId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="StoreId" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="TradeNo" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="OrderNumber" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="TradeType" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="ProductName" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="StartTime" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="EndTime" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="StoreNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="StoreName" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="Operator" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Terminal" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="MchAccount" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="TotalAmount" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ReceiveAmount" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="AlipayRPAmount" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="AlipayJFAmount" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="AlipayPromoAmount" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="MchPromoAmount" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="CouponAmount" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="CouponName" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="MchRPAmount" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="CardAmount" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="RefundNumber" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="Fee" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="Profit" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="Note" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TSID" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="GatewayPaymentBillWechat">
           <Key>
             <PropertyRef Name="UniqueId" />
@@ -374,6 +407,7 @@
         <EntityContainer Name="GatewayPaymentModelStoreContainer">
           <EntitySet Name="GatewayPaymentAccount" EntityType="Self.GatewayPaymentAccount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GatewayPaymentApp" EntityType="Self.GatewayPaymentApp" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GatewayPaymentBillAlipay" EntityType="Self.GatewayPaymentBillAlipay" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GatewayPaymentBillWechat" EntityType="Self.GatewayPaymentBillWechat" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GatewayPaymentCustomer" EntityType="Self.GatewayPaymentCustomer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GatewayPaymentMerchant" EntityType="Self.GatewayPaymentMerchant" Schema="dbo" store:Type="Tables" />
@@ -550,6 +584,7 @@
             <End Role="GatewayPaymentUser" EntitySet="GatewayPaymentUser" />
           </AssociationSet>
           <EntitySet Name="GatewayPaymentBillWechat" EntityType="GatewayPaymentModel.GatewayPaymentBillWechat" />
+          <EntitySet Name="GatewayPaymentBillAlipay" EntityType="GatewayPaymentModel.GatewayPaymentBillAlipay" />
         </EntityContainer>
         <EntityType Name="GatewayPaymentOrderDetail">
           <Key>
@@ -927,6 +962,39 @@
           <Property Name="TSID" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="StoreId" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="GatewayPaymentBillAlipay">
+          <Key>
+            <PropertyRef Name="UniqueId" />
+          </Key>
+          <Property Name="UniqueId" Type="Guid" Nullable="false" />
+          <Property Name="StoreId" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="TradeNo" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="OrderNumber" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="TradeType" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ProductName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="StartTime" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="EndTime" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="StoreNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="StoreName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Operator" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Terminal" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MchAccount" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="TotalAmount" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiveAmount" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="AlipayRPAmount" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="AlipayJFAmount" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="AlipayPromoAmount" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MchPromoAmount" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CouponAmount" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CouponName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MchRPAmount" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CardAmount" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RefundNumber" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Fee" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Profit" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Note" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TSID" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1131,6 +1199,40 @@
                 <ScalarProperty Name="MchId" ColumnName="MchId" />
                 <ScalarProperty Name="GHId" ColumnName="GHId" />
                 <ScalarProperty Name="TradeTime" ColumnName="TradeTime" />
+                <ScalarProperty Name="UniqueId" ColumnName="UniqueId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GatewayPaymentBillAlipay">
+            <EntityTypeMapping TypeName="GatewayPaymentModel.GatewayPaymentBillAlipay">
+              <MappingFragment StoreEntitySet="GatewayPaymentBillAlipay">
+                <ScalarProperty Name="TSID" ColumnName="TSID" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="Profit" ColumnName="Profit" />
+                <ScalarProperty Name="Fee" ColumnName="Fee" />
+                <ScalarProperty Name="RefundNumber" ColumnName="RefundNumber" />
+                <ScalarProperty Name="CardAmount" ColumnName="CardAmount" />
+                <ScalarProperty Name="MchRPAmount" ColumnName="MchRPAmount" />
+                <ScalarProperty Name="CouponName" ColumnName="CouponName" />
+                <ScalarProperty Name="CouponAmount" ColumnName="CouponAmount" />
+                <ScalarProperty Name="MchPromoAmount" ColumnName="MchPromoAmount" />
+                <ScalarProperty Name="AlipayPromoAmount" ColumnName="AlipayPromoAmount" />
+                <ScalarProperty Name="AlipayJFAmount" ColumnName="AlipayJFAmount" />
+                <ScalarProperty Name="AlipayRPAmount" ColumnName="AlipayRPAmount" />
+                <ScalarProperty Name="ReceiveAmount" ColumnName="ReceiveAmount" />
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="MchAccount" ColumnName="MchAccount" />
+                <ScalarProperty Name="Terminal" ColumnName="Terminal" />
+                <ScalarProperty Name="Operator" ColumnName="Operator" />
+                <ScalarProperty Name="StoreName" ColumnName="StoreName" />
+                <ScalarProperty Name="StoreNumber" ColumnName="StoreNumber" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="TradeType" ColumnName="TradeType" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="TradeNo" ColumnName="TradeNo" />
+                <ScalarProperty Name="StoreId" ColumnName="StoreId" />
                 <ScalarProperty Name="UniqueId" ColumnName="UniqueId" />
               </MappingFragment>
             </EntityTypeMapping>
