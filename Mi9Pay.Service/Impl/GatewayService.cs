@@ -200,7 +200,7 @@ namespace Mi9Pay.Service
 
             Dictionary<string, string> parameters = BuildUrlParameter(request, response);
             string postData = rawData ? SignatureUtil.CreateSortedParams(parameters) : new JavaScriptSerializer().Serialize(parameters);
-            string postResult = WebClientHelper.PostData(request.NotifyUrl, postData, rawData);
+            bool notifySuccess = WebClientHelper.PostData(request.NotifyUrl, postData, rawData);
 
             NotifyQueue queue = new NotifyQueue
             {
@@ -211,18 +211,10 @@ namespace Mi9Pay.Service
                 PostDataFormat = rawData ? NotifyDataFormat.RAW : NotifyDataFormat.JSON,
                 SendDate = sendDateTime,
                 LastSendDate = sendDateTime,
-                ProcessedCount = 1
+                ProcessedCount = 1,
+                NextInterval = notifySuccess ? 0 : NotifyConfig.NotifyStrategy[1],
+                Processed = notifySuccess ? "Y" : "N"
             };
-            if (postResult == WebClientHelper.SUCCESS_CODE)
-            {
-                queue.NextInterval = 0;
-                queue.Processed = "Y";
-            }
-            else
-            {
-                queue.NextInterval = NotifyConfig.NotifyStrategy[queue.ProcessedCount];
-                queue.Processed = "N";
-            }
             CreateNotifyQueue(queue);
         }
 

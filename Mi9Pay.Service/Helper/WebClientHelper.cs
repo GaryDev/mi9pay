@@ -16,7 +16,7 @@ namespace Mi9Pay.Service.Helper
         public const string SUCCESS_CODE = "200";
         public const string ERROR_CODE = "500";
 
-        public static string PostData(string postUrl, string postData, bool rawData)
+        public static bool PostData(string postUrl, string postData, bool rawData)
         {
             try
             {
@@ -32,20 +32,20 @@ namespace Mi9Pay.Service.Helper
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     if (response.StatusCode != HttpStatusCode.OK)
-                        return ERROR_CODE;
+                        return false;
                     else
                     {
                         // grab the response
                         using (var responseStream = response.GetResponseStream())
                         {
                             if (responseStream == null)
-                                return ERROR_CODE;
+                                return false;
                             else
                             {
                                 using (var reader = new StreamReader(responseStream))
                                 {
                                     string resContent = reader.ReadToEnd();
-                                    return resContent == SUCCESS_CODE ? SUCCESS_CODE : ERROR_CODE;
+                                    return resContent == SUCCESS_CODE;
                                 }
                             }
                         }
@@ -54,7 +54,7 @@ namespace Mi9Pay.Service.Helper
             }
             catch (Exception)
             {
-                return ERROR_CODE;
+                return false;
             }
         } 
 

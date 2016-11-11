@@ -22,11 +22,10 @@ namespace Mi9Pay.Entities
 
     public static class NotifyConfig
     {
-        public static Dictionary<int, int> NotifyStrategy = new Dictionary<int, int>
+        // Minutes
+        public static int[] NotifyStrategy = new int[]
         {
-            { 1, 2 }, { 2, 10 },
-            { 3, 60 }, { 4, 2 * 60 }, { 5, 6 * 60 },
-            { 6, 15 * 60 }, { 7, 24 * 60 }
+            0, 2, 10, 60, 2 * 60, 6 * 60, 15 * 60, 24 * 60
         };
     }
 
