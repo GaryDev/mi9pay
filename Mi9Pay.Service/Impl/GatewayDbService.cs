@@ -186,5 +186,27 @@ namespace Mi9Pay.Service
                 //throw ex;
             }
         }
+
+        private void CreateNotifyQueue(NotifyQueue queue)
+        {
+            try
+            {
+                Mapper.Initialize(cfg => cfg.CreateMap<NotifyQueue, GatewayPaymentNotifyQueue>());
+                GatewayPaymentNotifyQueue notifyQueue = Mapper.Map<NotifyQueue, GatewayPaymentNotifyQueue>(queue);
+                if (notifyQueue != null)
+                {
+                    using (var scope = new TransactionScope())
+                    {
+                        _repository.NotifyQueue.Insert(notifyQueue);
+                        _repository.Save();
+                        scope.Complete();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                //throw ex;
+            }
+        }
     }
 }

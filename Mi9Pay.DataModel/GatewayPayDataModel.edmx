@@ -141,6 +141,21 @@
           <Property Name="GatewayPaymentMethod" Type="uniqueidentifier" Nullable="false" />
           <Property Name="GatewayPaymentMethodType" Type="uniqueidentifier" Nullable="false" />
         </EntityType>
+        <EntityType Name="GatewayPaymentNotifyQueue">
+          <Key>
+            <PropertyRef Name="UniqueId" />
+          </Key>
+          <Property Name="UniqueId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="OrderNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="NotifyUrl" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="PostData" Type="nvarchar" MaxLength="4000" Nullable="false" />
+          <Property Name="PostDataFormat" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="SendDate" Type="datetime" Nullable="false" />
+          <Property Name="LastSendDate" Type="datetime" Nullable="false" />
+          <Property Name="NextInterval" Type="int" Nullable="false" />
+          <Property Name="ProcessedCount" Type="int" Nullable="false" />
+          <Property Name="Processed" Type="char" MaxLength="1" Nullable="false" />
+        </EntityType>
         <EntityType Name="GatewayPaymentOrder">
           <Key>
             <PropertyRef Name="UniqueId" />
@@ -414,6 +429,7 @@
           <EntitySet Name="GatewayPaymentMethod" EntityType="Self.GatewayPaymentMethod" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GatewayPaymentMethodType" EntityType="Self.GatewayPaymentMethodType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GatewayPaymentMethodTypeJoin" EntityType="Self.GatewayPaymentMethodTypeJoin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GatewayPaymentNotifyQueue" EntityType="Self.GatewayPaymentNotifyQueue" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GatewayPaymentOrder" EntityType="Self.GatewayPaymentOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GatewayPaymentOrderDetail" EntityType="Self.GatewayPaymentOrderDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GatewayPaymentOrderStatus" EntityType="Self.GatewayPaymentOrderStatus" Schema="dbo" store:Type="Tables" />
@@ -585,6 +601,7 @@
           </AssociationSet>
           <EntitySet Name="GatewayPaymentBillWechat" EntityType="GatewayPaymentModel.GatewayPaymentBillWechat" />
           <EntitySet Name="GatewayPaymentBillAlipay" EntityType="GatewayPaymentModel.GatewayPaymentBillAlipay" />
+          <EntitySet Name="GatewayPaymentNotifyQueue" EntityType="GatewayPaymentModel.GatewayPaymentNotifyQueue" />
         </EntityContainer>
         <EntityType Name="GatewayPaymentOrderDetail">
           <Key>
@@ -995,6 +1012,21 @@
           <Property Name="Note" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TSID" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
+        <EntityType Name="GatewayPaymentNotifyQueue">
+          <Key>
+            <PropertyRef Name="UniqueId" />
+          </Key>
+          <Property Name="UniqueId" Type="Guid" Nullable="false" />
+          <Property Name="OrderNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="NotifyUrl" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PostData" Type="String" Nullable="false" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="PostDataFormat" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="SendDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LastSendDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="NextInterval" Type="Int32" Nullable="false" />
+          <Property Name="ProcessedCount" Type="Int32" Nullable="false" />
+          <Property Name="Processed" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1233,6 +1265,22 @@
                 <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
                 <ScalarProperty Name="TradeNo" ColumnName="TradeNo" />
                 <ScalarProperty Name="StoreId" ColumnName="StoreId" />
+                <ScalarProperty Name="UniqueId" ColumnName="UniqueId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GatewayPaymentNotifyQueue">
+            <EntityTypeMapping TypeName="GatewayPaymentModel.GatewayPaymentNotifyQueue">
+              <MappingFragment StoreEntitySet="GatewayPaymentNotifyQueue">
+                <ScalarProperty Name="Processed" ColumnName="Processed" />
+                <ScalarProperty Name="ProcessedCount" ColumnName="ProcessedCount" />
+                <ScalarProperty Name="NextInterval" ColumnName="NextInterval" />
+                <ScalarProperty Name="LastSendDate" ColumnName="LastSendDate" />
+                <ScalarProperty Name="SendDate" ColumnName="SendDate" />
+                <ScalarProperty Name="PostDataFormat" ColumnName="PostDataFormat" />
+                <ScalarProperty Name="PostData" ColumnName="PostData" />
+                <ScalarProperty Name="NotifyUrl" ColumnName="NotifyUrl" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
                 <ScalarProperty Name="UniqueId" ColumnName="UniqueId" />
               </MappingFragment>
             </EntityTypeMapping>

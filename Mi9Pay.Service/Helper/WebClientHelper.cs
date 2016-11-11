@@ -16,12 +16,12 @@ namespace Mi9Pay.Service.Helper
         public const string SUCCESS_CODE = "200";
         public const string ERROR_CODE = "500";
 
-        public static string PostData(string postUrl, string postData)
+        public static string PostData(string postUrl, string postData, bool rawData)
         {
             try
             {
                 WebRequest request = WebRequest.Create(postUrl);
-                request.ContentType = "application/x-www-form-urlencoded";
+                request.ContentType = rawData ? "application/x-www-form-urlencoded" : "application/json";
                 request.Method = "POST";
                 request.Timeout = 60000;
 

@@ -29,6 +29,8 @@ namespace Mi9Pay.DataModel
         private GenericRepository<GatewayPaymentBillWechat> _billWechatRepository;
         private GenericRepository<GatewayPaymentBillAlipay> _billAlipayRepository;
 
+        private GenericRepository<GatewayPaymentNotifyQueue> _notifyQueueRepository;
+
         #endregion
 
         public GatewayRepository()
@@ -204,6 +206,19 @@ namespace Mi9Pay.DataModel
                 if (this._billAlipayRepository == null)
                     this._billAlipayRepository = new GenericRepository<GatewayPaymentBillAlipay>(_context);
                 return _billAlipayRepository;
+            }
+        }
+
+        /// <summary>
+        /// Get/Set Property for notify queue repository.
+        /// </summary>
+        public GenericRepository<GatewayPaymentNotifyQueue> NotifyQueue
+        {
+            get
+            {
+                if (this._notifyQueueRepository == null)
+                    this._notifyQueueRepository = new GenericRepository<GatewayPaymentNotifyQueue>(_context);
+                return _notifyQueueRepository;
             }
         }
 

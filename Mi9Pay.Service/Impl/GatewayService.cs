@@ -9,16 +9,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web.Script.Serialization;
 
 namespace Mi9Pay.Service
 {
     public partial class GatewayService : IGatewayService
     {
         private const int Multiplicator = 1000000;
-        private const int AmountMultiplicator = 100;
+        private const int AmountMultiplicator = 100;        
 
         private readonly GatewayRepository _repository;
-
         public GatewayService(GatewayRepository repository)
         {
             _repository = repository;
@@ -102,6 +102,8 @@ namespace Mi9Pay.Service
             request.Signature = requestParameter["sign"];
             request.DoneUrl = requestParameter["done_url"];
             request.NotifyUrl = requestParameter["notify_url"];
+            if (requestParameter.Keys.Contains("notify_dataformat"))
+                request.NotifyDataFormat = requestParameter["notify_dataformat"];
 
             return request;
         }
@@ -191,17 +193,37 @@ namespace Mi9Pay.Service
             if (string.IsNullOrWhiteSpace(request.NotifyUrl))
                 return;
 
+            DateTime sendDateTime = DateTime.Now;
+            bool rawData = true;
+            if (string.Compare(request.NotifyDataFormat, "json", true) == 0)
+                rawData = false;
+
             Dictionary<string, string> parameters = BuildUrlParameter(request, response);
-            string postData = SignatureUtil.CreateSortedParams(parameters);
-            string postResult = WebClientHelper.PostData(request.NotifyUrl, postData);
+            string postData = rawData ? SignatureUtil.CreateSortedParams(parameters) : new JavaScriptSerializer().Serialize(parameters);
+            string postResult = WebClientHelper.PostData(request.NotifyUrl, postData, rawData);
+
+            NotifyQueue queue = new NotifyQueue
+            {
+                UniqueId = Guid.Parse(response.order.notification_id),
+                OrderNumber = request.InvoiceNumber,
+                NotifyUrl = request.NotifyUrl,
+                PostData = postData,
+                PostDataFormat = rawData ? NotifyDataFormat.RAW : NotifyDataFormat.JSON,
+                SendDate = sendDateTime,
+                LastSendDate = sendDateTime,
+                ProcessedCount = 1
+            };
             if (postResult == WebClientHelper.SUCCESS_CODE)
             {
-
+                queue.NextInterval = 0;
+                queue.Processed = "Y";
             }
             else
             {
-
+                queue.NextInterval = NotifyConfig.NotifyStrategy[queue.ProcessedCount];
+                queue.Processed = "N";
             }
+            CreateNotifyQueue(queue);
         }
 
         private Dictionary<string, string> BuildUrlParameter(OrderRequest request, OrderPaymentResponse response)

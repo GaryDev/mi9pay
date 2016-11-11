@@ -14,6 +14,7 @@ namespace Mi9Pay.Entities
         public string Signature { get; set; }
         public string DoneUrl { get; set; }
         public string NotifyUrl { get; set; }
+        public string NotifyDataFormat { get; set; }
 
         public int StoreId { get; set; }
         public string InvoiceNumber { get; set; }
