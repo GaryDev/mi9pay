@@ -9,6 +9,7 @@ namespace Mi9Pay.Entities
     public class OrderPayment
     {
         public string uuid { get; set; }
+        public string notification_id { get; set; }
         public string invoice { get; set; }
         public string status { get; set; }
         public string amount { get; set; }

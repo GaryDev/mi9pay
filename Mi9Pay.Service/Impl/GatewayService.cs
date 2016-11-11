@@ -3,6 +3,7 @@ using ICanPay;
 using ICanPay.Configs;
 using Mi9Pay.DataModel;
 using Mi9Pay.Entities;
+using Mi9Pay.Service.Helper;
 using Mi9Pay.ViewModel.Utility;
 using System;
 using System.Collections.Generic;
@@ -126,26 +127,16 @@ namespace Mi9Pay.Service
             SetPaymentSettingOrder(paymentSetting, orderRequest);
             paymentSetting.SetGatewayParameterValue("auth_code", barcode);
 
+            string invoiceNumber = orderRequest.InvoiceNumber;
             CreatePaymentOrder(orderRequest, gatewayType, paymentSetting.Order.Subject, cid);
 
             PaymentResult result = paymentSetting.BarcodePayment();
             if (result != null)
             {
-                UpdatePaymentOrder(orderRequest.InvoiceNumber, gatewayType, result.TradeNo, cid);
+                UpdatePaymentOrder(invoiceNumber, gatewayType, result.TradeNo, cid);
 
-                response = new OrderPaymentResponse
-                {
-                    return_code = "SUCCESS",
-                    order = new OrderPayment
-                    {
-                        uuid = result.TradeNo,
-                        invoice = orderRequest.InvoiceNumber,
-                        status = "PAID",
-                        paid_amount = result.PaidAmount,
-                        amount = result.Amount,
-                        currency = result.Currency
-                    }
-                };
+                result.InvoiceNo = invoiceNumber;
+                response = BuildOrderPaymentResponse(result);
             }
 
             return response;
@@ -164,52 +155,72 @@ namespace Mi9Pay.Service
             {
                 UpdatePaymentOrder(invoiceNumber, gatewayType, result.TradeNo, cid);
 
-                response = new OrderPaymentResponse
-                {
-                    return_code = "SUCCESS",
-                    order = new OrderPayment
-                    {
-                        uuid = result.TradeNo,
-                        invoice = invoiceNumber,
-                        status = "PAID",
-                        paid_amount = result.PaidAmount,
-                        amount = result.Amount,
-                        currency = result.Currency
-                    }
-                };
+                result.InvoiceNo = invoiceNumber;
+                response = BuildOrderPaymentResponse(result);
             }
             return response;
         }
 
+        private OrderPaymentResponse BuildOrderPaymentResponse(PaymentResult result)
+        {
+            return new OrderPaymentResponse
+            {
+                return_code = "SUCCESS",
+                order = new OrderPayment
+                {
+                    notification_id = Guid.NewGuid().ToString(),
+                    uuid = result.TradeNo,
+                    invoice = result.InvoiceNo,
+                    status = "PAID",
+                    paid_amount = result.PaidAmount,
+                    amount = result.Amount,
+                    currency = result.Currency
+                }
+            };
+        }
+
         public string BuildReturnUrl(OrderRequest request, OrderPaymentResponse response)
         {
-            GatewayPaymentApp app = GetGatewayPaymentApp(request.AppId);
-
             Dictionary<string, string> parameters = BuildUrlParameter(request, response);
-            string signString = SignatureUtil.CreateSortedParams(parameters);
-            parameters.Add("sign", SignatureUtil.CreateSignature(signString + app.Appkey));
-
             string queryString = SignatureUtil.CreateSortedParams(parameters);
             return string.Format("{0}?{1}", request.DoneUrl, queryString);
         }
 
         public void PaymentNotify(OrderRequest request, OrderPaymentResponse response)
         {
+            if (string.IsNullOrWhiteSpace(request.NotifyUrl))
+                return;
 
+            Dictionary<string, string> parameters = BuildUrlParameter(request, response);
+            string postData = SignatureUtil.CreateSortedParams(parameters);
+            string postResult = WebClientHelper.PostData(request.NotifyUrl, postData);
+            if (postResult == WebClientHelper.SUCCESS_CODE)
+            {
+
+            }
+            else
+            {
+
+            }
         }
 
         private Dictionary<string, string> BuildUrlParameter(OrderRequest request, OrderPaymentResponse response)
         {
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             parameters.Add("app_id", request.AppId);
-            parameters.Add("notification_id", Guid.NewGuid().ToString());
             parameters.Add("invoice", request.InvoiceNumber);
             parameters.Add("currency", request.Currency);
+            parameters.Add("notification_id", response.order.notification_id);
             parameters.Add("order_uuid", response.order.uuid);
             parameters.Add("status", response.order.status);
             parameters.Add("amount", response.order.amount);
             parameters.Add("paid_amount", response.order.paid_amount);
             parameters.Add("payment_date", DateTime.Now.ToString("yyyyMMddHHmmss"));
+
+            GatewayPaymentApp app = GetGatewayPaymentApp(request.AppId);
+            string signString = SignatureUtil.CreateSortedParams(parameters);
+            parameters.Add("sign", SignatureUtil.CreateSignature(signString + app.Appkey));
+
             return parameters;
         }
 

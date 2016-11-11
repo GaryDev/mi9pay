@@ -28,6 +28,7 @@ namespace Mi9Pay.Web.Controllers
             return Json(new { version = assemblyHelper.FileVersion }, JsonRequestBehavior.AllowGet);
         }
 
+        #region 订单相关接口
         [Route("order")]
         [HttpPost]
         public ActionResult Order(FormCollection form)
@@ -67,57 +68,6 @@ namespace Mi9Pay.Web.Controllers
             }
         }
 
-        [Route("qrcode")]
-        [HttpGet]
-        public JsonResult PaymentQRCode(OrderRequest orderRequest, string method, string cid)
-        {
-            try
-            {
-                string imgTag = string.Empty;
-                GatewayType type = method.ToEnum<GatewayType>();
-                orderRequest.PayMethod = method;
-                orderRequest.PaymentCombine = cid;
-
-                MemoryStream ms = _gatewayService.CreatePaymentQRCode(orderRequest, type, cid);
-                if (ms != null)
-                {
-                    imgTag = string.Format("<img src='data:image/png;base64,{0}' />", Convert.ToBase64String(ms.ToArray()));
-                }
-                return Json(new { return_code = "SUCCESS", img = imgTag, return_msg = "OK" }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                return Json(new { return_code = "FAIL", img = string.Empty, return_msg = ex.Message }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [Route("barcode")]
-        [HttpPost]
-        public JsonResult BarcodePayment(OrderRequest request, string method, string barcode, string cid)
-        {
-            try
-            {
-                GatewayType type = method.ToEnum<GatewayType>();
-                request.PayMethod = method;
-                request.PaymentCombine = cid;
-
-                Entities.OrderPaymentResponse result = _gatewayService.BarcodePayment(request, type, barcode, cid);
-
-                string returnUrl = string.Empty;
-                if (result.IsSuccess())
-                {
-                    returnUrl = _gatewayService.BuildReturnUrl(request, result);
-                    _gatewayService.PaymentNotify(request, result);
-                }
-
-                return Json(new { return_code = result.return_code, return_url = returnUrl, return_msg = "OK" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { return_code = "FAIL", img = string.Empty, return_msg = ex.Message });
-            }
-        }
-
         [Route("order/query")]
         [HttpGet]
         public JsonResult QueryPaymentStatus(string app_id, string invoice, string sign)
@@ -148,7 +98,7 @@ namespace Mi9Pay.Web.Controllers
                         break;
                     }
                 }
-                
+
                 return Json(vmOrderPayment, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -180,7 +130,64 @@ namespace Mi9Pay.Web.Controllers
                 return Json(new { return_code = "FAIL", return_url = string.Empty, return_msg = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
+        #endregion
 
-        
+        #region 生成二维码接口
+        [Route("qrcode")]
+        [HttpGet]
+        public JsonResult PaymentQRCode(OrderRequest orderRequest, string method, string cid)
+        {
+            try
+            {
+                string imgTag = string.Empty;
+                GatewayType type = method.ToEnum<GatewayType>();
+                orderRequest.PayMethod = method;
+                orderRequest.PaymentCombine = cid;
+
+                MemoryStream ms = _gatewayService.CreatePaymentQRCode(orderRequest, type, cid);
+                if (ms != null)
+                {
+                    imgTag = string.Format("<img src='data:image/png;base64,{0}' />", Convert.ToBase64String(ms.ToArray()));
+                }
+                return Json(new { return_code = "SUCCESS", img = imgTag, return_msg = "OK" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { return_code = "FAIL", img = string.Empty, return_msg = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        #endregion
+
+        #region 条码支付接口
+        [Route("barcode")]
+        [HttpPost]
+        public JsonResult BarcodePayment(OrderRequest request, string method, string barcode, string cid)
+        {
+            try
+            {
+                GatewayType type = method.ToEnum<GatewayType>();
+                request.PayMethod = method;
+                request.PaymentCombine = cid;
+
+                Entities.OrderPaymentResponse result = _gatewayService.BarcodePayment(request, type, barcode, cid);
+
+                string returnUrl = string.Empty;
+                if (result.IsSuccess())
+                {
+                    returnUrl = _gatewayService.BuildReturnUrl(request, result);
+                    _gatewayService.PaymentNotify(request, result);
+                }
+
+                return Json(new { return_code = result.return_code, return_url = returnUrl, return_msg = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { return_code = "FAIL", img = string.Empty, return_msg = ex.Message });
+            }
+        }
+        #endregion
+
+
+
     }
 }

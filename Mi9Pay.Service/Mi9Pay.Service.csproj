@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\WebClientHelper.cs" />
     <Compile Include="IGatewayService.cs" />
     <Compile Include="Impl\BillService.cs" />
     <Compile Include="Impl\BillServiceAlipay.cs" />
