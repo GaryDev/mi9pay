@@ -43,6 +43,7 @@
     <Compile Include="NotifyQueue.cs" />
     <Compile Include="OrderPayment.cs" />
     <Compile Include="OrderPaymentResponse.cs" />
+    <Compile Include="OrderRefundRequest.cs" />
     <Compile Include="OrderRequest.cs" />
     <Compile Include="OrderResponse.cs" />
     <Compile Include="PaymentCombine.cs" />

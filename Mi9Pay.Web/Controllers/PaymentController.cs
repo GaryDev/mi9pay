@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Mi9Pay.Service;
 using ICanPay;
 using Mi9Pay.Web.Helpers;
+using Mi9Pay.Entities;
 
 namespace Mi9Pay.Web.Controllers
 {
@@ -31,6 +32,30 @@ namespace Mi9Pay.Web.Controllers
 
                 int retCount = _gatewayService.DownloadBill(storeIdArray, billDate, type);
                 return Json(new BillDownloadResponse { return_code = "SUCCESS", return_msg = "OK", process_count = retCount });
+            }
+            catch (Exception ex)
+            {
+                return Json(new BaseResponse { return_code = "FAIL", return_msg = ex.Message });
+            }
+        }
+
+        [Route("refund")]
+        [HttpPost]
+        public JsonResult Refund(RefundRequest request)
+        {
+            try
+            {
+                OrderRefundRequest refundRequest = new OrderRefundRequest
+                {
+                    InvoiceNo = request.order.invoice_no,
+                    TradeNo = request.order.trade_no,
+                    RefundAmount = request.order.refund_amount,
+                    RefundReason = request.order.refund_reason
+                };
+                GatewayType type = request.payment_method.ToEnum<GatewayType>();
+
+                _gatewayService.RefundPayment(request.store_id, refundRequest, type);
+                return Json(new BaseResponse { return_code = "SUCCESS", return_msg = "OK" });
             }
             catch (Exception ex)
             {

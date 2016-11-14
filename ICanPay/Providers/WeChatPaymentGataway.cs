@@ -28,6 +28,7 @@ namespace ICanPay.Providers
         const string queryGatewayUrl = "https://api.mch.weixin.qq.com/pay/orderquery";
         const string microPayGatewayUrl = "https://api.mch.weixin.qq.com/pay/micropay";
         const string reverseGatewayUrl = "https://api.mch.weixin.qq.com/secapi/pay/reverse";
+        const string refundGatewayUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
         const string downloadBillUrl = "https://api.mch.weixin.qq.com/pay/downloadbill";
 
         #endregion
@@ -86,6 +87,12 @@ namespace ICanPay.Providers
         {
             InitBarcodePaymentParameter();
             return GetBarcodePaymentResult(PostOrder(ConvertGatewayParameterDataToXml(), microPayGatewayUrl));
+        }
+
+        public bool RefundPayment()
+        {
+            InitRefundParameter();
+            return CheckRefundResult(PostOrder(ConvertGatewayParameterDataToXml(), refundGatewayUrl, true));
         }
 
         public bool CancelOrder(int retries = 0)
@@ -169,6 +176,25 @@ namespace ICanPay.Providers
             SetGatewayParameterValue("sign", GetSign());    // 签名需要在最后设置，以免缺少参数。
         }
 
+        private void InitRefundParameter()
+        {
+            SetGatewayParameterValue("appid", Merchant.AppId);
+            SetGatewayParameterValue("mch_id", Merchant.UserName);
+
+            if (!string.IsNullOrEmpty(Order.TradeNo))
+                SetGatewayParameterValue("transaction_id", Order.TradeNo);
+            else
+                SetGatewayParameterValue("out_trade_no", Order.Id);
+
+            SetGatewayParameterValue("out_refund_no", Order.RefundRequestNo);
+            SetGatewayParameterValue("total_fee", (Order.Amount * 100).ToString());
+            SetGatewayParameterValue("refund_fee", (Order.Amount * 100).ToString());
+            SetGatewayParameterValue("op_user_id", Merchant.UserName);
+
+            SetGatewayParameterValue("nonce_str", GenerateNonceString());
+            SetGatewayParameterValue("sign", GetSign());    // 签名需要在最后设置，以免缺少参数。
+        }
+
         private void ReadNotifyOrderParameter()
         {
             Order.Id = GetGatewayParameterValue("out_trade_no");
@@ -239,13 +265,18 @@ namespace ICanPay.Providers
         /// <param name="orderXml">订单的XML内容</param>
         /// <param name="gatewayUrl">网关URL</param>
         /// <returns></returns>
-        private string PostOrder(string orderXml, string gatewayUrl)
+        private string PostOrder(string orderXml, string gatewayUrl, bool certValidate = false)
         {
             byte[] dataByte = Encoding.UTF8.GetBytes(orderXml);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(gatewayUrl);
             request.Method = "POST";
             request.ContentType = "text/xml";
             request.ContentLength = dataByte.Length;
+
+            if (certValidate)
+            {
+
+            }
 
             try
             {
@@ -265,8 +296,9 @@ namespace ICanPay.Providers
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                WriteErrorLog("PostOrder", ex.Message);
             }
             finally
             {
@@ -383,6 +415,27 @@ namespace ICanPay.Providers
             if (IsSuccessResult())
             {
                 if (string.Compare(Order.Id, GetGatewayParameterValue("out_trade_no")) == 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 检查退款结果
+        /// </summary>
+        /// <param name="resultXml">支付结果的XML</param>
+        /// <returns></returns>
+        private bool CheckRefundResult(string resultXml)
+        {
+            // 需要先清除之前查询订单的参数，否则会对接收到的参数造成干扰。
+            ClearGatewayParameterData();
+            ReadResultXml(resultXml);
+            if (IsSuccessResult())
+            {
+                if (!string.IsNullOrEmpty(GetGatewayParameterValue("refund_id")))
                 {
                     return true;
                 }
@@ -548,6 +601,9 @@ namespace ICanPay.Providers
 
         private void WriteErrorLog(string method, string xml)
         {
+            if (!AppConfig.IsLogEnabled)
+                return;
+
             logger.Info(method + Environment.NewLine);
             logger.Info(string.Format("<============{0}============>", "XML信息") + Environment.NewLine);
             logger.Info(string.Format("{0}", xml) + Environment.NewLine);

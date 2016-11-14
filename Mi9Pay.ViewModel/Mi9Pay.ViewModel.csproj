@@ -42,6 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Request\BillDownloadRequest.cs" />
+    <Compile Include="Request\CommonRequest.cs" />
+    <Compile Include="Request\RefundOrder.cs" />
+    <Compile Include="Request\RefundRequest.cs" />
     <Compile Include="Response\BaseResponse.cs" />
     <Compile Include="Response\BillDownloadResponse.cs" />
     <Compile Include="View\OrderRequestViewModel.cs" />

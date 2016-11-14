@@ -15,6 +15,10 @@ namespace ICanPay
         string id;
         string subject;
 
+        string tradeNo;
+        string refundRequestNo;
+        string refundReason;
+
         #endregion
 
 
@@ -122,6 +126,54 @@ namespace ICanPay
             set
             {
                 subject = value;
+            }
+        }
+
+        /// <summary>
+        /// 订单交易号
+        /// </summary>
+        public string TradeNo
+        {
+            get
+            {
+                return tradeNo;
+            }
+
+            set
+            {
+                tradeNo = value;
+            }
+        }
+
+        /// <summary>
+        /// 退款请求号
+        /// </summary>
+        public string RefundRequestNo
+        {
+            get
+            {
+                return refundRequestNo;
+            }
+
+            set
+            {
+                refundRequestNo = value;
+            }
+        }
+
+        /// <summary>
+        /// 退款理由
+        /// </summary>
+        public string RefundReason
+        {
+            get
+            {
+                return refundReason;
+            }
+
+            set
+            {
+                refundReason = value;
             }
         }
 

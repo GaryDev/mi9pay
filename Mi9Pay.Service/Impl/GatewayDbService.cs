@@ -70,11 +70,11 @@ namespace Mi9Pay.Service
             return storePaymentMethod;
         }
 
-        private GatewayPaymentAccount GetGatewayPaymentAccount(int storeId, GatewayType gatewayType)
+        private GatewayPaymentAccount GetGatewayPaymentAccount(int storeId, GatewayType gatewayType, bool ignoreNull = false)
         {
             string payMethodCode = Enum.GetName(typeof(GatewayType), gatewayType);
             GatewayPaymentAccount account = _repository.GetGatewayPaymentAccount(storeId, payMethodCode);
-            if (account == null)
+            if (account == null && !ignoreNull)
                 throw new Exception("对应支付方式账号获取失败");
 
             return account;
@@ -176,6 +176,40 @@ namespace Mi9Pay.Service
                             }
                             _repository.Order.Update(order);
                         }
+                        _repository.Save();
+                        scope.Complete();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                //throw ex;
+            }
+        }
+
+        private void ValidatePaymentOrderStatus(string invoiceNumber, string tradeNo)
+        {
+            GatewayPaymentOrder order = _repository.Order.GetSingle(x => x.OrderNumber == invoiceNumber && x.TradeNumber == tradeNo);
+            if (order == null)
+                throw new Exception("未查询到相关支付订单");
+
+            if (order.GatewayPaymentOrderStatus1 == null)
+                throw new Exception("未查询到相关支付订单状态");
+
+            if (order.GatewayPaymentOrderStatus1.Code != "PAID")
+                throw new Exception(string.Format("该支付订单不能进行退款，状态: {0}", order.GatewayPaymentOrderStatus1.Description));
+        }
+
+        private void UpdatePaymentOrderStatus(string invoiceNumber, string tradeNo, PaymentOrderStatus status)
+        {
+            try
+            {
+                using (var scope = new TransactionScope())
+                {
+                    GatewayPaymentOrder order = _repository.Order.GetSingle(x => x.OrderNumber == invoiceNumber && x.TradeNumber == tradeNo);
+                    if (order != null)
+                    {
+                        order.GatewayPaymentOrderStatus = GetGatewayPaymentOrderStatus(status).UniqueId;
                         _repository.Save();
                         scope.Complete();
                     }

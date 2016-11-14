@@ -492,10 +492,55 @@ namespace ICanPay.Providers
 
         #endregion
 
+        #region 订单退款
+
+        public bool RefundPayment()
+        {
+            InitF2FPayService();
+            AlipayF2FRefundResult result = PostOrder(BuildRefundContent());
+            return ValidateRefundResult(result);
+        }
+
+        private bool ValidateRefundResult(AlipayF2FRefundResult result)
+        {
+            if (result.Status != ResultEnum.SUCCESS)
+            {
+                WriteErrorLog("ValidateRefundResult", result.response);
+            }
+            return result.Status == ResultEnum.SUCCESS;
+        }
+
+        private AlipayTradeRefundContentBuilder BuildRefundContent()
+        {
+            AlipayTradeRefundContentBuilder builder = new AlipayTradeRefundContentBuilder();
+
+            builder.out_trade_no = Order.Id;
+            builder.trade_no = Order.TradeNo;
+            builder.out_request_no = Order.RefundRequestNo;
+            builder.refund_amount = Order.Amount.ToString();
+            builder.refund_reason = Order.RefundReason;
+
+            return builder;
+        }
+
+        private AlipayF2FRefundResult PostOrder(AlipayTradeRefundContentBuilder builder)
+        {
+            AlipayF2FRefundResult refundResult = f2fPayService.tradeRefund(builder);
+            return refundResult;
+        }
+
+        #endregion
+
         private void WriteErrorLog(string method, AopResponse response, bool showAccountInfo = true)
         {
+            if (!AppConfig.IsLogEnabled)
+                return;
+
             if (response != null)
             {
+                if (response.SubMsg == "交易不存在")
+                    return;
+
                 logger.Info(string.Format("{0} ==> Msg: {1}", method, response.Msg) + Environment.NewLine);
                 logger.Info(string.Format("{0} ==> SubMsg: {1}", method, response.SubMsg) + Environment.NewLine);
             }

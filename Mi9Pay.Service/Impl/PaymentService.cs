@@ -30,7 +30,7 @@ namespace Mi9Pay.Service
         private int DownloadBill(string storeId, string billDate, GatewayType gatewayType)
         {
             int id = Convert.ToInt32(storeId);
-            GatewayPaymentAccount paymentAccount = GetGatewayPaymentAccount(id, gatewayType);
+            GatewayPaymentAccount paymentAccount = GetGatewayPaymentAccount(id, gatewayType, true);
             if (paymentAccount == null)
                 return 0;
 
@@ -64,6 +64,25 @@ namespace Mi9Pay.Service
             }
             return dataCount;
         }
-        
+
+        public void RefundPayment(string storeId, OrderRefundRequest refundRequest, GatewayType gatewayType)
+        {
+            ValidatePaymentOrderStatus(refundRequest.InvoiceNo, refundRequest.TradeNo);
+
+            OrderRequest orderRequest = new OrderRequest { StoreId = Convert.ToInt32(storeId) };
+            PaymentSetting paymentSetting = InitPaymentSetting(orderRequest, gatewayType);
+            paymentSetting.Order.Id = refundRequest.InvoiceNo;
+            paymentSetting.Order.TradeNo = refundRequest.TradeNo;
+            paymentSetting.Order.RefundRequestNo = "RF" + refundRequest.InvoiceNo;
+            paymentSetting.Order.Amount = double.Parse(refundRequest.RefundAmount);
+            paymentSetting.Order.RefundReason = refundRequest.RefundReason;
+
+            bool success = paymentSetting.RefundPayment();
+            if (success)
+                UpdatePaymentOrderStatus(refundRequest.InvoiceNo, refundRequest.TradeNo, PaymentOrderStatus.REFUND);
+
+            throw new Exception("退款失败");
+        }
+
     }
 }

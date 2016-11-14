@@ -234,6 +234,17 @@ namespace ICanPay
             throw new NotSupportedException(gateway.GatewayType + " 没有实现支付接口");
         }
 
+
+        public bool RefundPayment()
+        {
+            IPaymentWithCode codePayment = gateway as IPaymentWithCode;
+            if (codePayment != null)
+            {
+                return codePayment.RefundPayment();
+            }
+            throw new NotSupportedException(gateway.GatewayType + " 没有实现支付接口");
+        }
+
         /// <summary>
         /// 查询订单，订单的查询通知数据通过跟支付通知一样的形式反回。用处理网关通知一样的方法接受查询订单的数据。
         /// </summary>

@@ -87,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configs\AlipayConfig.cs" />
+    <Compile Include="Configs\AppConfig.cs" />
     <Compile Include="Configs\WechatConfig.cs" />
     <Compile Include="GatewayParameter.cs" />
     <Compile Include="GatewayParameterType.cs" />

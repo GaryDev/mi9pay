@@ -14,5 +14,7 @@ namespace ICanPay
         string GetPaymentQRCodeContent();
 
         PaymentResult BarcodePayment();
+
+        bool RefundPayment();
     }
 }
