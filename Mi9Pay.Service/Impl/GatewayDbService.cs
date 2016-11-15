@@ -80,10 +80,10 @@ namespace Mi9Pay.Service
             return account;
         }
 
-        private bool PaymentOrderExisted(string invoiceNumber, int storeId, GatewayType gatewayType, string cid)
+        private bool PaymentOrderExisted(OrderRequest orderRequest)
         {
-            string payMethodCode = Enum.GetName(typeof(GatewayType), gatewayType);
-            GatewayPaymentOrder order = _repository.GetGatewayPaymentOrder(invoiceNumber, storeId, Guid.Parse(cid));
+            GatewayPaymentOrder order = _repository.GetGatewayPaymentOrder(orderRequest.InvoiceNumber, 
+                orderRequest.StoreId, orderRequest.Merchant.UniqueId, Guid.Parse(orderRequest.PaymentCombine));
             if (order != null && order.UniqueId != Guid.Empty)
                 return true;
 
@@ -119,6 +119,7 @@ namespace Mi9Pay.Service
                     OrderType = GetGatewayPaymentOrderType(paymentOrder.OrderType).UniqueId,
                     GatewayPaymentOrderStatus = GetGatewayPaymentOrderStatus(paymentOrder.Status).UniqueId,
                     GatewayPaymentStorePaymentMethod = paymentOrder.StorePaymentMethod,
+                    GatewayPaymentMerchant = paymentOrder.Merchant.UniqueId,
                     //GatewayPaymentMethod = GetGatewayPaymentMethodByType(paymentOrder.GatewayType).UniqueId,
                     TSID = createTime
                 };
@@ -160,7 +161,10 @@ namespace Mi9Pay.Service
             {
                 using (var scope = new TransactionScope())
                 {
-                    List<GatewayPaymentOrder> orderList = _repository.Order.GetMany(x => x.OrderNumber == paymentOrder.InvoiceNumber).ToList();
+                    List<GatewayPaymentOrder> orderList = _repository.Order.GetMany(x => 
+                        x.OrderNumber == paymentOrder.InvoiceNumber && 
+                        x.StoreID == paymentOrder.StoreId && 
+                        x.GatewayPaymentMerchant == paymentOrder.Merchant.UniqueId).ToList();
                     if (orderList != null && orderList.Count > 0)
                     {
                         foreach (GatewayPaymentOrder order in orderList)

@@ -16,15 +16,19 @@ namespace Mi9Pay.DataModel
     {
         public GatewayPaymentMerchant()
         {
-            this.GatewayPaymentAccount = new HashSet<GatewayPaymentAccount>();
             this.GatewayPaymentStore = new HashSet<GatewayPaymentStore>();
+            this.GatewayPaymentAccount = new HashSet<GatewayPaymentAccount>();
+            this.GatewayPaymentApp = new HashSet<GatewayPaymentApp>();
+            this.GatewayPaymentOrder = new HashSet<GatewayPaymentOrder>();
         }
     
         public System.Guid UniqueId { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
     
-        public virtual ICollection<GatewayPaymentAccount> GatewayPaymentAccount { get; set; }
         public virtual ICollection<GatewayPaymentStore> GatewayPaymentStore { get; set; }
+        public virtual ICollection<GatewayPaymentAccount> GatewayPaymentAccount { get; set; }
+        public virtual ICollection<GatewayPaymentApp> GatewayPaymentApp { get; set; }
+        public virtual ICollection<GatewayPaymentOrder> GatewayPaymentOrder { get; set; }
     }
 }

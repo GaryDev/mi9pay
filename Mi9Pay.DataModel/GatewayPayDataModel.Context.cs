@@ -25,23 +25,23 @@ namespace Mi9Pay.DataModel
             throw new UnintentionalCodeFirstException();
         }
     
-        public DbSet<GatewayPaymentApp> GatewayPaymentApp { get; set; }
         public DbSet<GatewayPaymentMethod> GatewayPaymentMethod { get; set; }
         public DbSet<GatewayPaymentOrderDetail> GatewayPaymentOrderDetail { get; set; }
         public DbSet<GatewayPaymentOrderStatus> GatewayPaymentOrderStatus { get; set; }
         public DbSet<GatewayPaymentOrderType> GatewayPaymentOrderType { get; set; }
         public DbSet<GatewayPaymentCustomer> GatewayPaymentCustomer { get; set; }
         public DbSet<GatewayPaymentMerchant> GatewayPaymentMerchant { get; set; }
-        public DbSet<GatewayPaymentAccount> GatewayPaymentAccount { get; set; }
         public DbSet<GatewayPaymentStore> GatewayPaymentStore { get; set; }
         public DbSet<GatewayPaymentMethodType> GatewayPaymentMethodType { get; set; }
         public DbSet<GatewayPaymentMethodTypeJoin> GatewayPaymentMethodTypeJoin { get; set; }
         public DbSet<GatewayPaymentPosition> GatewayPaymentPosition { get; set; }
-        public DbSet<GatewayPaymentOrder> GatewayPaymentOrder { get; set; }
         public DbSet<GatewayPaymentStorePaymentMethod> GatewayPaymentStorePaymentMethod { get; set; }
         public DbSet<GatewayPaymentUser> GatewayPaymentUser { get; set; }
         public DbSet<GatewayPaymentBillWechat> GatewayPaymentBillWechat { get; set; }
         public DbSet<GatewayPaymentBillAlipay> GatewayPaymentBillAlipay { get; set; }
         public DbSet<GatewayPaymentNotifyQueue> GatewayPaymentNotifyQueue { get; set; }
+        public DbSet<GatewayPaymentAccount> GatewayPaymentAccount { get; set; }
+        public DbSet<GatewayPaymentApp> GatewayPaymentApp { get; set; }
+        public DbSet<GatewayPaymentOrder> GatewayPaymentOrder { get; set; }
     }
 }

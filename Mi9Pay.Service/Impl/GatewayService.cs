@@ -24,16 +24,17 @@ namespace Mi9Pay.Service
             _repository = repository;
         }
 
-        public void ValidateRequestParameter(Dictionary<string, string> requestParameter)
+        public void ValidateRequestParameter(Dictionary<string, string> requestParameter, string appKey = null)
         {
             string appid = requestParameter["app_id"];
-            GatewayPaymentApp app = GetGatewayPaymentApp(appid);
+            if (string.IsNullOrWhiteSpace(appKey))
+                appKey = GetGatewayPaymentApp(appid).Appkey;
 
             string requestSign = requestParameter["sign"] as string;
             requestParameter.Remove("sign");
 
             string sortedString = SignatureUtil.CreateSortedParams(requestParameter);
-            string serverSign = SignatureUtil.CreateSignature(sortedString + app.Appkey);
+            string serverSign = SignatureUtil.CreateSignature(sortedString + appKey);
             //string serverSign = requestSign;    // For test
 
             if (requestSign != serverSign)
@@ -44,9 +45,12 @@ namespace Mi9Pay.Service
 
         public OrderRequest RecieveRequestForm(Dictionary<string, string> requestParameter)
         {
-            OrderRequest request = new OrderRequest();
+            string appid = requestParameter["app_id"];
+            GatewayPaymentApp app = GetGatewayPaymentApp(appid);
+            ValidateRequestParameter(requestParameter, app.Appkey);
 
-            request.AppId = requestParameter["app_id"];
+            OrderRequest request = new OrderRequest();
+            request.AppId = appid;
             //request.InvoiceNumber = DateTime.Now.ToString("yyyyMMddHHmmss") + "0000" + (new Random()).Next(1, 10000).ToString(); // For test
             request.InvoiceNumber = requestParameter["invoice"];
             if (requestParameter.Keys.Contains("store_id"))
@@ -105,10 +109,22 @@ namespace Mi9Pay.Service
             if (requestParameter.Keys.Contains("notify_dataformat"))
                 request.NotifyDataFormat = requestParameter["notify_dataformat"];
 
+            request.Merchant = new PaymentOrderMerchant
+            {
+                AppId = appid
+            };
+            GatewayPaymentMerchant merchant = app.GatewayPaymentMerchant1;
+            if (merchant != null)
+            {
+                request.Merchant.UniqueId = merchant.UniqueId;
+                request.Merchant.Code = merchant.Code;
+                request.Merchant.Name = merchant.Name;
+            }
+
             return request;
         }
 
-        public MemoryStream CreatePaymentQRCode(OrderRequest orderRequest, GatewayType gatewayType, string cid)
+        public MemoryStream CreatePaymentQRCode(OrderRequest orderRequest, GatewayType gatewayType)
         {
             PaymentSetting paymentSetting = InitPaymentSetting(orderRequest, gatewayType);
             SetPaymentSettingOrder(paymentSetting, orderRequest);
@@ -116,12 +132,12 @@ namespace Mi9Pay.Service
             MemoryStream ms = paymentSetting.PaymentQRCode();
             if (ms != null)
             {
-                CreatePaymentOrder(orderRequest, gatewayType, paymentSetting.Order.Subject, cid);
+                CreatePaymentOrder(orderRequest, paymentSetting.Order.Subject);
             }
             return ms;
         }
 
-        public OrderPaymentResponse BarcodePayment(OrderRequest orderRequest, GatewayType gatewayType, string barcode, string cid)
+        public OrderPaymentResponse BarcodePayment(OrderRequest orderRequest, GatewayType gatewayType, string barcode)
         {
             OrderPaymentResponse response = new OrderPaymentResponse();
 
@@ -130,12 +146,12 @@ namespace Mi9Pay.Service
             paymentSetting.SetGatewayParameterValue("auth_code", barcode);
 
             string invoiceNumber = orderRequest.InvoiceNumber;
-            CreatePaymentOrder(orderRequest, gatewayType, paymentSetting.Order.Subject, cid);
+            CreatePaymentOrder(orderRequest, paymentSetting.Order.Subject);
 
             PaymentResult result = paymentSetting.BarcodePayment();
             if (result != null)
             {
-                UpdatePaymentOrder(invoiceNumber, gatewayType, result.TradeNo, cid);
+                UpdatePaymentOrder(orderRequest, result.TradeNo);
 
                 result.InvoiceNo = invoiceNumber;
                 response = BuildOrderPaymentResponse(result);
@@ -144,18 +160,18 @@ namespace Mi9Pay.Service
             return response;
         }
 
-        public OrderPaymentResponse QueryPayment(string appId, string invoiceNumber, GatewayType gatewayType, string cid)
+        public OrderPaymentResponse QueryPayment(OrderRequest orderRequest, GatewayType gatewayType)
         {
             OrderPaymentResponse response = new OrderPaymentResponse();
 
-            OrderRequest orderRequest = new OrderRequest { AppId = appId, StoreId = ParseStoreId(invoiceNumber) };
+            string invoiceNumber = orderRequest.InvoiceNumber;
             PaymentSetting paymentSetting = InitPaymentSetting(orderRequest, gatewayType);
             paymentSetting.Order.Id = invoiceNumber;
 
             PaymentResult result = paymentSetting.QueryForResult();
             if (result != null)
             {
-                UpdatePaymentOrder(invoiceNumber, gatewayType, result.TradeNo, cid);
+                UpdatePaymentOrder(orderRequest, result.TradeNo);
 
                 result.InvoiceNo = invoiceNumber;
                 response = BuildOrderPaymentResponse(result);
@@ -338,9 +354,9 @@ namespace Mi9Pay.Service
             paymentSetting.Order.DiscountAmount = (double)orderRequest.Discount;
         }
 
-        private void CreatePaymentOrder(OrderRequest orderRequest, GatewayType gatewayType, string orderSubject, string cid)
+        private void CreatePaymentOrder(OrderRequest orderRequest, string orderSubject)
         {
-            if (!PaymentOrderExisted(orderRequest.InvoiceNumber, orderRequest.StoreId, gatewayType, cid))
+            if (!PaymentOrderExisted(orderRequest))
             {
                 Mapper.Initialize(cfg => {
                     cfg.CreateMap<OrderRequest, PaymentOrder>();
@@ -350,21 +366,21 @@ namespace Mi9Pay.Service
                 {
                     paymentOrder.OrderType = "MOSAIC";
                     paymentOrder.Subject = orderSubject;
-                    paymentOrder.GatewayType = gatewayType;
-                    paymentOrder.StorePaymentMethod = Guid.Parse(cid);
+                    paymentOrder.StorePaymentMethod = Guid.Parse(orderRequest.PaymentCombine);
                     paymentOrder.Status = PaymentOrderStatus.UNPAID;
                     CreatePaymentOrder(paymentOrder);
                 }
             }
         }
 
-        private void UpdatePaymentOrder(string invoiceNumber, GatewayType gatewayType, string tradeNo, string cid)
+        private void UpdatePaymentOrder(OrderRequest orderRequest, string tradeNo)
         {
             PaymentOrder paymentOrder = new PaymentOrder
             {
-                InvoiceNumber = invoiceNumber,
-                GatewayType = gatewayType,
-                StorePaymentMethod = Guid.Parse(cid),
+                StoreId = orderRequest.StoreId,
+                Merchant = orderRequest.Merchant,
+                InvoiceNumber = orderRequest.InvoiceNumber,
+                StorePaymentMethod = Guid.Parse(orderRequest.PaymentCombine),
                 TradeNumber = tradeNo,
                 Status = PaymentOrderStatus.PAID
             };

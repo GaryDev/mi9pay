@@ -33,11 +33,13 @@ namespace Mi9Pay.DataModel
         public System.Guid OrderType { get; set; }
         public Nullable<System.Guid> GatewayPaymentCustomer { get; set; }
         public Nullable<System.Guid> GatewayPaymentStorePaymentMethod { get; set; }
+        public System.Guid GatewayPaymentMerchant { get; set; }
     
         public virtual GatewayPaymentCustomer GatewayPaymentCustomer1 { get; set; }
+        public virtual GatewayPaymentMerchant GatewayPaymentMerchant1 { get; set; }
         public virtual GatewayPaymentOrderStatus GatewayPaymentOrderStatus1 { get; set; }
         public virtual GatewayPaymentOrderType GatewayPaymentOrderType { get; set; }
-        public virtual ICollection<GatewayPaymentOrderDetail> GatewayPaymentOrderDetail { get; set; }
         public virtual GatewayPaymentStorePaymentMethod GatewayPaymentStorePaymentMethod1 { get; set; }
+        public virtual ICollection<GatewayPaymentOrderDetail> GatewayPaymentOrderDetail { get; set; }
     }
 }

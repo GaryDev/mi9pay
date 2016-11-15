@@ -36,7 +36,7 @@ namespace Mi9Pay.Web.Controllers
             try
             {
                 Dictionary<string, string> parameters = form.CovertToDictionary();
-                _gatewayService.ValidateRequestParameter(parameters);
+                //_gatewayService.ValidateRequestParameter(parameters);
 
                 OrderRequest orderRequest = _gatewayService.RecieveRequestForm(parameters);
                 ControllerContext.HttpContext.Session[OrderRequest.SessionKey] = orderRequest;
@@ -87,7 +87,15 @@ namespace Mi9Pay.Web.Controllers
                 foreach (PaymentCombine payCombine in _gatewayService.GetPaymentCombineList(storeId))
                 {
                     GatewayType type = payCombine.PaymentMethod.Code.ToEnum<GatewayType>();
-                    result = _gatewayService.QueryPayment(app_id, invoice, type, payCombine.StorePaymentMethod);
+                    OrderRequest orderRequest = new OrderRequest
+                    {
+                        AppId = app_id,
+                        InvoiceNumber = invoice,
+                        StoreId = _gatewayService.ParseStoreId(invoice),
+                        PaymentCombine = payCombine.StorePaymentMethod
+                    };
+
+                    result = _gatewayService.QueryPayment(orderRequest, type);
                     if (result != null && result.IsSuccess())
                     {
                         Mapper.Initialize(cfg => {
@@ -116,7 +124,7 @@ namespace Mi9Pay.Web.Controllers
             try
             {
                 GatewayType type = request.PayMethod.ToEnum<GatewayType>();
-                Entities.OrderPaymentResponse result = _gatewayService.QueryPayment(request.AppId, request.InvoiceNumber, type, request.PaymentCombine);
+                Entities.OrderPaymentResponse result = _gatewayService.QueryPayment(request, type);
 
                 string returnUrl = string.Empty;
                 if (result.IsSuccess())
@@ -145,7 +153,7 @@ namespace Mi9Pay.Web.Controllers
                 orderRequest.PayMethod = method;
                 orderRequest.PaymentCombine = cid;
 
-                MemoryStream ms = _gatewayService.CreatePaymentQRCode(orderRequest, type, cid);
+                MemoryStream ms = _gatewayService.CreatePaymentQRCode(orderRequest, type);
                 if (ms != null)
                 {
                     imgTag = string.Format("<img src='data:image/png;base64,{0}' />", Convert.ToBase64String(ms.ToArray()));
@@ -170,7 +178,7 @@ namespace Mi9Pay.Web.Controllers
                 request.PayMethod = method;
                 request.PaymentCombine = cid;
 
-                Entities.OrderPaymentResponse result = _gatewayService.BarcodePayment(request, type, barcode, cid);
+                Entities.OrderPaymentResponse result = _gatewayService.BarcodePayment(request, type, barcode);
 
                 string returnUrl = string.Empty;
                 if (result.IsSuccess())

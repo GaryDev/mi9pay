@@ -25,7 +25,7 @@ namespace Mi9Pay.DataModel
         public Nullable<System.Guid> GatewayPaymentMethodTypeJoin { get; set; }
     
         public virtual GatewayPaymentMethodTypeJoin GatewayPaymentMethodTypeJoin1 { get; set; }
-        public virtual ICollection<GatewayPaymentOrder> GatewayPaymentOrder { get; set; }
         public virtual GatewayPaymentStore GatewayPaymentStore1 { get; set; }
+        public virtual ICollection<GatewayPaymentOrder> GatewayPaymentOrder { get; set; }
     }
 }

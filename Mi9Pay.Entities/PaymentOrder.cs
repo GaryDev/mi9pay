@@ -17,14 +17,16 @@ namespace Mi9Pay.Entities
         public decimal Tax { get; set; }
         public decimal Discount { get; set; }
         public decimal ShippingFee { get; set; }
-        public string OrderType { get; set; }
+        public List<PaymentOrderDetail> PayItems { get; set; }
 
+        public string OrderType { get; set; }
         public GatewayType GatewayType { get; set; }
         public PaymentOrderStatus Status { get; set; }
         public Guid StorePaymentMethod { get; set; }
 
+        public PaymentOrderMerchant Merchant { get; set; }
         public PaymentOrderCustomer Customer { get; set; }
-        public List<PaymentOrderDetail> PayItems { get; set; }
+
 
         public PaymentOrder()
         {

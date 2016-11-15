@@ -14,15 +14,11 @@ namespace Mi9Pay.DataModel
     
     public partial class GatewayPaymentApp
     {
-        public GatewayPaymentApp()
-        {
-            this.GatewayPaymentAccount = new HashSet<GatewayPaymentAccount>();
-        }
-    
         public System.Guid UniqueId { get; set; }
         public string Appid { get; set; }
         public string Appkey { get; set; }
+        public System.Guid GatewayPaymentMerchant { get; set; }
     
-        public virtual ICollection<GatewayPaymentAccount> GatewayPaymentAccount { get; set; }
+        public virtual GatewayPaymentMerchant GatewayPaymentMerchant1 { get; set; }
     }
 }

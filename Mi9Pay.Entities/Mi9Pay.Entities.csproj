@@ -51,6 +51,8 @@
     <Compile Include="PaymentOrder.cs" />
     <Compile Include="PaymentOrderCustomer.cs" />
     <Compile Include="PaymentOrderDetail.cs" />
+    <Compile Include="PaymentOrderMerchant.cs" />
+    <Compile Include="PaymentOrderStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PaymentScanMode.cs" />
   </ItemGroup>

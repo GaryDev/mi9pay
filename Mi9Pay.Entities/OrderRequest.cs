@@ -30,6 +30,7 @@ namespace Mi9Pay.Entities
         public List<PaymentOrderDetail> PayItems { get; set; }
 
         public PaymentOrderCustomer Customer { get; set; }
+        public PaymentOrderMerchant Merchant { get; set; }
 
         public OrderRequest()
         {

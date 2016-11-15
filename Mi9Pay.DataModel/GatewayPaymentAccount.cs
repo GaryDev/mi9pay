@@ -20,11 +20,9 @@ namespace Mi9Pay.DataModel
         public string Mchkey { get; set; }
         public string MchPublickey { get; set; }
         public string Publickey { get; set; }
-        public System.Guid GatewayPaymentApp { get; set; }
         public System.Guid GatewayPaymentMerchant { get; set; }
         public System.Guid GatewayPaymentMethod { get; set; }
     
-        public virtual GatewayPaymentApp GatewayPaymentApp1 { get; set; }
         public virtual GatewayPaymentMerchant GatewayPaymentMerchant1 { get; set; }
         public virtual GatewayPaymentMethod GatewayPaymentMethod1 { get; set; }
     }

@@ -247,18 +247,19 @@ namespace Mi9Pay.DataModel
                                             join gpm in _context.GatewayPaymentMerchant on gpa.GatewayPaymentMerchant equals gpm.UniqueId
                                             join gps in _context.GatewayPaymentStore on gpm.UniqueId equals gps.GatewayPaymentMerchant
                                             join gpmd in _context.GatewayPaymentMethod on gpa.GatewayPaymentMethod equals gpmd.UniqueId
-                                            where gps.StoreId == storeId && string.Compare(gpmd.Code, payMethodCode, true) == 0
+                                            where gps.StoreId == storeId 
+                                            && string.Compare(gpmd.Code, payMethodCode, true) == 0
                                             select gpa).SingleOrDefault();
             return account;
         }
 
-        public GatewayPaymentOrder GetGatewayPaymentOrder(string invoiceNumber, int storeId, Guid payMethodJoin)
+        public GatewayPaymentOrder GetGatewayPaymentOrder(string invoiceNumber, int storeId, Guid merchant, Guid payMethodJoin)
         {
-            GatewayPaymentOrder order = (from gpo in _context.GatewayPaymentOrder
-                                         join gpmd in _context.GatewayPaymentStorePaymentMethod on gpo.GatewayPaymentStorePaymentMethod equals gpmd.UniqueId
-                                         where gpo.OrderNumber == invoiceNumber && gpo.StoreID == storeId && gpmd.GatewayPaymentMethodTypeJoin == payMethodJoin
-                                         select gpo).SingleOrDefault();
-            return order;
+            var orderQuery = Order.GetManyQueryable(x => 
+                x.StoreID == storeId && 
+                x.GatewayPaymentMerchant == merchant && 
+                x.OrderNumber == invoiceNumber);
+            return orderQuery != null ? orderQuery.Where(o => o.GatewayPaymentStorePaymentMethod == payMethodJoin).FirstOrDefault() : null;
         }
 
         /// <summary>

@@ -11,13 +11,13 @@ namespace Mi9Pay.Service
 {
     public interface IGatewayService
     {
-        void ValidateRequestParameter(Dictionary<string, string> requestParameter);
+        void ValidateRequestParameter(Dictionary<string, string> requestParameter, string appKey = null);
         OrderRequest RecieveRequestForm(Dictionary<string, string> requestParameter);
         int ParseStoreId(string invoiceNumber);
 
-        MemoryStream CreatePaymentQRCode(OrderRequest orderRequest, GatewayType gatewayType, string cid);
-        OrderPaymentResponse BarcodePayment(OrderRequest orderRequest, GatewayType gatewayType, string barcode, string cid);
-        OrderPaymentResponse QueryPayment(string appId, string invoiceNumber, GatewayType gatewayType, string cid);
+        MemoryStream CreatePaymentQRCode(OrderRequest orderRequest, GatewayType gatewayType);
+        OrderPaymentResponse BarcodePayment(OrderRequest orderRequest, GatewayType gatewayType, string barcode);
+        OrderPaymentResponse QueryPayment(OrderRequest orderRequest, GatewayType gatewayType);
 
         IEnumerable<GatewayType> GetGatewayTypes(string invoice);
 
