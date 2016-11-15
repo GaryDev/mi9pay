@@ -13,6 +13,7 @@ namespace Mi9Pay.Service
     {
         void ValidateRequestParameter(Dictionary<string, string> requestParameter);
         OrderRequest RecieveRequestForm(Dictionary<string, string> requestParameter);
+        int ParseStoreId(string invoiceNumber);
 
         MemoryStream CreatePaymentQRCode(OrderRequest orderRequest, GatewayType gatewayType, string cid);
         OrderPaymentResponse BarcodePayment(OrderRequest orderRequest, GatewayType gatewayType, string barcode, string cid);

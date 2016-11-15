@@ -20,6 +20,20 @@ namespace Mi9Pay.Entities
         public string Processed { get; set; }
     }
 
+    public class NotifyPostInfo
+    {
+        public string PostUrl { get; set; }
+        public string PostData { get; set; }
+        public bool IsRawData { get; set; }
+    }
+
+    public class NotifyAsyncParameter
+    {
+        public NotifyPostInfo NotifyPostInfo { get; set; }
+        public NotifyQueue NotifyQueue { get; set; }
+        public Action<NotifyQueue> PostAction { get; set; }
+    }
+
     public static class NotifyConfig
     {
         // Minutes

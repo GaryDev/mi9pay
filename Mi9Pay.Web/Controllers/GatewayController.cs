@@ -82,7 +82,8 @@ namespace Mi9Pay.Web.Controllers
 
                 Entities.OrderPaymentResponse result = null;
                 VmOrderPaymentResponse vmOrderPayment = new VmOrderPaymentResponse();
-                int storeId = 0;
+
+                int storeId = _gatewayService.ParseStoreId(invoice);
                 foreach (PaymentCombine payCombine in _gatewayService.GetPaymentCombineList(storeId))
                 {
                     GatewayType type = payCombine.PaymentMethod.Code.ToEnum<GatewayType>();

@@ -200,22 +200,24 @@ namespace Mi9Pay.Service
 
             Dictionary<string, string> parameters = BuildUrlParameter(request, response);
             string postData = rawData ? SignatureUtil.CreateSortedParams(parameters) : new JavaScriptSerializer().Serialize(parameters);
-            bool notifySuccess = WebClientHelper.PostData(request.NotifyUrl, postData, rawData);
 
-            NotifyQueue queue = new NotifyQueue
+            NotifyAsyncParameter parameter = new NotifyAsyncParameter
             {
-                UniqueId = Guid.Parse(response.order.notification_id),
-                OrderNumber = request.InvoiceNumber,
-                NotifyUrl = request.NotifyUrl,
-                PostData = postData,
-                PostDataFormat = rawData ? NotifyDataFormat.RAW : NotifyDataFormat.JSON,
-                SendDate = sendDateTime,
-                LastSendDate = sendDateTime,
-                ProcessedCount = 1,
-                NextInterval = notifySuccess ? 0 : NotifyConfig.NotifyStrategy[1],
-                Processed = notifySuccess ? "Y" : "N"
+                NotifyPostInfo = new NotifyPostInfo { PostUrl = request.NotifyUrl, PostData = postData, IsRawData = rawData },
+                NotifyQueue = new NotifyQueue
+                {
+                    UniqueId = Guid.Parse(response.order.notification_id),
+                    OrderNumber = request.InvoiceNumber,
+                    NotifyUrl = request.NotifyUrl,
+                    PostData = postData,
+                    PostDataFormat = rawData ? NotifyDataFormat.RAW : NotifyDataFormat.JSON,
+                    SendDate = sendDateTime,
+                    LastSendDate = sendDateTime,
+                    ProcessedCount = 1
+                },
+                PostAction = CreateNotifyQueue
             };
-            CreateNotifyQueue(queue);
+            WebClientHelper.SendNotification(parameter);
         }
 
         private Dictionary<string, string> BuildUrlParameter(OrderRequest request, OrderPaymentResponse response)
@@ -296,7 +298,7 @@ namespace Mi9Pay.Service
             return listPaymentCombine.OrderBy(x => x.PaymentMethod.Code + x.PaymentScanMode.Code);
         }
 
-        private int ParseStoreId(string invoiceNumber)
+        public int ParseStoreId(string invoiceNumber)
         {
             int invoice;
 
