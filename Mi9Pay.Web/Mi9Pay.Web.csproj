@@ -205,7 +205,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ICanPay\Mi9Pay.PayProvider.csproj">
+    <ProjectReference Include="..\Mi9Pay.PayProvider\Mi9Pay.PayProvider.csproj">
       <Project>{8cc9f719-2537-4b54-bad7-268057b946fa}</Project>
       <Name>Mi9Pay.PayProvider</Name>
     </ProjectReference>
