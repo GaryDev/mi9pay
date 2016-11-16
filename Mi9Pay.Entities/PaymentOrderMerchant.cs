@@ -12,6 +12,5 @@ namespace Mi9Pay.Entities
         public string Code { get; set; }
         public string Name { get; set; }
         public string AppId { get; set; }
-        public string AppKey { get; set; }
     }
 }

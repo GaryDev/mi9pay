@@ -22,9 +22,18 @@ namespace Mi9Pay.Service
             return app;
         }
 
-        private IEnumerable<GatewayPaymentMethodTypeJoinResult> GetPaymentMethodCombinations(int storeId)
+        private GatewayPaymentMerchant GetGatewayPaymentMerchant(string merchantCode)
         {
-            IEnumerable<GatewayPaymentMethodTypeJoinResult> paymentMethodCombinations = _repository.GetPaymentMethodCombinationByStore(storeId);
+            GatewayPaymentMerchant merchant = _repository.Merchant.Get(x => x.Code == merchantCode);
+            if (merchant == null)
+                throw new Exception("商家信息获取失败");
+
+            return merchant;
+        }
+
+        private IEnumerable<GatewayPaymentMethodTypeJoinResult> GetPaymentMethodCombinations(int storeId, Guid merchant)
+        {
+            IEnumerable<GatewayPaymentMethodTypeJoinResult> paymentMethodCombinations = _repository.GetPaymentMethodCombinationByStore(storeId, merchant);
             if (paymentMethodCombinations == null || paymentMethodCombinations.ToList().Count == 0)
                 throw new Exception(string.Format("未配置支付方式，门店ID({0})", storeId));
 
@@ -70,10 +79,10 @@ namespace Mi9Pay.Service
             return storePaymentMethod;
         }
 
-        private GatewayPaymentAccount GetGatewayPaymentAccount(int storeId, GatewayType gatewayType, bool ignoreNull = false)
+        private GatewayPaymentAccount GetGatewayPaymentAccount(OrderRequest orderRequest, GatewayType gatewayType, bool ignoreNull = false)
         {
             string payMethodCode = Enum.GetName(typeof(GatewayType), gatewayType);
-            GatewayPaymentAccount account = _repository.GetGatewayPaymentAccount(storeId, payMethodCode);
+            GatewayPaymentAccount account = _repository.GetGatewayPaymentAccount(orderRequest.StoreId, orderRequest.Merchant.UniqueId, payMethodCode);
             if (account == null && !ignoreNull)
                 throw new Exception("对应支付方式账号获取失败");
 

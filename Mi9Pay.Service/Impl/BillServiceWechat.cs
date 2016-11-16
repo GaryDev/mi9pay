@@ -15,12 +15,14 @@ namespace Mi9Pay.Service
             bool success = false;
             try
             {
-                var billData = Repository.BillWechat.GetMany(b => b.StoreId == StoreId && b.TradeTime.StartsWith(BillDate));
+                var billData = Repository.BillWechat.GetMany(b => 
+                    b.StoreId == StoreId && b.GatewayPaymentMerchant == Merchant && b.TradeTime.StartsWith(BillDate));
                 if (billData.Count() > 0)
                 {
                     using (var scope = new TransactionScope())
                     {
-                        Repository.BillWechat.Delete(b => b.StoreId == StoreId && b.TradeTime.StartsWith(BillDate));
+                        Repository.BillWechat.Delete(b => 
+                            b.StoreId == StoreId && b.GatewayPaymentMerchant == Merchant && b.TradeTime.StartsWith(BillDate));
                         Repository.Save();
                         scope.Complete();
                     }
@@ -53,6 +55,7 @@ namespace Mi9Pay.Service
                         {
                             UniqueId = Guid.NewGuid()
                             ,StoreId = StoreId
+                            ,GatewayPaymentMerchant = Merchant
                             ,TradeTime = rowValues[0]
                             ,GHId = rowValues[1]
                             ,MchId = rowValues[2]

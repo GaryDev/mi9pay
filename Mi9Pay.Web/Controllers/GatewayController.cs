@@ -36,15 +36,13 @@ namespace Mi9Pay.Web.Controllers
             try
             {
                 Dictionary<string, string> parameters = form.CovertToDictionary();
-                //_gatewayService.ValidateRequestParameter(parameters);
-
                 OrderRequest orderRequest = _gatewayService.RecieveRequestForm(parameters);
                 ControllerContext.HttpContext.Session[OrderRequest.SessionKey] = orderRequest;
 
                 Mapper.Initialize(cfg => cfg.CreateMap<OrderRequest, OrderRequestViewModel>());
                 OrderRequestViewModel order = Mapper.Map<OrderRequest, OrderRequestViewModel>(orderRequest);
 
-                IEnumerable<PaymentCombine> paymentCombineList = _gatewayService.GetPaymentCombineList(orderRequest.StoreId);
+                IEnumerable<PaymentCombine> paymentCombineList = _gatewayService.GetPaymentCombineList(orderRequest.StoreId, orderRequest.Merchant.UniqueId);
                 Mapper.Initialize(cfg => {
                     cfg.CreateMap<PaymentCombine, PaymentCombineViewModel>();
                     cfg.CreateMap<PaymentMethod, PaymentMethodViewModel>();
@@ -78,22 +76,15 @@ namespace Mi9Pay.Web.Controllers
                 parameters.Add("app_id", app_id);
                 parameters.Add("invoice", invoice);
                 parameters.Add("sign", sign);
-                _gatewayService.ValidateRequestParameter(parameters);
+                OrderRequest orderRequest = _gatewayService.ValidateRequestParameter(parameters);
 
                 Entities.OrderPaymentResponse result = null;
                 VmOrderPaymentResponse vmOrderPayment = new VmOrderPaymentResponse();
 
-                int storeId = _gatewayService.ParseStoreId(invoice);
-                foreach (PaymentCombine payCombine in _gatewayService.GetPaymentCombineList(storeId))
+                foreach (PaymentCombine payCombine in _gatewayService.GetPaymentCombineList(orderRequest.StoreId, orderRequest.Merchant.UniqueId))
                 {
                     GatewayType type = payCombine.PaymentMethod.Code.ToEnum<GatewayType>();
-                    OrderRequest orderRequest = new OrderRequest
-                    {
-                        AppId = app_id,
-                        InvoiceNumber = invoice,
-                        StoreId = _gatewayService.ParseStoreId(invoice),
-                        PaymentCombine = payCombine.StorePaymentMethod
-                    };
+                    orderRequest.PaymentCombine = payCombine.StorePaymentMethod;
 
                     result = _gatewayService.QueryPayment(orderRequest, type);
                     if (result != null && result.IsSuccess())

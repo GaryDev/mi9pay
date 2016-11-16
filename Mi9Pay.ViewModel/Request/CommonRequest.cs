@@ -10,11 +10,15 @@ namespace Mi9Pay.ViewModel
 {
     public class CommonRequest : IValidatableObject
     {
+        public string merchant_id { get; set; }
         public string store_id { get; set; }
         public string payment_method { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
+            if (string.IsNullOrWhiteSpace(merchant_id))
+                throw new ArgumentException("商家id不能为空");
+
             if (string.IsNullOrWhiteSpace(store_id))
                 throw new ArgumentException("门店id不能为空");
 

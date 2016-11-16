@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Web.Http;
 using System.Web.Http.Tracing;
 using System.Net.Http;
+using ICanPay.Configs;
 
 namespace Mi9Pay.Web.ActionFilters
 {
@@ -17,23 +18,27 @@ namespace Mi9Pay.Web.ActionFilters
             if (!TimeHelper.IsValid())
                 throw new Exception("感谢使用Mi9Pay支付网关，功能试用已到期");
 
-            var actionDescriptor = filterContext.ActionDescriptor;
-            string controllerName = actionDescriptor.ControllerDescriptor.ControllerName;
-            string actionName = actionDescriptor.ActionName;
-
-            if (actionName != "LongPolling")
+            if (AppConfig.IsLogEnabled)
             {
-                HttpMethod httpMethod = new HttpMethod(HttpContext.Current.Request.HttpMethod);
-                Uri requestUrl = HttpContext.Current.Request.Url;
-                HttpRequestMessage request = new HttpRequestMessage(httpMethod, requestUrl);
+                var actionDescriptor = filterContext.ActionDescriptor;
+                string controllerName = actionDescriptor.ControllerDescriptor.ControllerName;
+                string actionName = actionDescriptor.ActionName;
 
-                HttpConfiguration config = new HttpConfiguration();
-                config.Services.Replace(typeof(ITraceWriter), new NLogHelper());
-                var trace = config.Services.GetTraceWriter();
-                trace.Info(request,
-                    "Controller : " + controllerName + Environment.NewLine +
-                    "Action : " + actionName, "JSON", filterContext.ActionParameters.Values.ToArray());
+                if (actionName != "LongPolling")
+                {
+                    HttpMethod httpMethod = new HttpMethod(HttpContext.Current.Request.HttpMethod);
+                    Uri requestUrl = HttpContext.Current.Request.Url;
+                    HttpRequestMessage request = new HttpRequestMessage(httpMethod, requestUrl);
+
+                    HttpConfiguration config = new HttpConfiguration();
+                    config.Services.Replace(typeof(ITraceWriter), new NLogHelper());
+                    var trace = config.Services.GetTraceWriter();
+                    trace.Info(request,
+                        "Controller : " + controllerName + Environment.NewLine +
+                        "Action : " + actionName, "JSON", filterContext.ActionParameters.Values.ToArray());
+                }
             }
         }
+        
     }
 }

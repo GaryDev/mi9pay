@@ -15,6 +15,8 @@ namespace Mi9Pay.DataModel
     public partial class GatewayPaymentBillWechat
     {
         public System.Guid UniqueId { get; set; }
+        public string StoreId { get; set; }
+        public System.Guid GatewayPaymentMerchant { get; set; }
         public string TradeTime { get; set; }
         public string GHId { get; set; }
         public string MchId { get; set; }
@@ -40,6 +42,5 @@ namespace Mi9Pay.DataModel
         public string Fee { get; set; }
         public string Rate { get; set; }
         public System.DateTime TSID { get; set; }
-        public string StoreId { get; set; }
     }
 }

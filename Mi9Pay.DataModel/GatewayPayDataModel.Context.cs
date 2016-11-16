@@ -37,11 +37,11 @@ namespace Mi9Pay.DataModel
         public DbSet<GatewayPaymentPosition> GatewayPaymentPosition { get; set; }
         public DbSet<GatewayPaymentStorePaymentMethod> GatewayPaymentStorePaymentMethod { get; set; }
         public DbSet<GatewayPaymentUser> GatewayPaymentUser { get; set; }
-        public DbSet<GatewayPaymentBillWechat> GatewayPaymentBillWechat { get; set; }
-        public DbSet<GatewayPaymentBillAlipay> GatewayPaymentBillAlipay { get; set; }
         public DbSet<GatewayPaymentNotifyQueue> GatewayPaymentNotifyQueue { get; set; }
         public DbSet<GatewayPaymentAccount> GatewayPaymentAccount { get; set; }
         public DbSet<GatewayPaymentApp> GatewayPaymentApp { get; set; }
         public DbSet<GatewayPaymentOrder> GatewayPaymentOrder { get; set; }
+        public DbSet<GatewayPaymentBillAlipay> GatewayPaymentBillAlipay { get; set; }
+        public DbSet<GatewayPaymentBillWechat> GatewayPaymentBillWechat { get; set; }
     }
 }

@@ -11,6 +11,7 @@ namespace Mi9Pay.Service
     {
         public GatewayRepository Repository { get; set; }
         public string StoreId { get; set; }
+        public Guid Merchant { get; set; }
         public string BillDate { get; set; }
 
         public abstract bool ClearData();

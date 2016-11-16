@@ -24,13 +24,14 @@ namespace Mi9Pay.Web.Controllers
         {
             try
             {
+                string merchantCode = request.merchant_id;
                 string storeId = request.store_id;
                 string billDate = request.bill_date;
                 GatewayType type = request.payment_method.ToEnum<GatewayType>();
 
                 string[] storeIdArray = storeId.Split(",".ToCharArray());
 
-                int retCount = _gatewayService.DownloadBill(storeIdArray, billDate, type);
+                int retCount = _gatewayService.DownloadBill(merchantCode, storeIdArray, billDate, type);
                 return Json(new BillDownloadResponse { return_code = "SUCCESS", return_msg = "OK", process_count = retCount });
             }
             catch (Exception ex)
@@ -54,7 +55,7 @@ namespace Mi9Pay.Web.Controllers
                 };
                 GatewayType type = request.payment_method.ToEnum<GatewayType>();
 
-                _gatewayService.RefundPayment(request.store_id, refundRequest, type);
+                _gatewayService.RefundPayment(request.merchant_id, request.store_id, refundRequest, type);
                 return Json(new BaseResponse { return_code = "SUCCESS", return_msg = "OK" });
             }
             catch (Exception ex)

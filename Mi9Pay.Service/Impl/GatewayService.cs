@@ -24,11 +24,11 @@ namespace Mi9Pay.Service
             _repository = repository;
         }
 
-        public void ValidateRequestParameter(Dictionary<string, string> requestParameter, string appKey = null)
+        public OrderRequest ValidateRequestParameter(Dictionary<string, string> requestParameter)
         {
             string appid = requestParameter["app_id"];
-            if (string.IsNullOrWhiteSpace(appKey))
-                appKey = GetGatewayPaymentApp(appid).Appkey;
+            GatewayPaymentApp app = GetGatewayPaymentApp(appid);
+            string appKey = app.Appkey;
 
             string requestSign = requestParameter["sign"] as string;
             requestParameter.Remove("sign");
@@ -41,13 +41,6 @@ namespace Mi9Pay.Service
                 throw new Exception("签名验证失败");
 
             requestParameter.Add("sign", requestSign);
-        }
-
-        public OrderRequest RecieveRequestForm(Dictionary<string, string> requestParameter)
-        {
-            string appid = requestParameter["app_id"];
-            GatewayPaymentApp app = GetGatewayPaymentApp(appid);
-            ValidateRequestParameter(requestParameter, app.Appkey);
 
             OrderRequest request = new OrderRequest();
             request.AppId = appid;
@@ -57,6 +50,25 @@ namespace Mi9Pay.Service
                 request.StoreId = Convert.ToInt32(requestParameter["store_id"]);
             else
                 request.StoreId = ParseStoreId(requestParameter["invoice"]);
+
+            request.Merchant = new PaymentOrderMerchant
+            {
+                AppId = appid
+            };
+            GatewayPaymentMerchant merchant = app.GatewayPaymentMerchant1;
+            if (merchant != null)
+            {
+                request.Merchant.UniqueId = merchant.UniqueId;
+                request.Merchant.Code = merchant.Code;
+                request.Merchant.Name = merchant.Name;
+            }
+            return request;
+        }
+
+        public OrderRequest RecieveRequestForm(Dictionary<string, string> requestParameter)
+        {
+            OrderRequest request = ValidateRequestParameter(requestParameter);
+            
             request.Currency = requestParameter["currency"];
             request.TotalAmount = Convert.ToDecimal(requestParameter["amount"]) / AmountMultiplicator;
             if (requestParameter.Keys.Contains("discount"))
@@ -108,19 +120,7 @@ namespace Mi9Pay.Service
             request.NotifyUrl = requestParameter["notify_url"];
             if (requestParameter.Keys.Contains("notify_dataformat"))
                 request.NotifyDataFormat = requestParameter["notify_dataformat"];
-
-            request.Merchant = new PaymentOrderMerchant
-            {
-                AppId = appid
-            };
-            GatewayPaymentMerchant merchant = app.GatewayPaymentMerchant1;
-            if (merchant != null)
-            {
-                request.Merchant.UniqueId = merchant.UniqueId;
-                request.Merchant.Code = merchant.Code;
-                request.Merchant.Name = merchant.Name;
-            }
-
+            
             return request;
         }
 
@@ -256,24 +256,9 @@ namespace Mi9Pay.Service
             return parameters;
         }
 
-        public IEnumerable<GatewayType> GetGatewayTypes(string invoice)
+        public IEnumerable<PaymentMethod> GetPaymentMethodList(int storeId, Guid merchant)
         {
-            int storeId = ParseStoreId(invoice);
-            IEnumerable<PaymentMethod> paymentMethods = GetPaymentMethodList(storeId);
-
-            List<GatewayType> gatewayTypes = new List<GatewayType>();
-            paymentMethods.ToList().ForEach(m => {
-                GatewayType gatewayType;
-                if (Enum.TryParse(m.Code, out gatewayType))
-                    gatewayTypes.Add(gatewayType);
-            });
-
-            return gatewayTypes;
-        }
-
-        public IEnumerable<PaymentMethod> GetPaymentMethodList(int storeId)
-        {
-            List<GatewayPaymentMethodTypeJoinResult> paymentMethodCombinations = GetPaymentMethodCombinations(storeId).ToList();
+            List<GatewayPaymentMethodTypeJoinResult> paymentMethodCombinations = GetPaymentMethodCombinations(storeId, merchant).ToList();
             List<GatewayPaymentMethod> storePaymentMethods = new List<GatewayPaymentMethod>();
             paymentMethodCombinations.ForEach(x => {
                 storePaymentMethods.Add(x.PaymentCombine.GatewayPaymentMethod1);
@@ -294,9 +279,9 @@ namespace Mi9Pay.Service
             return listScanMode;
         }
 
-        public IEnumerable<PaymentCombine> GetPaymentCombineList(int storeId)
+        public IEnumerable<PaymentCombine> GetPaymentCombineList(int storeId, Guid merchant)
         {
-            List<GatewayPaymentMethodTypeJoinResult> paymentMethodCombinations = GetPaymentMethodCombinations(storeId).ToList();
+            List<GatewayPaymentMethodTypeJoinResult> paymentMethodCombinations = GetPaymentMethodCombinations(storeId, merchant).ToList();
             
             List<PaymentCombine> listPaymentCombine = new List<PaymentCombine>();
             paymentMethodCombinations.ForEach(x => {
@@ -314,7 +299,7 @@ namespace Mi9Pay.Service
             return listPaymentCombine.OrderBy(x => x.PaymentMethod.Code + x.PaymentScanMode.Code);
         }
 
-        public int ParseStoreId(string invoiceNumber)
+        private int ParseStoreId(string invoiceNumber)
         {
             int invoice;
 
@@ -328,7 +313,7 @@ namespace Mi9Pay.Service
         {
             GatewayPaymentAccount paymentAccount = account;
             if (paymentAccount == null)
-                paymentAccount = GetGatewayPaymentAccount(orderRequest.StoreId, gatewayType);
+                paymentAccount = GetGatewayPaymentAccount(orderRequest, gatewayType);
 
             PaymentSetting paymentSetting = new PaymentSetting(gatewayType);
             //paymentSetting.SetGatewayParameterValue("appid", account.Appid);

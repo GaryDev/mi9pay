@@ -19,12 +19,14 @@ namespace Mi9Pay.Service
             bool success = false;
             try
             {
-                var billData = Repository.BillAlipay.GetMany(b => b.StoreId == StoreId && b.StartTime.StartsWith(BillDate));
+                var billData = Repository.BillAlipay.GetMany(b => 
+                    b.StoreId == StoreId && b.GatewayPaymentMerchant == Merchant && b.StartTime.StartsWith(BillDate));
                 if (billData.Count() > 0)
                 {
                     using (var scope = new TransactionScope())
                     {
-                        Repository.BillAlipay.Delete(b => b.StoreId == StoreId && b.StartTime.StartsWith(BillDate));
+                        Repository.BillAlipay.Delete(b => 
+                            b.StoreId == StoreId && b.GatewayPaymentMerchant == Merchant && b.StartTime.StartsWith(BillDate));
                         Repository.Save();
                         scope.Complete();
                     }
@@ -85,6 +87,7 @@ namespace Mi9Pay.Service
                                         {
                                             UniqueId = Guid.NewGuid()
                                             ,StoreId = StoreId
+                                            ,GatewayPaymentMerchant = Merchant
                                             ,TradeNo = rowValues[0]
                                             ,OrderNumber = rowValues[1]
                                             ,TradeType = rowValues[2]

@@ -226,12 +226,13 @@ namespace Mi9Pay.DataModel
 
         #region Public member methods...
 
-        public IEnumerable<GatewayPaymentMethodTypeJoinResult> GetPaymentMethodCombinationByStore(int storeId)
+        public IEnumerable<GatewayPaymentMethodTypeJoinResult> GetPaymentMethodCombinationByStore(int storeId, Guid merchant)
         {
             var queryResult = from gpmd in _context.GatewayPaymentMethodTypeJoin
                               join gpspm in _context.GatewayPaymentStorePaymentMethod on gpmd.UniqueId equals gpspm.GatewayPaymentMethodTypeJoin
                               join gps in _context.GatewayPaymentStore on gpspm.GatewayPaymentStore equals gps.UniqueId
                               where gps.StoreId == storeId
+                              && gps.GatewayPaymentMerchant == merchant
                               select new GatewayPaymentMethodTypeJoinResult
                               {
                                   PaymentCombine = gpmd,
@@ -241,13 +242,14 @@ namespace Mi9Pay.DataModel
             return queryResult;
         }
         
-        public GatewayPaymentAccount GetGatewayPaymentAccount(int storeId, string payMethodCode)
+        public GatewayPaymentAccount GetGatewayPaymentAccount(int storeId, Guid merchant, string payMethodCode)
         {
             GatewayPaymentAccount account = (from gpa in _context.GatewayPaymentAccount
                                             join gpm in _context.GatewayPaymentMerchant on gpa.GatewayPaymentMerchant equals gpm.UniqueId
                                             join gps in _context.GatewayPaymentStore on gpm.UniqueId equals gps.GatewayPaymentMerchant
                                             join gpmd in _context.GatewayPaymentMethod on gpa.GatewayPaymentMethod equals gpmd.UniqueId
                                             where gps.StoreId == storeId 
+                                            && gps.GatewayPaymentMerchant == merchant
                                             && string.Compare(gpmd.Code, payMethodCode, true) == 0
                                             select gpa).SingleOrDefault();
             return account;

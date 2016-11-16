@@ -16,6 +16,7 @@ namespace Mi9Pay.DataModel
     {
         public System.Guid UniqueId { get; set; }
         public string StoreId { get; set; }
+        public System.Guid GatewayPaymentMerchant { get; set; }
         public string TradeNo { get; set; }
         public string OrderNumber { get; set; }
         public string TradeType { get; set; }

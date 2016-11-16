@@ -11,7 +11,7 @@ namespace Mi9Pay.Service
 {
     public partial class GatewayService
     {
-        public int DownloadBill(string[] storeIdArray, string billDate, GatewayType gatewayType)
+        public int DownloadBill(string merchantCode, string[] storeIdArray, string billDate, GatewayType gatewayType)
         {
             if (storeIdArray == null || storeIdArray.Length < 1)
                 return 0;
@@ -21,20 +21,20 @@ namespace Mi9Pay.Service
             {
                 if (string.IsNullOrWhiteSpace(storeId)) continue;
 
-                dataCount += DownloadBill(storeId, billDate, gatewayType);
+                dataCount += DownloadBill(merchantCode, storeId, billDate, gatewayType);
             }
 
             return dataCount;
         }
 
-        private int DownloadBill(string storeId, string billDate, GatewayType gatewayType)
+        private int DownloadBill(string merchantCode, string storeId, string billDate, GatewayType gatewayType)
         {
-            int id = Convert.ToInt32(storeId);
-            GatewayPaymentAccount paymentAccount = GetGatewayPaymentAccount(id, gatewayType, true);
+            OrderRequest orderRequest = BuildOrderRequest(merchantCode, storeId);
+
+            GatewayPaymentAccount paymentAccount = GetGatewayPaymentAccount(orderRequest, gatewayType, true);
             if (paymentAccount == null)
                 return 0;
 
-            OrderRequest orderRequest = new OrderRequest { StoreId = id };
             PaymentSetting paymentSetting = InitPaymentSetting(orderRequest, gatewayType, paymentAccount);
             paymentSetting.Bill.BillDate = billDate;
 
@@ -56,6 +56,7 @@ namespace Mi9Pay.Service
                 if (billService != null)
                 {
                     billService.Repository = _repository;
+                    billService.Merchant = orderRequest.Merchant.UniqueId;
                     billService.StoreId = storeId;
                     billService.BillDate = billDate;
 
@@ -65,11 +66,11 @@ namespace Mi9Pay.Service
             return dataCount;
         }
 
-        public void RefundPayment(string storeId, OrderRefundRequest refundRequest, GatewayType gatewayType)
+        public void RefundPayment(string merchantCode, string storeId, OrderRefundRequest refundRequest, GatewayType gatewayType)
         {
             ValidatePaymentOrderStatus(refundRequest.InvoiceNo, refundRequest.TradeNo);
 
-            OrderRequest orderRequest = new OrderRequest { StoreId = Convert.ToInt32(storeId) };
+            OrderRequest orderRequest = BuildOrderRequest(merchantCode, storeId);
             PaymentSetting paymentSetting = InitPaymentSetting(orderRequest, gatewayType);
             paymentSetting.Order.Id = refundRequest.InvoiceNo;
             paymentSetting.Order.TradeNo = refundRequest.TradeNo;
@@ -82,6 +83,18 @@ namespace Mi9Pay.Service
                 UpdatePaymentOrderStatus(refundRequest.InvoiceNo, refundRequest.TradeNo, PaymentOrderStatus.REFUND);
 
             throw new Exception("退款失败");
+        }
+
+        private OrderRequest BuildOrderRequest(string merchantCode, string storeId)
+        {
+            return new OrderRequest
+            {
+                StoreId = Convert.ToInt32(storeId),
+                Merchant = new PaymentOrderMerchant
+                {
+                    UniqueId = GetGatewayPaymentMerchant(merchantCode).UniqueId
+                }
+            };
         }
 
     }
