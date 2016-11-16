@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ICanPay;
 using Mi9Pay.Entities;
 using Mi9Pay.Service;
 using Mi9Pay.ViewModel;
@@ -10,6 +9,7 @@ using System.IO;
 using System.Web.Mvc;
 using VmOrderPaymentResponse = Mi9Pay.ViewModel.OrderPaymentResponse;
 using VmOrderPayment = Mi9Pay.ViewModel.OrderPayment;
+using Mi9Pay.PayProvider;
 
 namespace Mi9Pay.Web.Controllers
 {

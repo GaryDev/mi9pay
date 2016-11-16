@@ -205,9 +205,13 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ICanPay\ICanPay.csproj">
+    <ProjectReference Include="..\ICanPay\Mi9Pay.PayProvider.csproj">
       <Project>{8cc9f719-2537-4b54-bad7-268057b946fa}</Project>
-      <Name>ICanPay</Name>
+      <Name>Mi9Pay.PayProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mi9Pay.Config\Mi9Pay.Config.csproj">
+      <Project>{f6671e87-74f5-4b26-90fb-b4f33ec50e44}</Project>
+      <Name>Mi9Pay.Config</Name>
     </ProjectReference>
     <ProjectReference Include="..\Mi9Pay.DataModel\Mi9Pay.DataModel.csproj">
       <Project>{8d8d4996-2fb4-4089-be60-9b81606a2abc}</Project>

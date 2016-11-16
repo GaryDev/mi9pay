@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mi9Pay.Service", "Mi9Pay.Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mi9Pay.Entities", "Mi9Pay.Entities\Mi9Pay.Entities.csproj", "{6C35C7D3-BFCF-4D46-A803-28EAF8E4213B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICanPay", "ICanPay\ICanPay.csproj", "{8CC9F719-2537-4B54-BAD7-268057B946FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mi9Pay.PayProvider", "Mi9Pay.PayProvider\Mi9Pay.PayProvider.csproj", "{8CC9F719-2537-4B54-BAD7-268057B946FA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DLLs", "DLLs", "{01DA51B4-767B-47C9-8604-E1D224F148CA}"
 	ProjectSection(SolutionItems) = preProject
@@ -22,6 +22,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DLLs", "DLLs", "{01DA51B4-7
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mi9Pay.DataModel", "Mi9Pay.DataModel\Mi9Pay.DataModel.csproj", "{8D8D4996-2FB4-4089-BE60-9B81606A2ABC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mi9Pay.Config", "Mi9Pay.Config\Mi9Pay.Config.csproj", "{F6671E87-74F5-4B26-90FB-B4F33EC50E44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{8D8D4996-2FB4-4089-BE60-9B81606A2ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D8D4996-2FB4-4089-BE60-9B81606A2ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D8D4996-2FB4-4089-BE60-9B81606A2ABC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6671E87-74F5-4B26-90FB-B4F33EC50E44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6671E87-74F5-4B26-90FB-B4F33EC50E44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6671E87-74F5-4B26-90FB-B4F33EC50E44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6671E87-74F5-4B26-90FB-B4F33EC50E44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

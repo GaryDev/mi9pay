@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ICanPay;
 using Mi9Pay.Entities;
 using Mi9Pay.DataModel;
+using Mi9Pay.PayProvider;
 
 namespace Mi9Pay.Service
 {

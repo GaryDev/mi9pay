@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using ICanPay;
-using ICanPay.Configs;
 using Mi9Pay.DataModel;
 using Mi9Pay.Entities;
+using Mi9Pay.PayProvider;
 using Mi9Pay.Service.Helper;
 using Mi9Pay.ViewModel.Utility;
 using System;

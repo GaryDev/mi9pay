@@ -7,7 +7,7 @@ using System.Web.Mvc;
 using System.Web.Http;
 using System.Web.Http.Tracing;
 using System.Net.Http;
-using ICanPay.Configs;
+using Mi9Pay.Config;
 
 namespace Mi9Pay.Web.ActionFilters
 {

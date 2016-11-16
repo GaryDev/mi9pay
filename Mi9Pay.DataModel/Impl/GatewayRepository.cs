@@ -35,7 +35,8 @@ namespace Mi9Pay.DataModel
 
         public GatewayRepository()
         {
-            _context = new GatewayPayEntities();
+            string dbConnection = DBUtility.GetEntityConnectionString(DBUtility.DataModelFileName);
+            _context = new GatewayPayEntities(dbConnection);
         }
 
         #region Public Repository Creation properties...

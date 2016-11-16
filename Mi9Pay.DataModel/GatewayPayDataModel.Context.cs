@@ -19,7 +19,12 @@ namespace Mi9Pay.DataModel
             : base("name=GatewayPayEntities")
         {
         }
-    
+
+        public GatewayPayEntities(string connectionString)
+            : base(connectionString)
+        {
+        }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();

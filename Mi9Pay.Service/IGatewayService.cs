@@ -1,5 +1,5 @@
-﻿using ICanPay;
-using Mi9Pay.Entities;
+﻿using Mi9Pay.Entities;
+using Mi9Pay.PayProvider;
 using System;
 using System.Collections.Generic;
 using System.IO;

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Mi9Pay.Service;
-using ICanPay;
 using Mi9Pay.Web.Helpers;
 using Mi9Pay.Entities;
+using Mi9Pay.PayProvider;
 
 namespace Mi9Pay.Web.Controllers
 {

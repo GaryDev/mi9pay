@@ -57,9 +57,9 @@
     <Compile Include="PaymentScanMode.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ICanPay\ICanPay.csproj">
+    <ProjectReference Include="..\ICanPay\Mi9Pay.PayProvider.csproj">
       <Project>{8CC9F719-2537-4B54-BAD7-268057B946FA}</Project>
-      <Name>ICanPay</Name>
+      <Name>Mi9Pay.PayProvider</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
