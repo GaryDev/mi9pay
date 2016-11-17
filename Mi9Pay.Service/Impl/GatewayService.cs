@@ -209,9 +209,10 @@ namespace Mi9Pay.Service
                 return;
 
             DateTime sendDateTime = DateTime.Now;
-            bool rawData = true;
-            if (string.Compare(request.NotifyDataFormat, "json", true) == 0)
-                rawData = false;
+            bool rawData = false;
+            if (string.IsNullOrWhiteSpace(request.NotifyDataFormat) || 
+                string.Compare(request.NotifyDataFormat, "raw", true) == 0)
+                rawData = true;
 
             Dictionary<string, string> parameters = BuildUrlParameter(request, response);
             string postData = rawData ? SignatureUtil.CreateSortedParams(parameters) : new JavaScriptSerializer().Serialize(parameters);

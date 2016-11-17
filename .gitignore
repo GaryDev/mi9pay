@@ -7,6 +7,8 @@
 /Mi9Pay.DataModel/obj
 /Mi9Pay.Entities/bin
 /Mi9Pay.Entities/obj
+/Mi9Pay.PayNotifyTask/bin
+/Mi9Pay.PayNotifyTask/obj
 /Mi9Pay.PayProvider/bin
 /Mi9Pay.PayProvider/obj
 /Mi9Pay.Service/bin

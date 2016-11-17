@@ -34,7 +34,14 @@ namespace Mi9Pay.Service.Helper
             {
                 bool notifySuccess = PostData(parameter.NotifyPostInfo.PostUrl, parameter.NotifyPostInfo.PostData, parameter.NotifyPostInfo.IsRawData);
                 NotifyQueue queue = parameter.NotifyQueue;
-                queue.NextInterval = notifySuccess ? 0 : NotifyConfig.NotifyStrategy[1];
+                int interval = queue.NextInterval;
+                if (notifySuccess)
+                    interval = 0;
+                else if (queue.ProcessedCount >= NotifyConfig.NotifyStrategy.Length)
+                    interval = -1;
+                else
+                    interval = NotifyConfig.NotifyStrategy[queue.ProcessedCount];
+                queue.NextInterval = interval;
                 queue.Processed = notifySuccess ? "Y" : "N";
                 parameter.PostAction(queue);
             }

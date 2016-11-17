@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Mi9Pay.Config
 {
-    public sealed class AppConfig
+    public sealed partial class AppConfig
     {
         public static bool IsLogEnabled
         {

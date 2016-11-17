@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EE73B7D2-C769-4E15-BCA1-95F181C84F67}</ProjectGuid>
+    <ProjectGuid>{695EEDF7-AD1B-4E82-A460-355FBC55A81D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Mi9Pay.Service</RootNamespace>
-    <AssemblyName>Mi9Pay.Service</AssemblyName>
+    <RootNamespace>Mi9Pay.PayNotifyTask</RootNamespace>
+    <AssemblyName>Mi9Pay.PayNotifyTask</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,61 +30,46 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper, Version=5.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoMapper.5.1.1\lib\net45\AutoMapper.dll</HintPath>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.3.9\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetZip, Version=1.10.1.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNetZip.1.10.1\lib\net20\DotNetZip.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="TaskScheduler, Version=6.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DLLs\TaskScheduler.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helper\WebClientHelper.cs" />
-    <Compile Include="IGatewayService.cs" />
-    <Compile Include="Impl\BillService.cs" />
-    <Compile Include="Impl\BillServiceAlipay.cs" />
-    <Compile Include="Impl\BillServiceWechat.cs" />
-    <Compile Include="Impl\GatewayDbService.cs" />
-    <Compile Include="Impl\GatewayService.cs" />
-    <Compile Include="Impl\NotifyTaskService.cs" />
-    <Compile Include="Impl\PaymentService.cs" />
-    <Compile Include="INotifyTaskService.cs" />
+    <Compile Include="NotifyTaskBundle.cs" />
+    <Compile Include="NotifyTaskExecution.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mi9Pay.PayProvider\Mi9Pay.PayProvider.csproj">
-      <Project>{8CC9F719-2537-4B54-BAD7-268057B946FA}</Project>
-      <Name>Mi9Pay.PayProvider</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Mi9Pay.DataModel\Mi9Pay.DataModel.csproj">
-      <Project>{8d8d4996-2fb4-4089-be60-9b81606a2abc}</Project>
-      <Name>Mi9Pay.DataModel</Name>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mi9Pay.Config\Mi9Pay.Config.csproj">
+      <Project>{f6671e87-74f5-4b26-90fb-b4f33ec50e44}</Project>
+      <Name>Mi9Pay.Config</Name>
     </ProjectReference>
     <ProjectReference Include="..\Mi9Pay.Entities\Mi9Pay.Entities.csproj">
       <Project>{6C35C7D3-BFCF-4D46-A803-28EAF8E4213B}</Project>
       <Name>Mi9Pay.Entities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mi9Pay.ViewModel\Mi9Pay.ViewModel.csproj">
-      <Project>{1695AE88-25B1-4E3E-89F3-704FB4DF0167}</Project>
-      <Name>Mi9Pay.ViewModel</Name>
+    <ProjectReference Include="..\Mi9Pay.Service\Mi9Pay.Service.csproj">
+      <Project>{ee73b7d2-c769-4e15-bca1-95f181c84f67}</Project>
+      <Name>Mi9Pay.Service</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
