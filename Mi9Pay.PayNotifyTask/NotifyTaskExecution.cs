@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TaskScheduler;
 
@@ -15,19 +16,18 @@ namespace Mi9Pay.PayNotifyTask
         public override TaskExecResult TaskTrigger()
         {
             DateTime processTime = DateTime.Now;
-            logger.Info(string.Format("任务 {0} 处理开始 - {1}.", TaskId, processTime));
             try
             {
+                logger.Info(string.Format("任务 {0} 处理开始 - {1}.", TaskId, processTime));
                 INotifyTaskService taskService = new NotifyTaskService();
                 List<NotifyQueue> queueList = taskService.GetNotificationQueue(processTime);
                 logger.Info(string.Format("任务 {0} 处理记录数：{1} - {2}.", TaskId, queueList.Count, processTime));
-                if (queueList.Count > 0)
+                if (queueList != null && queueList.Count > 0)
                 {
                     queueList.ForEach(q =>
                     {
                         logger.Info(string.Format("任务 {0} 处理订单号{1}, 处理次数{2} - {3}.", 
                             TaskId, q.OrderNumber, q.ProcessedCount, processTime));
-
                         q.LastSendDate = processTime;
                         q.ProcessedCount = q.ProcessedCount + 1;
                         NotifyAsyncParameter parameter = new NotifyAsyncParameter
@@ -41,13 +41,15 @@ namespace Mi9Pay.PayNotifyTask
                             NotifyQueue = q,
                             PostAction = taskService.UpdateNotificationQueue
                         };
+
                         logger.Info(string.Format("任务 {0} 处理订单号{1}, 通知发送地址{2}, 发送数据格式{3} - {4}.",
                             TaskId, q.OrderNumber, q.NotifyUrl, Enum.GetName(typeof(NotifyDataFormat), q.PostDataFormat), processTime));
-
                         WebClientHelper.SendNotification(parameter);
-                        logger.Info(string.Format("任务 {0} 处理成功 - {1}.", TaskId, processTime));
+
+                        Thread.Sleep(5000);
                     });
                 }
+                logger.Info(string.Format("任务 {0} 处理结束 - {1}.", TaskId, processTime));
             }
             catch (Exception ex)
             {

@@ -7,12 +7,16 @@ using Mi9Pay.Entities;
 using AutoMapper;
 using Mi9Pay.DataModel;
 using System.Transactions;
+using NLog;
 
 namespace Mi9Pay.Service
 {
     public class NotifyTaskService : INotifyTaskService
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private GatewayRepository _repository;
+
         public NotifyTaskService()
         {
             _repository = new GatewayRepository();
@@ -20,14 +24,27 @@ namespace Mi9Pay.Service
 
         public List<NotifyQueue> GetNotificationQueue(DateTime processTime)
         {
-            List<GatewayPaymentNotifyQueue> notifyQueueList = _repository.NotifyQueue.GetMany(q => 
-                q.Processed == "N" &&
-                q.NextInterval > 0 &&
-                DateTime.Compare(processTime, q.LastSendDate.AddMinutes(q.NextInterval)) >= 0).ToList();
+            try
+            {
+                //_repository = new GatewayRepository();
+                List<GatewayPaymentNotifyQueue> notifyQueueList = _repository.NotifyQueue.GetMany(q =>
+                        q.Processed == "N" &&
+                        q.NextInterval > 0 &&
+                        DateTime.Compare(processTime, q.SendDate.AddMinutes(q.NextInterval)) >= 0).ToList();
 
-            Mapper.Initialize(cfg => cfg.CreateMap<GatewayPaymentNotifyQueue, NotifyQueue>());
-            List<NotifyQueue> queueList = Mapper.Map<List<GatewayPaymentNotifyQueue>, List<NotifyQueue>>(notifyQueueList);
-            return queueList;
+                Mapper.Initialize(cfg => cfg.CreateMap<GatewayPaymentNotifyQueue, NotifyQueue>());
+                List<NotifyQueue> queueList = Mapper.Map<List<GatewayPaymentNotifyQueue>, List<NotifyQueue>>(notifyQueueList);
+                return queueList;
+            }
+            catch (Exception ex)
+            {
+                logger.Info("错误原因:");
+                logger.Info(ex.Message);
+                if (ex.InnerException != null)
+                    logger.Info(ex.InnerException.Message);
+
+                throw ex;
+            }            
         }
 
         public void UpdateNotificationQueue(NotifyQueue queue)
@@ -36,6 +53,7 @@ namespace Mi9Pay.Service
             {
                 using (var scope = new TransactionScope())
                 {
+                    //_repository = new GatewayRepository();
                     GatewayPaymentNotifyQueue notifyQueue = _repository.NotifyQueue.GetSingle(q => q.UniqueId == queue.UniqueId);
                     if (notifyQueue != null)
                     {
@@ -51,6 +69,11 @@ namespace Mi9Pay.Service
             }
             catch (Exception ex)
             {
+                logger.Info("错误原因: " + queue.OrderNumber);
+                logger.Info(ex.Message);
+                if (ex.InnerException != null)
+                    logger.Info(ex.InnerException.Message);
+
                 throw ex;
             }
         }

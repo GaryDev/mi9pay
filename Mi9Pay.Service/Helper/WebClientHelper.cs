@@ -43,7 +43,7 @@ namespace Mi9Pay.Service.Helper
                     interval = NotifyConfig.NotifyStrategy[queue.ProcessedCount];
                 queue.NextInterval = interval;
                 queue.Processed = notifySuccess ? "Y" : "N";
-                parameter.PostAction(queue);
+                parameter.PostAction?.Invoke(queue);
             }
         }
 
