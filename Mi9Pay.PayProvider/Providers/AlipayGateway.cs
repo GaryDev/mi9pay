@@ -21,15 +21,15 @@ using System.Xml;
 namespace Mi9Pay.PayProvider.Providers
 {
     /// <summary>
-    /// Ö§¸¶±¦Íø¹Ø
+    /// æ”¯ä»˜å®ç½‘å…³
     /// </summary>
     /// <remarks>
-    /// µ±Ç°Ö§¸¶±¦µÄÊµÏÖ½öÖ§³ÖMD5ÃÜÔ¿¡£
+    /// å½“å‰æ”¯ä»˜å®çš„å®ç°ä»…æ”¯æŒMD5å¯†é’¥ã€‚
     /// </remarks>
     public sealed class AlipayGateway : GatewayBase, IPaymentForm, IPaymentUrl, IPaymentWithCode, IQueryNow
     {
 
-        #region Ë½ÓĞ×Ö¶Î
+        #region ç§æœ‰å­—æ®µ
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -43,10 +43,10 @@ namespace Mi9Pay.PayProvider.Providers
         #endregion
 
 
-        #region ¹¹Ôìº¯Êı
+        #region æ„é€ å‡½æ•°
 
         /// <summary>
-        /// ³õÊ¼»¯Ö§¸¶±¦Íø¹Ø
+        /// åˆå§‹åŒ–æ”¯ä»˜å®ç½‘å…³
         /// </summary>
         public AlipayGateway()
         {
@@ -55,9 +55,9 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// ³õÊ¼»¯Ö§¸¶±¦Íø¹Ø
+        /// åˆå§‹åŒ–æ”¯ä»˜å®ç½‘å…³
         /// </summary>
-        /// <param name="gatewayParameterData">Íø¹ØÍ¨ÖªµÄÊı¾İ¼¯ºÏ</param>
+        /// <param name="gatewayParameterData">ç½‘å…³é€šçŸ¥çš„æ•°æ®é›†åˆ</param>
         public AlipayGateway(List<GatewayParameter> gatewayParameterData)
             : base(gatewayParameterData)
         {
@@ -66,7 +66,7 @@ namespace Mi9Pay.PayProvider.Providers
         #endregion
 
 
-        #region ÊôĞÔ
+        #region å±æ€§
 
         public override GatewayType GatewayType
         {
@@ -81,7 +81,7 @@ namespace Mi9Pay.PayProvider.Providers
         {
             get
             {
-                // Í¨¹ıRequestType¡¢UserAgentÀ´ÅĞ¶ÏÊÇ·ñÎª·şÎñÆ÷Í¨Öª
+                // é€šè¿‡RequestTypeã€UserAgentæ¥åˆ¤æ–­æ˜¯å¦ä¸ºæœåŠ¡å™¨é€šçŸ¥
                 if (string.Compare(HttpContext.Current.Request.RequestType, "POST") == 0 &&
                     string.Compare(HttpContext.Current.Request.UserAgent, "Mozilla/4.0") == 0)
                 {
@@ -96,9 +96,9 @@ namespace Mi9Pay.PayProvider.Providers
         #endregion
 
 
-        #region ·½·¨
+        #region æ–¹æ³•
 
-        #region Ô­¿ò¼Ü´úÂë
+        #region åŸæ¡†æ¶ä»£ç 
         public string BuildPaymentForm()
         {
             ValidatePaymentOrderParameter();
@@ -109,7 +109,7 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// ³õÊ¼»¯¶©µ¥²ÎÊı
+        /// åˆå§‹åŒ–è®¢å•å‚æ•°
         /// </summary>
         private void InitOrderParameter()
         {
@@ -123,7 +123,7 @@ namespace Mi9Pay.PayProvider.Providers
             SetGatewayParameterValue("total_fee", Order.Amount.ToString());
             SetGatewayParameterValue("payment_type", "1");
             SetGatewayParameterValue("_input_charset", "gb2312");
-            SetGatewayParameterValue("sign", GetOrderSign());    // Ç©ÃûĞèÒªÔÚ×îºóÉèÖÃ£¬ÒÔÃâÈ±ÉÙ²ÎÊı¡£
+            SetGatewayParameterValue("sign", GetOrderSign());    // ç­¾åéœ€è¦åœ¨æœ€åè®¾ç½®ï¼Œä»¥å…ç¼ºå°‘å‚æ•°ã€‚
         }
 
 
@@ -149,7 +149,7 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// »ñµÃÓÃÓÚÇ©ÃûµÄ²ÎÊı×Ö·û´®
+        /// è·å¾—ç”¨äºç­¾åçš„å‚æ•°å­—ç¬¦ä¸²
         /// </summary>
         private string GetSignParameter()
         {
@@ -168,19 +168,19 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// ÑéÖ¤Ö§¸¶¶©µ¥µÄ²ÎÊıÉèÖÃ
+        /// éªŒè¯æ”¯ä»˜è®¢å•çš„å‚æ•°è®¾ç½®
         /// </summary>
         private void ValidatePaymentOrderParameter()
         {
             if (string.IsNullOrEmpty(GetGatewayParameterValue("seller_email")))
             {
-                throw new ArgumentNullException("seller_email", "¶©µ¥È±ÉÙseller_email²ÎÊı£¬seller_emailÊÇÂô¼ÒÖ§¸¶±¦ÕËºÅµÄÓÊÏä¡£" +
-                                                "ÄãĞèÒªÊ¹ÓÃPaymentSetting<T>.SetGatewayParameterValue(\"seller_email\", \"youname@email.com\")·½·¨ÉèÖÃÂô¼ÒÖ§¸¶±¦ÕËºÅµÄÓÊÏä¡£");
+                throw new ArgumentNullException("seller_email", "è®¢å•ç¼ºå°‘seller_emailå‚æ•°ï¼Œseller_emailæ˜¯å–å®¶æ”¯ä»˜å®è´¦å·çš„é‚®ç®±ã€‚" +
+                                                "ä½ éœ€è¦ä½¿ç”¨PaymentSetting<T>.SetGatewayParameterValue(\"seller_email\", \"youname@email.com\")æ–¹æ³•è®¾ç½®å–å®¶æ”¯ä»˜å®è´¦å·çš„é‚®ç®±ã€‚");
             }
 
             if (!IsEmail(GetGatewayParameterValue("seller_email")))
             {
-                throw new ArgumentException("Email¸ñÊ½²»ÕıÈ·", "seller_email");
+                throw new ArgumentException("Emailæ ¼å¼ä¸æ­£ç¡®", "seller_email");
             }
         }
 
@@ -189,7 +189,7 @@ namespace Mi9Pay.PayProvider.Providers
         {
             if (ValidateAlipayNotify() && ValidateAlipayNotifySign())
             {
-                // Ö§¸¶×´Ì¬ÊÇ·ñÎª³É¹¦¡£TRADE_FINISHED£¨ÆÕÍ¨¼´Ê±µ½ÕËµÄ½»Ò×³É¹¦×´Ì¬£¬TRADE_SUCCESS£¨¿ªÍ¨ÁË¸ß¼¶¼´Ê±µ½ÕË»ò»úÆ±·ÖÏú²úÆ·ºóµÄ½»Ò×³É¹¦×´Ì¬£©
+                // æ”¯ä»˜çŠ¶æ€æ˜¯å¦ä¸ºæˆåŠŸã€‚TRADE_FINISHEDï¼ˆæ™®é€šå³æ—¶åˆ°è´¦çš„äº¤æ˜“æˆåŠŸçŠ¶æ€ï¼ŒTRADE_SUCCESSï¼ˆå¼€é€šäº†é«˜çº§å³æ—¶åˆ°è´¦æˆ–æœºç¥¨åˆ†é”€äº§å“åçš„äº¤æ˜“æˆåŠŸçŠ¶æ€ï¼‰
                 if (string.Compare(GetGatewayParameterValue("trade_status"), "TRADE_FINISHED") == 0 ||
                     string.Compare(GetGatewayParameterValue("trade_status"), "TRADE_SUCCESS") == 0)
                 {
@@ -205,11 +205,11 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// ÑéÖ¤Ö§¸¶±¦Í¨ÖªµÄÇ©Ãû
+        /// éªŒè¯æ”¯ä»˜å®é€šçŸ¥çš„ç­¾å
         /// </summary>
         private bool ValidateAlipayNotifySign()
         {
-            // ÑéÖ¤Í¨ÖªµÄÇ©Ãû
+            // éªŒè¯é€šçŸ¥çš„ç­¾å
             if (string.Compare(GetGatewayParameterValue("sign"), GetOrderSign()) == 0)
             {
                 return true;
@@ -220,9 +220,9 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// ½«Íø¹Ø²ÎÊıµÄ¼¯ºÏÅÅĞò
+        /// å°†ç½‘å…³å‚æ•°çš„é›†åˆæ’åº
         /// </summary>
-        /// <param name="coll">Ô­Íø¹Ø²ÎÊıµÄ¼¯ºÏ</param>
+        /// <param name="coll">åŸç½‘å…³å‚æ•°çš„é›†åˆ</param>
         private SortedList<string, string> GatewayParameterDataSort(ICollection<GatewayParameter> coll)
         {
             SortedList<string, string> list = new SortedList<string, string>();
@@ -236,11 +236,11 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// »ñµÃ¶©µ¥µÄÇ©Ãû¡£
+        /// è·å¾—è®¢å•çš„ç­¾åã€‚
         /// </summary>
         private string GetOrderSign()
         {
-            // »ñµÃMD5ÖµÊ±ĞèÒªÊ¹ÓÃGB2312±àÂë£¬·ñÔòÖ÷ÌâÖĞÓĞÖĞÎÄÊ±»áÌáÊ¾Ç©ÃûÒì³££¬²¢ÇÒMD5Öµ±ØĞëÎªĞ¡Ğ´¡£
+            // è·å¾—MD5å€¼æ—¶éœ€è¦ä½¿ç”¨GB2312ç¼–ç ï¼Œå¦åˆ™ä¸»é¢˜ä¸­æœ‰ä¸­æ–‡æ—¶ä¼šæç¤ºç­¾åå¼‚å¸¸ï¼Œå¹¶ä¸”MD5å€¼å¿…é¡»ä¸ºå°å†™ã€‚
             return Utility.GetMD5(GetSignParameter() + Merchant.Key, pageEncoding).ToLower();
         }
 
@@ -255,12 +255,12 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// ÑéÖ¤Íø¹ØµÄÍ¨ÖªIdÊÇ·ñÓĞĞ§
+        /// éªŒè¯ç½‘å…³çš„é€šçŸ¥Idæ˜¯å¦æœ‰æ•ˆ
         /// </summary>
         private bool ValidateAlipayNotify()
         {
-            // ä¯ÀÀÆ÷×Ô¶¯·µ»ØµÄÍ¨ÖªId»áÔÚÑéÖ¤ºó1·ÖÖÓÊ§Ğ§£¬
-            // ·şÎñÆ÷Òì²½Í¨ÖªµÄÍ¨ÖªIdÔò»áÔÚÊä³ö±êÖ¾³É¹¦½ÓÊÕµ½Í¨ÖªµÄsuccess×Ö·û´®ºóÊ§Ğ§¡£
+            // æµè§ˆå™¨è‡ªåŠ¨è¿”å›çš„é€šçŸ¥Idä¼šåœ¨éªŒè¯å1åˆ†é’Ÿå¤±æ•ˆï¼Œ
+            // æœåŠ¡å™¨å¼‚æ­¥é€šçŸ¥çš„é€šçŸ¥Idåˆ™ä¼šåœ¨è¾“å‡ºæ ‡å¿—æˆåŠŸæ¥æ”¶åˆ°é€šçŸ¥çš„successå­—ç¬¦ä¸²åå¤±æ•ˆã€‚
             if (string.Compare(Utility.ReadPage(GetValidateAlipayNotifyUrl()), "true") == 0)
             {
                 return true;
@@ -271,7 +271,7 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// »ñµÃÑéÖ¤Ö§¸¶±¦Í¨ÖªµÄUrl
+        /// è·å¾—éªŒè¯æ”¯ä»˜å®é€šçŸ¥çš„Url
         /// </summary>
         private string GetValidateAlipayNotifyUrl()
         {
@@ -281,9 +281,9 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// ÊÇ·ñÊÇÕıÈ·¸ñÊ½µÄEmailµØÖ·
+        /// æ˜¯å¦æ˜¯æ­£ç¡®æ ¼å¼çš„Emailåœ°å€
         /// </summary>
-        /// <param name="emailAddress">EmailµØÖ·</param>
+        /// <param name="emailAddress">Emailåœ°å€</param>
         public bool IsEmail(string emailAddress)
         {
             if (string.IsNullOrEmpty(emailAddress))
@@ -332,7 +332,7 @@ namespace Mi9Pay.PayProvider.Providers
            );
         }
 
-        #region ¶şÎ¬ÂëÔ¤Ö§¸¶
+        #region äºŒç»´ç é¢„æ”¯ä»˜
         public string GetPaymentQRCodeContent()
         {
             InitF2FPayService();
@@ -374,7 +374,7 @@ namespace Mi9Pay.PayProvider.Providers
         }
         #endregion
 
-        #region ÌõÂëÖ§¸¶
+        #region æ¡ç æ”¯ä»˜
         public PaymentResult BarcodePayment()
         {
             InitF2FPayService();
@@ -429,7 +429,7 @@ namespace Mi9Pay.PayProvider.Providers
 
         #endregion
 
-        #region ¶©µ¥²éÑ¯
+        #region è®¢å•æŸ¥è¯¢
         public bool QueryNow()
         {
             InitF2FPayService();
@@ -469,7 +469,7 @@ namespace Mi9Pay.PayProvider.Providers
         }
         #endregion
 
-        #region ÕËµ¥²éÑ¯
+        #region è´¦å•æŸ¥è¯¢
 
         public string QueryBill()
         {
@@ -493,7 +493,7 @@ namespace Mi9Pay.PayProvider.Providers
 
         #endregion
 
-        #region ¶©µ¥ÍË¿î
+        #region è®¢å•é€€æ¬¾
 
         public bool RefundPayment()
         {
@@ -539,7 +539,7 @@ namespace Mi9Pay.PayProvider.Providers
 
             if (response != null)
             {
-                if (response.SubMsg == "½»Ò×²»´æÔÚ")
+                if (response.SubMsg == "äº¤æ˜“ä¸å­˜åœ¨")
                     return;
 
                 logger.Info(string.Format("{0} ==> Msg: {1}", method, response.Msg) + Environment.NewLine);
@@ -553,11 +553,11 @@ namespace Mi9Pay.PayProvider.Providers
                 string mchKey = Merchant.Key;
                 string publicKey = Merchant.PublicKey;
 
-                logger.Info(string.Format("<============{0}============>", "Ö§¸¶ÕËºÅĞÅÏ¢") + Environment.NewLine);
-                logger.Info(string.Format("Íø¹ØµØÖ·£º{0}", serverUrl) + Environment.NewLine);
-                logger.Info(string.Format("Ö§¸¶ÕËºÅAppid£º{0}", appid) + Environment.NewLine);
-                logger.Info(string.Format("Ö§¸¶ÕËºÅmchKey£º{0}", mchKey) + Environment.NewLine);
-                logger.Info(string.Format("Ö§¸¶ÕËºÅpublicKey£º{0}", publicKey) + Environment.NewLine);
+                logger.Info(string.Format("<============{0}============>", "æ”¯ä»˜è´¦å·ä¿¡æ¯") + Environment.NewLine);
+                logger.Info(string.Format("ç½‘å…³åœ°å€ï¼š{0}", serverUrl) + Environment.NewLine);
+                logger.Info(string.Format("æ”¯ä»˜è´¦å·Appidï¼š{0}", appid) + Environment.NewLine);
+                logger.Info(string.Format("æ”¯ä»˜è´¦å·mchKeyï¼š{0}", mchKey) + Environment.NewLine);
+                logger.Info(string.Format("æ”¯ä»˜è´¦å·publicKeyï¼š{0}", publicKey) + Environment.NewLine);
                 logger.Info("<=======================================>" + Environment.NewLine);
             }
             

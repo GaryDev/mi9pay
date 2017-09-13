@@ -13,15 +13,15 @@ using System.Xml;
 namespace Mi9Pay.PayProvider.Providers
 {
     /// <summary>
-    /// Î¢ĞÅÖ§¸¶Íø¹Ø
+    /// å¾®ä¿¡æ”¯ä»˜ç½‘å…³
     /// </summary>
     /// <remarks>
-    /// Ê¹ÓÃÄ£Ê½¶şÊµÏÖÎ¢ĞÅÖ§¸¶
+    /// ä½¿ç”¨æ¨¡å¼äºŒå®ç°å¾®ä¿¡æ”¯ä»˜
     /// </remarks>
     public sealed class WeChatPaymentGataway : GatewayBase, IPaymentWithCode, IQueryNow
     {
 
-        #region Ë½ÓĞ×Ö¶Î
+        #region ç§æœ‰å­—æ®µ
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -35,10 +35,10 @@ namespace Mi9Pay.PayProvider.Providers
         #endregion
 
 
-        #region ¹¹Ôìº¯Êı
+        #region æ„é€ å‡½æ•°
 
         /// <summary>
-        /// ³õÊ¼»¯Î¢ĞÅÖ§¸¶Íø¹Ø
+        /// åˆå§‹åŒ–å¾®ä¿¡æ”¯ä»˜ç½‘å…³
         /// </summary>
         public WeChatPaymentGataway()
         {
@@ -46,9 +46,9 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// ³õÊ¼»¯Î¢ĞÅÖ§¸¶Íø¹Ø
+        /// åˆå§‹åŒ–å¾®ä¿¡æ”¯ä»˜ç½‘å…³
         /// </summary>
-        /// <param name="gatewayParameterData">Íø¹ØÍ¨ÖªµÄÊı¾İ¼¯ºÏ</param>
+        /// <param name="gatewayParameterData">ç½‘å…³é€šçŸ¥çš„æ•°æ®é›†åˆ</param>
         public WeChatPaymentGataway(List<GatewayParameter> gatewayParameterData)
             : base(gatewayParameterData)
         {
@@ -123,7 +123,7 @@ namespace Mi9Pay.PayProvider.Providers
         }
 
         /// <summary>
-        /// ³õÊ¼»¯Ö§¸¶¶©µ¥µÄ²ÎÊı
+        /// åˆå§‹åŒ–æ”¯ä»˜è®¢å•çš„å‚æ•°
         /// </summary>
         private void InitPaymentOrderParameter()
         {          
@@ -137,7 +137,7 @@ namespace Mi9Pay.PayProvider.Providers
             SetGatewayParameterValue("notify_url", Merchant.NotifyUrl.ToString());
             SetGatewayParameterValue("trade_type", "NATIVE");
             SetGatewayParameterValue("product_id", Order.Id);
-            SetGatewayParameterValue("sign", GetSign());    // Ç©ÃûĞèÒªÔÚ×îºóÉèÖÃ£¬ÒÔÃâÈ±ÉÙ²ÎÊı¡£
+            SetGatewayParameterValue("sign", GetSign());    // ç­¾åéœ€è¦åœ¨æœ€åè®¾ç½®ï¼Œä»¥å…ç¼ºå°‘å‚æ•°ã€‚
         }
 
         private void InitBarcodePaymentParameter()
@@ -149,11 +149,11 @@ namespace Mi9Pay.PayProvider.Providers
             SetGatewayParameterValue("out_trade_no", Order.Id);
             SetGatewayParameterValue("total_fee", (Order.Amount * 100).ToString());
             SetGatewayParameterValue("spbill_create_ip", "127.0.0.1");
-            SetGatewayParameterValue("sign", GetSign());    // Ç©ÃûĞèÒªÔÚ×îºóÉèÖÃ£¬ÒÔÃâÈ±ÉÙ²ÎÊı¡£
+            SetGatewayParameterValue("sign", GetSign());    // ç­¾åéœ€è¦åœ¨æœ€åè®¾ç½®ï¼Œä»¥å…ç¼ºå°‘å‚æ•°ã€‚
         }
 
         /// <summary>
-        /// ³õÊ¼»¯²éÑ¯¶©µ¥²ÎÊı
+        /// åˆå§‹åŒ–æŸ¥è¯¢è®¢å•å‚æ•°
         /// </summary>
         private void InitQueryOrderParameter()
         {
@@ -161,11 +161,11 @@ namespace Mi9Pay.PayProvider.Providers
             SetGatewayParameterValue("mch_id", Merchant.UserName);
             SetGatewayParameterValue("out_trade_no", Order.Id);
             SetGatewayParameterValue("nonce_str", GenerateNonceString());
-            SetGatewayParameterValue("sign", GetSign());    // Ç©ÃûĞèÒªÔÚ×îºóÉèÖÃ£¬ÒÔÃâÈ±ÉÙ²ÎÊı¡£
+            SetGatewayParameterValue("sign", GetSign());    // ç­¾åéœ€è¦åœ¨æœ€åè®¾ç½®ï¼Œä»¥å…ç¼ºå°‘å‚æ•°ã€‚
         }
 
         /// <summary>
-        /// ³õÊ¼»¯²éÑ¯¶©µ¥²ÎÊı
+        /// åˆå§‹åŒ–æŸ¥è¯¢è®¢å•å‚æ•°
         /// </summary>
         private void InitQueryBillParameter()
         {
@@ -174,7 +174,7 @@ namespace Mi9Pay.PayProvider.Providers
             SetGatewayParameterValue("bill_date", string.IsNullOrEmpty(Bill.BillDate) ? DateTime.Now.ToString("yyyyMMdd") : Bill.BillDate.Replace("-", ""));
             SetGatewayParameterValue("bill_type", "ALL");
             SetGatewayParameterValue("nonce_str", GenerateNonceString());
-            SetGatewayParameterValue("sign", GetSign());    // Ç©ÃûĞèÒªÔÚ×îºóÉèÖÃ£¬ÒÔÃâÈ±ÉÙ²ÎÊı¡£
+            SetGatewayParameterValue("sign", GetSign());    // ç­¾åéœ€è¦åœ¨æœ€åè®¾ç½®ï¼Œä»¥å…ç¼ºå°‘å‚æ•°ã€‚
         }
 
         private void InitRefundParameter()
@@ -193,7 +193,7 @@ namespace Mi9Pay.PayProvider.Providers
             SetGatewayParameterValue("op_user_id", Merchant.UserName);
 
             SetGatewayParameterValue("nonce_str", GenerateNonceString());
-            SetGatewayParameterValue("sign", GetSign());    // Ç©ÃûĞèÒªÔÚ×îºóÉèÖÃ£¬ÒÔÃâÈ±ÉÙ²ÎÊı¡£
+            SetGatewayParameterValue("sign", GetSign());    // ç­¾åéœ€è¦åœ¨æœ€åè®¾ç½®ï¼Œä»¥å…ç¼ºå°‘å‚æ•°ã€‚
         }
 
         private void ReadNotifyOrderParameter()
@@ -204,7 +204,7 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// Éú³ÉËæ»ú×Ö·û´®
+        /// ç”Ÿæˆéšæœºå­—ç¬¦ä¸²
         /// </summary>
         /// <returns></returns>
         private string GenerateNonceString()
@@ -214,7 +214,7 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// ½«Íø¹ØÊı¾İ×ª»»³ÉXML
+        /// å°†ç½‘å…³æ•°æ®è½¬æ¢æˆXML
         /// </summary>
         /// <returns></returns>
         private string ConvertGatewayParameterDataToXml()
@@ -240,7 +240,7 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// »ñµÃÇ©Ãû
+        /// è·å¾—ç­¾å
         /// </summary>
         /// <returns></returns>
         private string GetSign()
@@ -248,7 +248,7 @@ namespace Mi9Pay.PayProvider.Providers
             StringBuilder signBuilder = new StringBuilder();
             foreach (var item in GetSortedGatewayParameter())
             {
-                // ¿ÕÖµµÄ²ÎÊıÓësign²ÎÊı²»²ÎÓëÇ©Ãû
+                // ç©ºå€¼çš„å‚æ•°ä¸signå‚æ•°ä¸å‚ä¸ç­¾å
                 if (!string.IsNullOrEmpty(item.Value) && string.Compare("sign", item.Key) != 0)
                 {
                     signBuilder.AppendFormat("{0}={1}&", item.Key, item.Value);
@@ -261,10 +261,10 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// Ìá½»¶©µ¥
+        /// æäº¤è®¢å•
         /// </summary>
-        /// <param name="orderXml">¶©µ¥µÄXMLÄÚÈİ</param>
-        /// <param name="gatewayUrl">Íø¹ØURL</param>
+        /// <param name="orderXml">è®¢å•çš„XMLå†…å®¹</param>
+        /// <param name="gatewayUrl">ç½‘å…³URL</param>
         /// <returns></returns>
         private string PostOrder(string orderXml, string gatewayUrl, bool certValidate = false)
         {
@@ -311,13 +311,13 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// »ñµÃÎ¢ĞÅÖ§¸¶µÄURL
+        /// è·å¾—å¾®ä¿¡æ”¯ä»˜çš„URL
         /// </summary>
-        /// <param name="resultXml">´´½¨¶©µ¥·µ»ØµÄÊı¾İ</param>
+        /// <param name="resultXml">åˆ›å»ºè®¢å•è¿”å›çš„æ•°æ®</param>
         /// <returns></returns>
         private string GetWeixinPaymentUrl(string resultXml)
         {
-            // ĞèÒªÏÈÇå³ıÖ®Ç°´´½¨¶©µ¥µÄ²ÎÊı£¬·ñÔò»á¶Ô½ÓÊÕµ½µÄ²ÎÊıÔì³É¸ÉÈÅ¡£
+            // éœ€è¦å…ˆæ¸…é™¤ä¹‹å‰åˆ›å»ºè®¢å•çš„å‚æ•°ï¼Œå¦åˆ™ä¼šå¯¹æ¥æ”¶åˆ°çš„å‚æ•°é€ æˆå¹²æ‰°ã€‚
             ClearGatewayParameterData();
             ReadResultXml(resultXml);
             if (IsSuccessResult())
@@ -334,7 +334,7 @@ namespace Mi9Pay.PayProvider.Providers
 
         
         /// <summary>
-        /// ÊÇ·ñÊÇ³É¹¦µÄ½á¹û
+        /// æ˜¯å¦æ˜¯æˆåŠŸçš„ç»“æœ
         /// </summary>
         /// <param name="parma"></param>
         /// <returns></returns>
@@ -350,7 +350,7 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// ÑéÖ¤·µ»ØµÄ½á¹û
+        /// éªŒè¯è¿”å›çš„ç»“æœ
         /// </summary>
         /// <returns></returns>
         private bool ValidateResult()
@@ -367,7 +367,7 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// ÑéÖ¤Ç©Ãû
+        /// éªŒè¯ç­¾å
         /// </summary>
         /// <returns></returns>
         private bool ValidateSign()
@@ -382,13 +382,13 @@ namespace Mi9Pay.PayProvider.Providers
 
 
         /// <summary>
-        /// ¼ì²é²éÑ¯½á¹û
+        /// æ£€æŸ¥æŸ¥è¯¢ç»“æœ
         /// </summary>
-        /// <param name="resultXml">²éÑ¯½á¹ûµÄXML</param>
+        /// <param name="resultXml">æŸ¥è¯¢ç»“æœçš„XML</param>
         /// <returns></returns>
         private bool CheckQueryResult(string resultXml)
         {
-            // ĞèÒªÏÈÇå³ıÖ®Ç°²éÑ¯¶©µ¥µÄ²ÎÊı£¬·ñÔò»á¶Ô½ÓÊÕµ½µÄ²ÎÊıÔì³É¸ÉÈÅ¡£
+            // éœ€è¦å…ˆæ¸…é™¤ä¹‹å‰æŸ¥è¯¢è®¢å•çš„å‚æ•°ï¼Œå¦åˆ™ä¼šå¯¹æ¥æ”¶åˆ°çš„å‚æ•°é€ æˆå¹²æ‰°ã€‚
             ClearGatewayParameterData();
             ReadResultXml(resultXml);
             if (IsSuccessResult())
@@ -404,13 +404,13 @@ namespace Mi9Pay.PayProvider.Providers
         }
 
         /// <summary>
-        /// ¼ì²éÖ§¸¶½á¹û
+        /// æ£€æŸ¥æ”¯ä»˜ç»“æœ
         /// </summary>
-        /// <param name="resultXml">Ö§¸¶½á¹ûµÄXML</param>
+        /// <param name="resultXml">æ”¯ä»˜ç»“æœçš„XML</param>
         /// <returns></returns>
         private bool CheckPaymentResult(string resultXml)
         {
-            // ĞèÒªÏÈÇå³ıÖ®Ç°²éÑ¯¶©µ¥µÄ²ÎÊı£¬·ñÔò»á¶Ô½ÓÊÕµ½µÄ²ÎÊıÔì³É¸ÉÈÅ¡£
+            // éœ€è¦å…ˆæ¸…é™¤ä¹‹å‰æŸ¥è¯¢è®¢å•çš„å‚æ•°ï¼Œå¦åˆ™ä¼šå¯¹æ¥æ”¶åˆ°çš„å‚æ•°é€ æˆå¹²æ‰°ã€‚
             ClearGatewayParameterData();
             ReadResultXml(resultXml);
             if (IsSuccessResult())
@@ -425,13 +425,13 @@ namespace Mi9Pay.PayProvider.Providers
         }
 
         /// <summary>
-        /// ¼ì²éÍË¿î½á¹û
+        /// æ£€æŸ¥é€€æ¬¾ç»“æœ
         /// </summary>
-        /// <param name="resultXml">Ö§¸¶½á¹ûµÄXML</param>
+        /// <param name="resultXml">æ”¯ä»˜ç»“æœçš„XML</param>
         /// <returns></returns>
         private bool CheckRefundResult(string resultXml)
         {
-            // ĞèÒªÏÈÇå³ıÖ®Ç°²éÑ¯¶©µ¥µÄ²ÎÊı£¬·ñÔò»á¶Ô½ÓÊÕµ½µÄ²ÎÊıÔì³É¸ÉÈÅ¡£
+            // éœ€è¦å…ˆæ¸…é™¤ä¹‹å‰æŸ¥è¯¢è®¢å•çš„å‚æ•°ï¼Œå¦åˆ™ä¼šå¯¹æ¥æ”¶åˆ°çš„å‚æ•°é€ æˆå¹²æ‰°ã€‚
             ClearGatewayParameterData();
             ReadResultXml(resultXml);
             if (IsSuccessResult())
@@ -446,13 +446,13 @@ namespace Mi9Pay.PayProvider.Providers
         }
 
         /// <summary>
-        /// ¼ì²é³·Ïú½á¹û
+        /// æ£€æŸ¥æ’¤é”€ç»“æœ
         /// </summary>
-        /// <param name="resultXml">³·Ïú½á¹ûµÄXML</param>
+        /// <param name="resultXml">æ’¤é”€ç»“æœçš„XML</param>
         /// <returns></returns>
         private bool CheckCancelResult(string resultXml, int retries)
         {
-            // ĞèÒªÏÈÇå³ıÖ®Ç°²éÑ¯¶©µ¥µÄ²ÎÊı£¬·ñÔò»á¶Ô½ÓÊÕµ½µÄ²ÎÊıÔì³É¸ÉÈÅ¡£
+            // éœ€è¦å…ˆæ¸…é™¤ä¹‹å‰æŸ¥è¯¢è®¢å•çš„å‚æ•°ï¼Œå¦åˆ™ä¼šå¯¹æ¥æ”¶åˆ°çš„å‚æ•°é€ æˆå¹²æ‰°ã€‚
             ClearGatewayParameterData();
             ReadResultXml(resultXml);
 
@@ -540,23 +540,23 @@ namespace Mi9Pay.PayProvider.Providers
         {
             Order.Id = GetGatewayParameterValue("out_trade_no");
             
-            //È·ÈÏÖ§¸¶ÊÇ·ñ³É¹¦,Ã¿¸ôÒ»¶ÎÊ±¼ä²éÑ¯Ò»´Î¶©µ¥£¬¹²²éÑ¯10´Î
-            int queryTimes = 10;//²éÑ¯´ÎÊı¼ÆÊıÆ÷
+            //ç¡®è®¤æ”¯ä»˜æ˜¯å¦æˆåŠŸ,æ¯éš”ä¸€æ®µæ—¶é—´æŸ¥è¯¢ä¸€æ¬¡è®¢å•ï¼Œå…±æŸ¥è¯¢10æ¬¡
+            int queryTimes = 10;//æŸ¥è¯¢æ¬¡æ•°è®¡æ•°å™¨
             while (queryTimes-- > 0)
             {
                 PaymentResult result = QueryForResult();
-                //Èç¹ûĞèÒª¼ÌĞø²éÑ¯£¬ÔòµÈ´ı3sºó¼ÌĞø
+                //å¦‚æœéœ€è¦ç»§ç»­æŸ¥è¯¢ï¼Œåˆ™ç­‰å¾…3såç»§ç»­
                 if (result != null && result.SuccessFlag == 2)
                 {
                     Thread.Sleep(3000);
                     continue;
                 }
-                //²éÑ¯³É¹¦,·µ»Ø¶©µ¥²éÑ¯½Ó¿Ú·µ»ØµÄÊı¾İ
+                //æŸ¥è¯¢æˆåŠŸ,è¿”å›è®¢å•æŸ¥è¯¢æ¥å£è¿”å›çš„æ•°æ®
                 else if (result != null && result.SuccessFlag == 1)
                 {
                     return result;
                 }
-                //¶©µ¥½»Ò×Ê§°Ü£¬Ö±½Ó·µ»ØË¢¿¨Ö§¸¶½Ó¿Ú·µ»ØµÄ½á¹û£¬Ê§°ÜÔ­Òò»áÔÚerr_codeÖĞÃèÊö
+                //è®¢å•äº¤æ˜“å¤±è´¥ï¼Œç›´æ¥è¿”å›åˆ·å¡æ”¯ä»˜æ¥å£è¿”å›çš„ç»“æœï¼Œå¤±è´¥åŸå› ä¼šåœ¨err_codeä¸­æè¿°
                 else
                 {
                     return null;
@@ -575,7 +575,7 @@ namespace Mi9Pay.PayProvider.Providers
         }
 
         /// <summary>
-        /// Çå³ıÍø¹ØµÄÊı¾İ
+        /// æ¸…é™¤ç½‘å…³çš„æ•°æ®
         /// </summary>
         private void ClearGatewayParameterData()
         {
@@ -584,7 +584,7 @@ namespace Mi9Pay.PayProvider.Providers
 
         
         /// <summary>
-        /// ³õÊ¼»¯±íÊ¾ÒÑ³É¹¦½ÓÊÕµ½Ö§¸¶Í¨ÖªµÄÊı¾İ
+        /// åˆå§‹åŒ–è¡¨ç¤ºå·²æˆåŠŸæ¥æ”¶åˆ°æ”¯ä»˜é€šçŸ¥çš„æ•°æ®
         /// </summary>
         private void InitProcessSuccessParameter()
         {
@@ -594,7 +594,7 @@ namespace Mi9Pay.PayProvider.Providers
 
         public override void WriteSucceedFlag()
         {
-            // ĞèÒªÏÈÇå³ıÖ®Ç°½ÓÊÕµ½µÄÍ¨ÖªµÄ²ÎÊı£¬·ñÔò»á¶ÔÉú³É±êÖ¾³É¹¦½ÓÊÕµ½Í¨ÖªµÄXMLÔì³É¸ÉÈÅ¡£
+            // éœ€è¦å…ˆæ¸…é™¤ä¹‹å‰æ¥æ”¶åˆ°çš„é€šçŸ¥çš„å‚æ•°ï¼Œå¦åˆ™ä¼šå¯¹ç”Ÿæˆæ ‡å¿—æˆåŠŸæ¥æ”¶åˆ°é€šçŸ¥çš„XMLé€ æˆå¹²æ‰°ã€‚
             ClearGatewayParameterData();
             InitProcessSuccessParameter();
             HttpContext.Current.Response.Write(ConvertGatewayParameterDataToXml());
@@ -606,7 +606,7 @@ namespace Mi9Pay.PayProvider.Providers
                 return;
 
             logger.Info(method + Environment.NewLine);
-            logger.Info(string.Format("<============{0}============>", "XMLĞÅÏ¢") + Environment.NewLine);
+            logger.Info(string.Format("<============{0}============>", "XMLä¿¡æ¯") + Environment.NewLine);
             logger.Info(string.Format("{0}", xml) + Environment.NewLine);
             logger.Info("<==================================>" + Environment.NewLine);
         }

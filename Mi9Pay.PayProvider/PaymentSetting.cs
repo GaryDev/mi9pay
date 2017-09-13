@@ -11,18 +11,18 @@ using ThoughtWorks.QRCode.Codec;
 namespace Mi9Pay.PayProvider
 {
     /// <summary>
-    /// ÉèÖÃĞèÒªÖ§¸¶µÄ¶©µ¥µÄÊı¾İ£¬´´½¨Ö§¸¶¶©µ¥URLµØÖ·»òHTML±íµ¥
+    /// è®¾ç½®éœ€è¦æ”¯ä»˜çš„è®¢å•çš„æ•°æ®ï¼Œåˆ›å»ºæ”¯ä»˜è®¢å•URLåœ°å€æˆ–HTMLè¡¨å•
     /// </summary>
     /// <remarks>
-    /// ÒòÎª²¿·ÖÖ§¸¶Íø¹ØµÄ±àÂë½öÖ§³ÖGB2312£¬ËùÒÔËùÓĞÖ§¸¶Íø¹ØÍ³Ò»Ê¹ÓÃGB2312±àÂë¡£
-    /// ÄãĞèÒª±£Ö¤Êä³öHTML´úÂëµÄÒ³ÃæÎªGB2312±àÂë£¬·ñÔò¿ÉÄÜ»áÒòÎªÂÒÂë¶øÔì³ÉÎŞ·¨Õı³£´´½¨Ö§¸¶¶©µ¥ºÍÊ¶±ğÖ§¸¶Íø¹ØµÄÖ§¸¶Í¨Öª¡£
-    /// Í¨¹ıÔÚ Web.config ÖĞµÄ configuration/system.web ½ÚµãÉèÖÃ <globalization requestEncoding="gb2312" responseEncoding="gb2312" />
-    /// ¿ÉÒÔ½«Ò³ÃæµÄÄ¬ÈÏ±àÂëÉèÖÃÎªGB2312¡£Ä¿Ç°Ö»ÄÜÊ¹ÓÃRMBÖ§¸¶£¬ÆäËû»õ±ÒÖ§¸¶ÇëÔÄ¶ÁÏà¹ØÍø¹Ø½Ó¿ÚÎÄµµĞŞ¸Ä¡£
+    /// å› ä¸ºéƒ¨åˆ†æ”¯ä»˜ç½‘å…³çš„ç¼–ç ä»…æ”¯æŒGB2312ï¼Œæ‰€ä»¥æ‰€æœ‰æ”¯ä»˜ç½‘å…³ç»Ÿä¸€ä½¿ç”¨GB2312ç¼–ç ã€‚
+    /// ä½ éœ€è¦ä¿è¯è¾“å‡ºHTMLä»£ç çš„é¡µé¢ä¸ºGB2312ç¼–ç ï¼Œå¦åˆ™å¯èƒ½ä¼šå› ä¸ºä¹±ç è€Œé€ æˆæ— æ³•æ­£å¸¸åˆ›å»ºæ”¯ä»˜è®¢å•å’Œè¯†åˆ«æ”¯ä»˜ç½‘å…³çš„æ”¯ä»˜é€šçŸ¥ã€‚
+    /// é€šè¿‡åœ¨ Web.config ä¸­çš„ configuration/system.web èŠ‚ç‚¹è®¾ç½® <globalization requestEncoding="gb2312" responseEncoding="gb2312" />
+    /// å¯ä»¥å°†é¡µé¢çš„é»˜è®¤ç¼–ç è®¾ç½®ä¸ºGB2312ã€‚ç›®å‰åªèƒ½ä½¿ç”¨RMBæ”¯ä»˜ï¼Œå…¶ä»–è´§å¸æ”¯ä»˜è¯·é˜…è¯»ç›¸å…³ç½‘å…³æ¥å£æ–‡æ¡£ä¿®æ”¹ã€‚
     /// </remarks>
     public class PaymentSetting
     {
 
-        #region ×Ö¶Î
+        #region å­—æ®µ
 
         GatewayBase gateway;
 
@@ -31,7 +31,7 @@ namespace Mi9Pay.PayProvider
         #endregion
 
 
-        #region ¹¹Ôìº¯Êı
+        #region æ„é€ å‡½æ•°
 
         public PaymentSetting(GatewayType gatewayType)
         {
@@ -50,10 +50,10 @@ namespace Mi9Pay.PayProvider
         #endregion
 
 
-        #region ÊôĞÔ
+        #region å±æ€§
 
         /// <summary>
-        /// Íø¹Ø
+        /// ç½‘å…³
         /// </summary>
         public GatewayBase Gateway
         {
@@ -65,7 +65,7 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>
-        /// ÉÌ¼ÒÊı¾İ
+        /// å•†å®¶æ•°æ®
         /// </summary>
         public Merchant Merchant
         {
@@ -82,7 +82,7 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>
-        /// ¶©µ¥Êı¾İ
+        /// è®¢å•æ•°æ®
         /// </summary>
         public Order Order
         {
@@ -98,7 +98,7 @@ namespace Mi9Pay.PayProvider
         }
 
         /// <summary>
-        /// ÕËµ¥Êı¾İ
+        /// è´¦å•æ•°æ®
         /// </summary>
         public PaymentBill Bill
         {
@@ -139,7 +139,7 @@ namespace Mi9Pay.PayProvider
         #endregion
 
 
-        #region ·½·¨
+        #region æ–¹æ³•
 
 
         private GatewayBase CreateGateway(GatewayType gatewayType)
@@ -175,10 +175,10 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>
-        /// ´´½¨¶©µ¥µÄÖ§¸¶Url¡¢Form±íµ¥¡¢¶şÎ¬Âë¡£
+        /// åˆ›å»ºè®¢å•çš„æ”¯ä»˜Urlã€Formè¡¨å•ã€äºŒç»´ç ã€‚
         /// </summary>
         /// <remarks>
-        /// Èç¹û´´½¨µÄÊÇ¶©µ¥µÄUrl»òForm±íµ¥½«Ìø×ªµ½ÏàÓ¦Íø¹ØÖ§¸¶£¬Èç¹ûÊÇ¶şÎ¬Âë½«Êä³ö¶şÎ¬ÂëÍ¼Æ¬¡£
+        /// å¦‚æœåˆ›å»ºçš„æ˜¯è®¢å•çš„Urlæˆ–Formè¡¨å•å°†è·³è½¬åˆ°ç›¸åº”ç½‘å…³æ”¯ä»˜ï¼Œå¦‚æœæ˜¯äºŒç»´ç å°†è¾“å‡ºäºŒç»´ç å›¾ç‰‡ã€‚
         /// </remarks>
         public void Payment()
         {
@@ -205,7 +205,7 @@ namespace Mi9Pay.PayProvider
                 return;
             }
 
-            throw new NotSupportedException(gateway.GatewayType + " Ã»ÓĞÊµÏÖÖ§¸¶½Ó¿Ú");
+            throw new NotSupportedException(gateway.GatewayType + " æ²¡æœ‰å®ç°æ”¯ä»˜æ¥å£");
         }
 
         public MemoryStream PaymentQRCode()
@@ -221,7 +221,7 @@ namespace Mi9Pay.PayProvider
                 return BuildQRCodeImage(qrCode);
             }
 
-            throw new NotSupportedException(gateway.GatewayType + " Ã»ÓĞÊµÏÖÖ§¸¶½Ó¿Ú");
+            throw new NotSupportedException(gateway.GatewayType + " æ²¡æœ‰å®ç°æ”¯ä»˜æ¥å£");
         }
 
         public PaymentResult BarcodePayment()
@@ -231,7 +231,7 @@ namespace Mi9Pay.PayProvider
             {
                 return codePayment.BarcodePayment();
             }
-            throw new NotSupportedException(gateway.GatewayType + " Ã»ÓĞÊµÏÖÖ§¸¶½Ó¿Ú");
+            throw new NotSupportedException(gateway.GatewayType + " æ²¡æœ‰å®ç°æ”¯ä»˜æ¥å£");
         }
 
 
@@ -242,11 +242,11 @@ namespace Mi9Pay.PayProvider
             {
                 return codePayment.RefundPayment();
             }
-            throw new NotSupportedException(gateway.GatewayType + " Ã»ÓĞÊµÏÖÖ§¸¶½Ó¿Ú");
+            throw new NotSupportedException(gateway.GatewayType + " æ²¡æœ‰å®ç°æ”¯ä»˜æ¥å£");
         }
 
         /// <summary>
-        /// ²éÑ¯¶©µ¥£¬¶©µ¥µÄ²éÑ¯Í¨ÖªÊı¾İÍ¨¹ı¸úÖ§¸¶Í¨ÖªÒ»ÑùµÄĞÎÊ½·´»Ø¡£ÓÃ´¦ÀíÍø¹ØÍ¨ÖªÒ»ÑùµÄ·½·¨½ÓÊÜ²éÑ¯¶©µ¥µÄÊı¾İ¡£
+        /// æŸ¥è¯¢è®¢å•ï¼Œè®¢å•çš„æŸ¥è¯¢é€šçŸ¥æ•°æ®é€šè¿‡è·Ÿæ”¯ä»˜é€šçŸ¥ä¸€æ ·çš„å½¢å¼åå›ã€‚ç”¨å¤„ç†ç½‘å…³é€šçŸ¥ä¸€æ ·çš„æ–¹æ³•æ¥å—æŸ¥è¯¢è®¢å•çš„æ•°æ®ã€‚
         /// </summary>
         public void QueryNotify()
         {
@@ -264,12 +264,12 @@ namespace Mi9Pay.PayProvider
                 return;
             }
 
-            throw new NotSupportedException(gateway.GatewayType + " Ã»ÓĞÊµÏÖ IQueryUrl »ò IQueryForm ²éÑ¯½Ó¿Ú");
+            throw new NotSupportedException(gateway.GatewayType + " æ²¡æœ‰å®ç° IQueryUrl æˆ– IQueryForm æŸ¥è¯¢æ¥å£");
         }
 
         
         /// <summary>
-        /// ²éÑ¯¶©µ¥£¬Á¢¼´»ñµÃ¶©µ¥µÄ²éÑ¯½á¹û
+        /// æŸ¥è¯¢è®¢å•ï¼Œç«‹å³è·å¾—è®¢å•çš„æŸ¥è¯¢ç»“æœ
         /// </summary>
         /// <returns></returns>
         public bool QueryNow()
@@ -280,11 +280,11 @@ namespace Mi9Pay.PayProvider
                 return queryNow.QueryNow();
             }
 
-            throw new NotSupportedException(gateway.GatewayType + " Ã»ÓĞÊµÏÖ IQueryNow ²éÑ¯½Ó¿Ú");
+            throw new NotSupportedException(gateway.GatewayType + " æ²¡æœ‰å®ç° IQueryNow æŸ¥è¯¢æ¥å£");
         }
 
         /// <summary>
-        /// ²éÑ¯¶©µ¥£¬Á¢¼´»ñµÃ¶©µ¥µÄ²éÑ¯½á¹û
+        /// æŸ¥è¯¢è®¢å•ï¼Œç«‹å³è·å¾—è®¢å•çš„æŸ¥è¯¢ç»“æœ
         /// </summary>
         /// <returns></returns>
         public PaymentResult QueryForResult()
@@ -295,7 +295,7 @@ namespace Mi9Pay.PayProvider
                 return queryNow.QueryForResult();
             }
 
-            throw new NotSupportedException(gateway.GatewayType + " Ã»ÓĞÊµÏÖ IQueryNow ²éÑ¯½Ó¿Ú");
+            throw new NotSupportedException(gateway.GatewayType + " æ²¡æœ‰å®ç° IQueryNow æŸ¥è¯¢æ¥å£");
         }
 
         public string QueryBill()
@@ -306,14 +306,14 @@ namespace Mi9Pay.PayProvider
                 return queryNow.QueryBill();
             }
 
-            throw new NotSupportedException(gateway.GatewayType + " Ã»ÓĞÊµÏÖ IQueryNow ²éÑ¯½Ó¿Ú");
+            throw new NotSupportedException(gateway.GatewayType + " æ²¡æœ‰å®ç° IQueryNow æŸ¥è¯¢æ¥å£");
         }
 
         /// <summary>
-        /// ÉèÖÃÍø¹ØµÄÊı¾İ
+        /// è®¾ç½®ç½‘å…³çš„æ•°æ®
         /// </summary>
-        /// <param name="gatewayParameterName">Íø¹ØµÄ²ÎÊıÃû³Æ</param>
-        /// <param name="gatewayParameterValue">Íø¹ØµÄ²ÎÊıÖµ</param>
+        /// <param name="gatewayParameterName">ç½‘å…³çš„å‚æ•°åç§°</param>
+        /// <param name="gatewayParameterValue">ç½‘å…³çš„å‚æ•°å€¼</param>
         public void SetGatewayParameterValue(string gatewayParameterName, string gatewayParameterValue)
         {
             Gateway.SetGatewayParameterValue(gatewayParameterName, gatewayParameterValue);
@@ -321,13 +321,13 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>
-        /// Éú³É²¢Êä³ö¶şÎ¬ÂëÍ¼Æ¬
+        /// ç”Ÿæˆå¹¶è¾“å‡ºäºŒç»´ç å›¾ç‰‡
         /// </summary>
-        /// <param name="qrCodeContent">¶şÎ¬ÂëÄÚÈİ</param>
+        /// <param name="qrCodeContent">äºŒç»´ç å†…å®¹</param>
         private MemoryStream BuildQRCodeImage(string qrCodeContent)
         {
             QRCodeEncoder qrCodeEncoder = new QRCodeEncoder();
-            qrCodeEncoder.QRCodeScale = 4;  // ¶şÎ¬Âë´óĞ¡
+            qrCodeEncoder.QRCodeScale = 4;  // äºŒç»´ç å¤§å°
             qrCodeEncoder.QRCodeVersion = 8;
             qrCodeEncoder.QRCodeErrorCorrect = QRCodeEncoder.ERROR_CORRECTION.M;
 
@@ -358,17 +358,17 @@ namespace Mi9Pay.PayProvider
         }
 
         /// <summary>    
-        /// µ÷ÓÃ´Ëº¯ÊıºóÊ¹´ËÁ½ÖÖÍ¼Æ¬ºÏ²¢£¬ÀàËÆÏà²á£¬ÓĞ¸ö    
-        /// ±³¾°Í¼£¬ÖĞ¼äÌù×Ô¼ºµÄÄ¿±êÍ¼Æ¬    
+        /// è°ƒç”¨æ­¤å‡½æ•°åä½¿æ­¤ä¸¤ç§å›¾ç‰‡åˆå¹¶ï¼Œç±»ä¼¼ç›¸å†Œï¼Œæœ‰ä¸ª    
+        /// èƒŒæ™¯å›¾ï¼Œä¸­é—´è´´è‡ªå·±çš„ç›®æ ‡å›¾ç‰‡    
         /// </summary>    
-        /// <param name="imgBack">Õ³ÌùµÄÔ´Í¼Æ¬</param>    
-        /// <param name="logoImg">Õ³ÌùµÄÄ¿±êÍ¼Æ¬</param>    
+        /// <param name="imgBack">ç²˜è´´çš„æºå›¾ç‰‡</param>    
+        /// <param name="logoImg">ç²˜è´´çš„ç›®æ ‡å›¾ç‰‡</param>    
         public static Image AddLogo(Image imgBack, string logoImg)
         {
            if (!File.Exists(logoImg))
                 return imgBack;
 
-            Image img = Image.FromFile(logoImg);        //LogoÍ¼Æ¬      
+            Image img = Image.FromFile(logoImg);        //Logoå›¾ç‰‡      
             if (img.Height != 35 || img.Width != 35)
             {
                 img = KiResizeImage(img, 35, 35, 0);
@@ -383,20 +383,20 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>    
-        /// ResizeÍ¼Æ¬    
+        /// Resizeå›¾ç‰‡    
         /// </summary>    
-        /// <param name="bmp">Ô­Ê¼Bitmap</param>    
-        /// <param name="newW">ĞÂµÄ¿í¶È</param>    
-        /// <param name="newH">ĞÂµÄ¸ß¶È</param>    
-        /// <param name="Mode">±£Áô×Å£¬ÔİÊ±Î´ÓÃ</param>    
-        /// <returns>´¦ÀíÒÔºóµÄÍ¼Æ¬</returns>    
+        /// <param name="bmp">åŸå§‹Bitmap</param>    
+        /// <param name="newW">æ–°çš„å®½åº¦</param>    
+        /// <param name="newH">æ–°çš„é«˜åº¦</param>    
+        /// <param name="Mode">ä¿ç•™ç€ï¼Œæš‚æ—¶æœªç”¨</param>    
+        /// <returns>å¤„ç†ä»¥åçš„å›¾ç‰‡</returns>    
         private static Image KiResizeImage(Image bmp, int newW, int newH, int Mode)
         {
             try
             {
                 Image b = new Bitmap(newW, newH);
                 Graphics g = Graphics.FromImage(b);
-                // ²åÖµËã·¨µÄÖÊÁ¿    
+                // æ’å€¼ç®—æ³•çš„è´¨é‡    
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.DrawImage(bmp, new Rectangle(0, 0, newW, newH), new Rectangle(0, 0, bmp.Width, bmp.Height), GraphicsUnit.Pixel);
                 g.Dispose();

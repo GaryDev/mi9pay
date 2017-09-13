@@ -6,12 +6,12 @@ using System.Xml;
 namespace Mi9Pay.PayProvider
 {
     /// <summary>
-    /// Ö§¸¶Íø¹ØµÄ³éÏó»ùÀà
+    /// æ”¯ä»˜ç½‘å…³çš„æŠ½è±¡åŸºç±»
     /// </summary>
     public abstract class GatewayBase
     {
 
-        #region Ë½ÓĞ×Ö¶Î
+        #region ç§æœ‰å­—æ®µ
 
         Merchant merchant;
         Order order;
@@ -22,7 +22,7 @@ namespace Mi9Pay.PayProvider
         #endregion
 
 
-        #region ¹¹Ôìº¯Êı
+        #region æ„é€ å‡½æ•°
 
 
         protected GatewayBase() : this(new List<GatewayParameter>())
@@ -38,11 +38,11 @@ namespace Mi9Pay.PayProvider
         #endregion
 
 
-        #region ÊôĞÔ
+        #region å±æ€§
 
 
         /// <summary>
-        /// ÉÌ¼ÒÊı¾İ
+        /// å•†å®¶æ•°æ®
         /// </summary>
         public Merchant Merchant
         {
@@ -64,7 +64,7 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>
-        /// ¶©µ¥Êı¾İ
+        /// è®¢å•æ•°æ®
         /// </summary>
         public Order Order
         {
@@ -86,7 +86,7 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>
-        /// Ö§¸¶Íø¹ØµÄÀàĞÍ
+        /// æ”¯ä»˜ç½‘å…³çš„ç±»å‹
         /// </summary>
         public abstract GatewayType GatewayType
         {
@@ -94,7 +94,7 @@ namespace Mi9Pay.PayProvider
         }
 
         /// <summary>
-        /// ÕËµ¥Êı¾İ
+        /// è´¦å•æ•°æ®
         /// </summary>
         public PaymentBill Bill
         {
@@ -116,15 +116,15 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>
-        /// Ö§¸¶Í¨ÖªµÄ·µ»Ø·½Ê½
+        /// æ”¯ä»˜é€šçŸ¥çš„è¿”å›æ–¹å¼
         /// </summary>
         /// <remarks>
-        /// Ä¿Ç°µÄÖ§¸¶Íø¹ØÔÚÖ§¸¶³É¹¦ºó»áÒÔGet»òPost·½Ê½½«Ö§¸¶½á¹û·µ»Ø¸øÉÌ»§¡£
-        /// POST·½Ê½µÄ·µ»ØÒ»°ãÊÇÍ¨¹ıÍø¹Ø·şÎñÆ÷·¢ËÍ£¬ÕâÀï¿ÉÄÜÒªÇóÉÌ»§Êä³ö×Ö·û±ê¼Ç±íÊ¾ÒÑ³É¹¦½ÓÊÕµ½Ö§¸¶½á¹û¡£
-        /// ¶øÁíÒ»ÖÖÊÇÍ¨¹ıGET·½Ê½½«ÓÃ»§·µ»Øµ½ÉÌ»§µÄÍøÕ¾£¬ÕâÊ±Èç¹ûÒÔPOSTÊı¾İÊ±µÄ·½Ê½À´´¦Àí½«»áÊä³ö±ê¼ÇÒÑ³É¹¦½ÓÊÕµÄ×Ö·û´®¡£
-        /// Èç¹ûÕâÑùÓÃ»§»á¸Ğµ½ºÜÆæ¹Ö£¬ÕâÊ±ÏÔÊ¾Ö§¸¶³É¹¦µÄÒ³Ãæ½«»á¸üºÏÊÊ¡£ËùÒÔ¿ÉÒÔÍ¨¹ıPaymentNotifyMethodÊôĞÔÀ´ÅĞ¶Ï
-        /// Ö§¸¶½á¹ûµÄ·¢ËÍ·½Ê½£¬ÒÔ¾ö¶¨ÊÇÓ¦¸ÃÊä³ö±ê¼ÇÒÑ³É¹¦½ÓÊÕµÄ×Ö·û´®»¹ÊÇÏòÓÃ»§ÏÔÊ¾Ö§¸¶³É¹¦µÄÒ³Ãæ¡£
-        /// ·şÎñÆ÷·¢ËÍÍ¨ÖªÊ±ÊôĞÔÎªServerNotify£¬Èç¹ûÊÇÓÃ»§Í¨¹ıä¯ÀÀÆ÷Ìø×ªµ½½ÓÊÕÍø¹ØÍ¨ÖªµÄÒ³ÃæÊôĞÔÎªAutoReturn¡£
+        /// ç›®å‰çš„æ”¯ä»˜ç½‘å…³åœ¨æ”¯ä»˜æˆåŠŸåä¼šä»¥Getæˆ–Postæ–¹å¼å°†æ”¯ä»˜ç»“æœè¿”å›ç»™å•†æˆ·ã€‚
+        /// POSTæ–¹å¼çš„è¿”å›ä¸€èˆ¬æ˜¯é€šè¿‡ç½‘å…³æœåŠ¡å™¨å‘é€ï¼Œè¿™é‡Œå¯èƒ½è¦æ±‚å•†æˆ·è¾“å‡ºå­—ç¬¦æ ‡è®°è¡¨ç¤ºå·²æˆåŠŸæ¥æ”¶åˆ°æ”¯ä»˜ç»“æœã€‚
+        /// è€Œå¦ä¸€ç§æ˜¯é€šè¿‡GETæ–¹å¼å°†ç”¨æˆ·è¿”å›åˆ°å•†æˆ·çš„ç½‘ç«™ï¼Œè¿™æ—¶å¦‚æœä»¥POSTæ•°æ®æ—¶çš„æ–¹å¼æ¥å¤„ç†å°†ä¼šè¾“å‡ºæ ‡è®°å·²æˆåŠŸæ¥æ”¶çš„å­—ç¬¦ä¸²ã€‚
+        /// å¦‚æœè¿™æ ·ç”¨æˆ·ä¼šæ„Ÿåˆ°å¾ˆå¥‡æ€ªï¼Œè¿™æ—¶æ˜¾ç¤ºæ”¯ä»˜æˆåŠŸçš„é¡µé¢å°†ä¼šæ›´åˆé€‚ã€‚æ‰€ä»¥å¯ä»¥é€šè¿‡PaymentNotifyMethodå±æ€§æ¥åˆ¤æ–­
+        /// æ”¯ä»˜ç»“æœçš„å‘é€æ–¹å¼ï¼Œä»¥å†³å®šæ˜¯åº”è¯¥è¾“å‡ºæ ‡è®°å·²æˆåŠŸæ¥æ”¶çš„å­—ç¬¦ä¸²è¿˜æ˜¯å‘ç”¨æˆ·æ˜¾ç¤ºæ”¯ä»˜æˆåŠŸçš„é¡µé¢ã€‚
+        /// æœåŠ¡å™¨å‘é€é€šçŸ¥æ—¶å±æ€§ä¸ºServerNotifyï¼Œå¦‚æœæ˜¯ç”¨æˆ·é€šè¿‡æµè§ˆå™¨è·³è½¬åˆ°æ¥æ”¶ç½‘å…³é€šçŸ¥çš„é¡µé¢å±æ€§ä¸ºAutoReturnã€‚
         /// </remarks>
         public abstract PaymentNotifyMethod PaymentNotifyMethod
         {
@@ -134,7 +134,7 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>
-        /// Ö§¸¶Íø¹ØµÄGet¡¢PostÊı¾İµÄ¼¯ºÏ¡£Get·½Ê½´«ÈëQueryStringµÄÖµ¾ùÎªÎ´½âÂë
+        /// æ”¯ä»˜ç½‘å…³çš„Getã€Postæ•°æ®çš„é›†åˆã€‚Getæ–¹å¼ä¼ å…¥QueryStringçš„å€¼å‡ä¸ºæœªè§£ç 
         /// </summary>
         public List<GatewayParameter> GatewayParameterData
         {
@@ -148,13 +148,13 @@ namespace Mi9Pay.PayProvider
         #endregion
 
 
-        #region ·½·¨
+        #region æ–¹æ³•
 
 
         /// <summary>
-        /// ´´½¨Form HTML´úÂë
+        /// åˆ›å»ºForm HTMLä»£ç 
         /// </summary>
-        /// <param name="url">Íø¹ØµÄUrl</param>
+        /// <param name="url">ç½‘å…³çš„Url</param>
         protected string GetFormHtml(string url)
         {
             StringBuilder html = new StringBuilder();
@@ -178,7 +178,7 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>
-        /// »ñµÃ°´×ÖÄ¸ÉıĞòÅÅĞòºóµÄÍø¹Ø²ÎÊıµÄ¼¯ºÏ
+        /// è·å¾—æŒ‰å­—æ¯å‡åºæ’åºåçš„ç½‘å…³å‚æ•°çš„é›†åˆ
         /// </summary>
         /// <returns></returns>
         protected SortedDictionary<string, string> GetSortedGatewayParameter()
@@ -193,7 +193,7 @@ namespace Mi9Pay.PayProvider
         }
 
         /// <summary>
-        /// ¶ÁÈ¡½á¹ûµÄXML
+        /// è¯»å–ç»“æœçš„XML
         /// </summary>
         /// <param name="xml"></param>
         /// <returns></returns>
@@ -218,7 +218,7 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>
-        /// ÑéÖ¤¶©µ¥ÊÇ·ñÖ§¸¶³É¹¦
+        /// éªŒè¯è®¢å•æ˜¯å¦æ”¯ä»˜æˆåŠŸ
         /// </summary>
         public bool ValidateNotify()
         {
@@ -232,12 +232,12 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>
-        /// ÉèÖÃÍø¹ØµÄÊı¾İ
+        /// è®¾ç½®ç½‘å…³çš„æ•°æ®
         /// </summary>
-        /// <param name="gatewayParameterName">Íø¹ØµÄ²ÎÊıÃû³Æ</param>
-        /// <param name="gatewayParameterValue">Íø¹ØµÄ²ÎÊıÖµ</param>
+        /// <param name="gatewayParameterName">ç½‘å…³çš„å‚æ•°åç§°</param>
+        /// <param name="gatewayParameterValue">ç½‘å…³çš„å‚æ•°å€¼</param>
         /// <remarks>
-        /// ÉèÖÃµÄ²ÎÊı´æÔÚÊ±£¬Èç¹û²ÎÊıµÄÖµ²»Ò»ÖÂÔò±£´æĞÂµÄ²ÎÊıÖµ¡£
+        /// è®¾ç½®çš„å‚æ•°å­˜åœ¨æ—¶ï¼Œå¦‚æœå‚æ•°çš„å€¼ä¸ä¸€è‡´åˆ™ä¿å­˜æ–°çš„å‚æ•°å€¼ã€‚
         /// </remarks>
         public void SetGatewayParameterValue(string gatewayParameterName, object gatewayParameterValue)
         {
@@ -246,12 +246,12 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>
-        /// ÉèÖÃÍø¹ØµÄÊı¾İ
+        /// è®¾ç½®ç½‘å…³çš„æ•°æ®
         /// </summary>
-        /// <param name="gatewayParameterName">Íø¹ØµÄ²ÎÊıÃû³Æ</param>
-        /// <param name="gatewayParameterValue">Íø¹ØµÄ²ÎÊıÖµ</param>
+        /// <param name="gatewayParameterName">ç½‘å…³çš„å‚æ•°åç§°</param>
+        /// <param name="gatewayParameterValue">ç½‘å…³çš„å‚æ•°å€¼</param>
         /// <remarks>
-        /// ÉèÖÃµÄ²ÎÊı´æÔÚÊ±£¬Èç¹û²ÎÊıµÄÖµ²»Ò»ÖÂÔò±£´æĞÂµÄ²ÎÊıÖµ¡£
+        /// è®¾ç½®çš„å‚æ•°å­˜åœ¨æ—¶ï¼Œå¦‚æœå‚æ•°çš„å€¼ä¸ä¸€è‡´åˆ™ä¿å­˜æ–°çš„å‚æ•°å€¼ã€‚
         /// </remarks>
         public void SetGatewayParameterValue(string gatewayParameterName, string gatewayParameterValue)
         {
@@ -260,13 +260,13 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>
-        /// ÉèÖÃÍø¹ØµÄÊı¾İ
+        /// è®¾ç½®ç½‘å…³çš„æ•°æ®
         /// </summary>
-        /// <param name="gatewayParameterName">Íø¹ØµÄ²ÎÊıÃû³Æ</param>
-        /// <param name="gatewayParameterValue">Íø¹ØµÄ²ÎÊıÖµ</param>
-        /// <param name="gatewayParameterType">Íø¹ØµÄ²ÎÊıµÄÀàĞÍ</param>
+        /// <param name="gatewayParameterName">ç½‘å…³çš„å‚æ•°åç§°</param>
+        /// <param name="gatewayParameterValue">ç½‘å…³çš„å‚æ•°å€¼</param>
+        /// <param name="gatewayParameterType">ç½‘å…³çš„å‚æ•°çš„ç±»å‹</param>
         /// <remarks>
-        /// ÉèÖÃµÄ²ÎÊı´æÔÚÊ±£¬Èç¹û²ÎÊıµÄÖµ²»Ò»ÖÂÔò±£´æĞÂµÄ²ÎÊıÖµ¡£
+        /// è®¾ç½®çš„å‚æ•°å­˜åœ¨æ—¶ï¼Œå¦‚æœå‚æ•°çš„å€¼ä¸ä¸€è‡´åˆ™ä¿å­˜æ–°çš„å‚æ•°å€¼ã€‚
         /// </remarks>
         public void SetGatewayParameterValue(string gatewayParameterName, object gatewayParameterValue, GatewayParameterType gatewayParameterType)
         {
@@ -275,13 +275,13 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>
-        /// ÉèÖÃÍø¹ØµÄÊı¾İ
+        /// è®¾ç½®ç½‘å…³çš„æ•°æ®
         /// </summary>
-        /// <param name="gatewayParameterName">Íø¹ØµÄ²ÎÊıÃû³Æ</param>
-        /// <param name="gatewayParameterValue">Íø¹ØµÄ²ÎÊıÖµ</param>
-        /// <param name="gatewayParameterType">Íø¹ØµÄ²ÎÊıµÄÀàĞÍ</param>
+        /// <param name="gatewayParameterName">ç½‘å…³çš„å‚æ•°åç§°</param>
+        /// <param name="gatewayParameterValue">ç½‘å…³çš„å‚æ•°å€¼</param>
+        /// <param name="gatewayParameterType">ç½‘å…³çš„å‚æ•°çš„ç±»å‹</param>
         /// <remarks>
-        /// ÉèÖÃµÄ²ÎÊı´æÔÚÊ±£¬Èç¹û²ÎÊıµÄÖµ²»Ò»ÖÂÔò±£´æĞÂµÄ²ÎÊıÖµ¡£
+        /// è®¾ç½®çš„å‚æ•°å­˜åœ¨æ—¶ï¼Œå¦‚æœå‚æ•°çš„å€¼ä¸ä¸€è‡´åˆ™ä¿å­˜æ–°çš„å‚æ•°å€¼ã€‚
         /// </remarks>
         public void SetGatewayParameterValue(string gatewayParameterName, string gatewayParameterValue, GatewayParameterType gatewayParameterType)
         {
@@ -307,9 +307,9 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>
-        /// »ñµÃÍø¹ØµÄ²ÎÊıÖµ¡£Ã»ÓĞ²ÎÊıÖµÊ±·µ»Ø¿Õ×Ö·û´®£¬Get·½Ê½µÄÖµ¾ùÎªÎ´½âÂë
+        /// è·å¾—ç½‘å…³çš„å‚æ•°å€¼ã€‚æ²¡æœ‰å‚æ•°å€¼æ—¶è¿”å›ç©ºå­—ç¬¦ä¸²ï¼ŒGetæ–¹å¼çš„å€¼å‡ä¸ºæœªè§£ç 
         /// </summary>
-        /// <param name="gatewayParameterName">Íø¹ØµÄ²ÎÊıÃû³Æ</param>
+        /// <param name="gatewayParameterName">ç½‘å…³çš„å‚æ•°åç§°</param>
         public string GetGatewayParameterValue(string gatewayParameterName)
         {
             return GetGatewayParameterValue(gatewayParameterName, GatewayParameterType.Both);
@@ -317,10 +317,10 @@ namespace Mi9Pay.PayProvider
 
 
         /// <summary>
-        /// »ñµÃÍø¹ØµÄ²ÎÊıÖµ¡£Ã»ÓĞ²ÎÊıÖµÊ±·µ»Ø¿Õ×Ö·û´®£¬Get·½Ê½µÄÖµ¾ùÎªÎ´½âÂë
+        /// è·å¾—ç½‘å…³çš„å‚æ•°å€¼ã€‚æ²¡æœ‰å‚æ•°å€¼æ—¶è¿”å›ç©ºå­—ç¬¦ä¸²ï¼ŒGetæ–¹å¼çš„å€¼å‡ä¸ºæœªè§£ç 
         /// </summary>
-        /// <param name="gatewayParameterName">Íø¹ØµÄ²ÎÊıÃû³Æ</param>
-        /// <param name="gatewayParameterType">Íø¹ØµÄÊı¾İµÄ½ÓÊÕ¡¢·¢ËÍ·½Ê½</param>
+        /// <param name="gatewayParameterName">ç½‘å…³çš„å‚æ•°åç§°</param>
+        /// <param name="gatewayParameterType">ç½‘å…³çš„æ•°æ®çš„æ¥æ”¶ã€å‘é€æ–¹å¼</param>
         public string GetGatewayParameterValue(string gatewayParameterName, GatewayParameterType gatewayParameterType)
         {
             GatewayParameter parameter = GatewayParameterData.SingleOrDefault(p => string.Compare(p.Name, gatewayParameterName) == 0 &&
@@ -335,13 +335,13 @@ namespace Mi9Pay.PayProvider
         
 
         /// <summary>
-        /// ¼ìÑéÍø¹Ø·µ»ØµÄÍ¨Öª£¬È·ÈÏ¶©µ¥ÊÇ·ñÖ§¸¶³É¹¦
+        /// æ£€éªŒç½‘å…³è¿”å›çš„é€šçŸ¥ï¼Œç¡®è®¤è®¢å•æ˜¯å¦æ”¯ä»˜æˆåŠŸ
         /// </summary>
         protected abstract bool CheckNotifyData();
 
 
         /// <summary>
-        /// °´Íø¹ØÒªÇó¸ñÊ½Êä³ö³É¹¦½ÓÊÕµ½Íø¹ØÍ¨ÖªµÄ±ê¼Ç×Ö·û
+        /// æŒ‰ç½‘å…³è¦æ±‚æ ¼å¼è¾“å‡ºæˆåŠŸæ¥æ”¶åˆ°ç½‘å…³é€šçŸ¥çš„æ ‡è®°å­—ç¬¦
         /// </summary>
         public virtual void WriteSucceedFlag()
         {
