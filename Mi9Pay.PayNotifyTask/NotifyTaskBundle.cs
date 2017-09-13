@@ -9,15 +9,15 @@ namespace Mi9Pay.PayNotifyTask
 {
     public class NotifyTaskBundle : TaskBundle
     {
-        protected override int GetInterval()
+        public NotifyTaskBundle(int interval) 
+            : base(interval)
         {
-            return 1;
+
         }
 
-        protected override ITaskExecution GetTask()
+        protected override TaskExecution GetTask()
         {
-            ITaskExecution task = new NotifyTaskExecution();
-            return task;
+            return new NotifyTaskExecution();
         }
     }
 }

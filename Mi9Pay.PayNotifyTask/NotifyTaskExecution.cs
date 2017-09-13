@@ -13,7 +13,7 @@ namespace Mi9Pay.PayNotifyTask
 {
     public class NotifyTaskExecution : TaskExecutionAdapter
     {
-        public override TaskExecResult TaskTrigger()
+        protected override TaskExecResult TaskAction()
         {
             DateTime processTime = DateTime.Now;
             try

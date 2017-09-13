@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DLLs", "DLLs", "{01DA51B4-7
 	ProjectSection(SolutionItems) = preProject
 		DLLs\Alipay.AopSdk.dll = DLLs\Alipay.AopSdk.dll
 		DLLs\Alipay.F2FPay.dll = DLLs\Alipay.F2FPay.dll
-		DLLs\TaskScheduler.dll = DLLs\TaskScheduler.dll
+		DLLs\System.Web.Http.dll = DLLs\System.Web.Http.dll
 		DLLs\ThoughtWorks.QRCode.dll = DLLs\ThoughtWorks.QRCode.dll
 	EndProjectSection
 EndProject
