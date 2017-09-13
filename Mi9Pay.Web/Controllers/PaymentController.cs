@@ -14,7 +14,8 @@ namespace Mi9Pay.Web.Controllers
     [RoutePrefix("payment")]
     public class PaymentController : BaseController
     {
-        public PaymentController(IGatewayService gatewayService) : base(gatewayService)
+        public PaymentController(IGatewayService gatewayService) 
+            : base(gatewayService)
         {
         }
 
@@ -32,11 +33,11 @@ namespace Mi9Pay.Web.Controllers
                 string[] storeIdArray = storeId.Split(",".ToCharArray());
 
                 int retCount = _gatewayService.DownloadBill(merchantCode, storeIdArray, billDate, type);
-                return Json(new BillDownloadResponse { return_code = "SUCCESS", return_msg = "OK", process_count = retCount });
+                return Json(new SuccessResponse().AddData("process_count", retCount.ToString()));
             }
             catch (Exception ex)
             {
-                return Json(new BaseResponse { return_code = "FAIL", return_msg = ex.Message });
+                return Json(new ErrorResponse(ex.Message));
             }
         }
 
@@ -56,11 +57,11 @@ namespace Mi9Pay.Web.Controllers
                 GatewayType type = request.payment_method.ToEnum<GatewayType>();
 
                 _gatewayService.RefundPayment(request.merchant_id, request.store_id, refundRequest, type);
-                return Json(new BaseResponse { return_code = "SUCCESS", return_msg = "OK" });
+                return Json(new SuccessResponse());
             }
             catch (Exception ex)
             {
-                return Json(new BaseResponse { return_code = "FAIL", return_msg = ex.Message });
+                return Json(new ErrorResponse(ex.Message));
             }
         }
 
@@ -72,7 +73,7 @@ namespace Mi9Pay.Web.Controllers
             filterContext.HttpContext.Response.StatusCode = 200;
             filterContext.Result = new JsonResult
             {
-                Data = new { return_code = "FAIL", return_msg = ex.Message },
+                Data = new ErrorResponse(ex.Message),
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
         }

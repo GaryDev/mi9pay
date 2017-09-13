@@ -1,4 +1,5 @@
 ﻿using Mi9Pay.Service;
+using Mi9Pay.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace Mi9Pay.Web.Controllers
                 filterContext.HttpContext.Response.StatusCode = 200;
                 filterContext.Result = new JsonResult
                 {
-                    Data = new { return_code = "FAIL", return_msg = ex.Message },
+                    Data = new ErrorResponse(ex.Message),
                     JsonRequestBehavior = JsonRequestBehavior.AllowGet
                 };
             }

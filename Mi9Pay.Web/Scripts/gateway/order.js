@@ -33,14 +33,14 @@
                 "cid": selectCombine
             },
             dataType: 'json',
-            success: function (data) {
+            success: function (allData) {
                 container.hideLoading();
                 qrDiv.empty();
-                if (data.img) {
-                    qrDiv.append(data.img);
+                if (allData.data.img) {
+                    qrDiv.append(allData.data.img);
                     longPolling();
-                } else if (data.return_msg != "OK") {
-                    qrDiv.append("<span>" + data.return_msg + "</span>");
+                } else if (allData.return_msg != "OK") {
+                    qrDiv.append("<span>" + allData.return_msg + "</span>");
                     if (interval)
                         clearInterval(interval);
                 } else {
@@ -68,15 +68,15 @@
                     "cid": selectCombine
                 },
                 dataType: 'json',
-                success: function (data) {
+                success: function (allData) {
                     container.hideLoading();
                     barcodeTxt.val("").focus();
-                    if (data && data.return_code == "SUCCESS") {
-                        if (data.return_url && data.return_url != null)
-                            window.location = data.return_url;
-                    } else if (data && data.return_code == "FAIL") {
+                    if (allData && allData.return_code == "SUCCESS") {
+                        if (allData.data.return_url && allData.data.return_url != null)
+                            window.location = allData.data.return_url;
+                    } else if (allData && allData.return_code == "FAIL") {
                         qrDiv.empty();
-                        qrDiv.append("<span>" + data.return_msg + "</span>");
+                        qrDiv.append("<span>" + allData.return_msg + "</span>");
                     }
                 },
                 error: function () {
@@ -165,15 +165,15 @@
                 error: function (error) {
                     longPolling();
                 },
-                success: function (data) {
-                    if (data && data.return_code == "SUCCESS") {
-                        if (data.return_url && data.return_url != null)
-                            window.location = data.return_url;
+                success: function (allData) {
+                    if (allData && allData.return_code == "SUCCESS") {
+                        if (allData.data.return_url && allData.data.return_url != null)
+                            window.location = allData.data.return_url;
                         else
                             longPolling();
-                    } else if (data && data.return_code == "FAIL") {
+                    } else if (allData && allData.return_code == "FAIL") {
                         qrDiv.empty();
-                        qrDiv.append("<span>" + data.return_msg + "</span>");
+                        qrDiv.append("<span>" + allData.return_msg + "</span>");
                         if (interval)
                             clearInterval(interval);
                     } else {

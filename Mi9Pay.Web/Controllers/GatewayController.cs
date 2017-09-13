@@ -16,7 +16,8 @@ namespace Mi9Pay.Web.Controllers
     [RoutePrefix("gateway")]
     public class GatewayController : BaseController
     {
-        public GatewayController(IGatewayService gatewayService) : base(gatewayService)
+        public GatewayController(IGatewayService gatewayService) 
+            : base(gatewayService)
         {
         }
 
@@ -25,7 +26,7 @@ namespace Mi9Pay.Web.Controllers
         public JsonResult GatewayInfo()
         {
             AssemblyHelper assemblyHelper = new AssemblyHelper(GetType().Assembly);
-            return Json(new { version = assemblyHelper.FileVersion }, JsonRequestBehavior.AllowGet);
+            return Json(new SuccessResponse().AddData("version", assemblyHelper.FileVersion), JsonRequestBehavior.AllowGet);
         }
 
         #region 订单相关接口
@@ -103,7 +104,7 @@ namespace Mi9Pay.Web.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new BaseResponse() { return_code = "FAIL", return_msg = ex.Message }, JsonRequestBehavior.AllowGet);
+                return Json(new ErrorResponse(ex.Message), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -123,11 +124,11 @@ namespace Mi9Pay.Web.Controllers
                     returnUrl = _gatewayService.BuildReturnUrl(request, result);
                     _gatewayService.PaymentNotify(request, result);
                 }
-                return Json(new { return_code = result.return_code, return_url = returnUrl, return_msg = "OK" }, JsonRequestBehavior.AllowGet);
+                return Json(new SuccessResponse().AddData("return_url", returnUrl), JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { return_code = "FAIL", return_url = string.Empty, return_msg = ex.Message }, JsonRequestBehavior.AllowGet);
+                return Json(new ErrorResponse(ex.Message), JsonRequestBehavior.AllowGet);
             }
         }
         #endregion
@@ -149,11 +150,11 @@ namespace Mi9Pay.Web.Controllers
                 {
                     imgTag = string.Format("<img src='data:image/png;base64,{0}' />", Convert.ToBase64String(ms.ToArray()));
                 }
-                return Json(new { return_code = "SUCCESS", img = imgTag, return_msg = "OK" }, JsonRequestBehavior.AllowGet);
+                return Json(new SuccessResponse().AddData("img", imgTag), JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { return_code = "FAIL", img = string.Empty, return_msg = ex.Message }, JsonRequestBehavior.AllowGet);
+                return Json(new ErrorResponse(ex.Message), JsonRequestBehavior.AllowGet);
             }
         }
         #endregion
@@ -178,11 +179,11 @@ namespace Mi9Pay.Web.Controllers
                     _gatewayService.PaymentNotify(request, result);
                 }
 
-                return Json(new { return_code = result.return_code, return_url = returnUrl, return_msg = "OK" });
+                return Json(new SuccessResponse().AddData("return_url", returnUrl));
             }
             catch (Exception ex)
             {
-                return Json(new { return_code = "FAIL", img = string.Empty, return_msg = ex.Message });
+                return Json(new ErrorResponse(ex.Message));
             }
         }
         #endregion
