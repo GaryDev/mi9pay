@@ -47,9 +47,11 @@
     <Compile Include="Request\RefundRequest.cs" />
     <Compile Include="Response\BaseResponse.cs" />
     <Compile Include="Response\BillDownloadResponse.cs" />
+    <Compile Include="Response\ErrorResponse.cs" />
+    <Compile Include="Response\SuccessResponse.cs" />
     <Compile Include="View\OrderRequestViewModel.cs" />
     <Compile Include="Response\OrderPaymentResponse.cs" />
-    <Compile Include="Response\OrderPayment.cs" />
+    <Compile Include="OrderPayment.cs" />
     <Compile Include="View\PaymentCombineViewModel.cs" />
     <Compile Include="View\PaymentMethodViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

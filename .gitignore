@@ -1,6 +1,7 @@
 *.suo
 /.vs
 /packages
+/publish
 /Mi9Pay.Config/bin
 /Mi9Pay.Config/obj
 /Mi9Pay.DataModel/bin
