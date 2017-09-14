@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -49,6 +50,8 @@
     <Compile Include="Response\BillDownloadResponse.cs" />
     <Compile Include="Response\ErrorResponse.cs" />
     <Compile Include="Response\SuccessResponse.cs" />
+    <Compile Include="Test\OrderDetailViewModel.cs" />
+    <Compile Include="Test\OrderViewModel.cs" />
     <Compile Include="View\OrderRequestViewModel.cs" />
     <Compile Include="Response\OrderPaymentResponse.cs" />
     <Compile Include="OrderPayment.cs" />
