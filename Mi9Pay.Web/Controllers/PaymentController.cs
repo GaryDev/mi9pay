@@ -64,18 +64,5 @@ namespace Mi9Pay.Web.Controllers
                 return Json(new ErrorResponse(ex.Message));
             }
         }
-
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            Exception ex = filterContext.Exception;
-            filterContext.ExceptionHandled = true;
-
-            filterContext.HttpContext.Response.StatusCode = 200;
-            filterContext.Result = new JsonResult
-            {
-                Data = new ErrorResponse(ex.Message),
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet
-            };
-        }
     }
 }

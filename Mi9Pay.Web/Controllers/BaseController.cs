@@ -3,6 +3,7 @@ using Mi9Pay.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -25,7 +26,7 @@ namespace Mi9Pay.Web.Controllers
             //if (filterContext.HttpContext.Request.HttpMethod == "GET")
             if (filterContext.HttpContext.Request.IsAjaxRequest())
             {
-                filterContext.HttpContext.Response.StatusCode = 200;
+                filterContext.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 filterContext.Result = new JsonResult
                 {
                     Data = new ErrorResponse(ex.Message),

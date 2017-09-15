@@ -173,41 +173,6 @@ namespace Mi9Pay.PayProvider
             }
         }
 
-
-        /// <summary>
-        /// 创建订单的支付Url、Form表单、二维码。
-        /// </summary>
-        /// <remarks>
-        /// 如果创建的是订单的Url或Form表单将跳转到相应网关支付，如果是二维码将输出二维码图片。
-        /// </remarks>
-        public void Payment()
-        {
-            IPaymentUrl paymentUrl = gateway as IPaymentUrl;
-            if (paymentUrl != null)
-            {
-                HttpContext.Current.Response.Redirect(paymentUrl.BuildPaymentUrl());
-                return;
-            }
-
-            IPaymentForm paymentForm = gateway as IPaymentForm;
-            if (paymentForm != null)
-            {
-                HttpContext.Current.Response.Write(paymentForm.BuildPaymentForm());
-                return;
-            }
-
-            IPaymentWithCode paymentQRCode = gateway as IPaymentWithCode;
-            if (paymentQRCode != null)
-            {
-                MemoryStream ms = BuildQRCodeImage(paymentQRCode.GetPaymentQRCodeContent());
-                HttpContext.Current.Response.ContentType = "image/x-png";
-                HttpContext.Current.Response.BinaryWrite(ms.GetBuffer());
-                return;
-            }
-
-            throw new NotSupportedException(gateway.GatewayType + " 没有实现支付接口");
-        }
-
         public MemoryStream PaymentQRCode()
         {
             IPaymentWithCode codePayment = gateway as IPaymentWithCode;
@@ -243,44 +208,6 @@ namespace Mi9Pay.PayProvider
                 return codePayment.RefundPayment();
             }
             throw new NotSupportedException(gateway.GatewayType + " 没有实现支付接口");
-        }
-
-        /// <summary>
-        /// 查询订单，订单的查询通知数据通过跟支付通知一样的形式反回。用处理网关通知一样的方法接受查询订单的数据。
-        /// </summary>
-        public void QueryNotify()
-        {
-            IQueryUrl queryUrl = gateway as IQueryUrl;
-            if (queryUrl != null)
-            {
-                HttpContext.Current.Response.Redirect(queryUrl.BuildQueryUrl());
-                return;
-            }
-
-            IQueryForm queryForm = gateway as IQueryForm;
-            if (queryForm != null)
-            {
-                HttpContext.Current.Response.Write(queryForm.BuildQueryForm());
-                return;
-            }
-
-            throw new NotSupportedException(gateway.GatewayType + " 没有实现 IQueryUrl 或 IQueryForm 查询接口");
-        }
-
-        
-        /// <summary>
-        /// 查询订单，立即获得订单的查询结果
-        /// </summary>
-        /// <returns></returns>
-        public bool QueryNow()
-        {
-            IQueryNow queryNow = gateway as IQueryNow;
-            if (queryNow != null)
-            {
-                return queryNow.QueryNow();
-            }
-
-            throw new NotSupportedException(gateway.GatewayType + " 没有实现 IQueryNow 查询接口");
         }
 
         /// <summary>
