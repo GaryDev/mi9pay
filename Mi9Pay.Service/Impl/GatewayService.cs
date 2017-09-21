@@ -247,7 +247,7 @@ namespace Mi9Pay.Service
             parameters.Add("status", response.order.status);
             parameters.Add("amount", response.order.amount);
             parameters.Add("paid_amount", response.order.paid_amount);
-            parameters.Add("payment_date", DateTime.Now.ToString("yyyyMMddHHmmss"));
+            parameters.Add("payment_date", DateTime.Now.ToString("yyyy-MM-dd"));
 
             GatewayPaymentApp app = GetGatewayPaymentApp(request.AppId);
             string signString = SignatureUtil.CreateSortedParams(parameters);

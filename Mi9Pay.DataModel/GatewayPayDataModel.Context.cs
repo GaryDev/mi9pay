@@ -15,16 +15,11 @@ namespace Mi9Pay.DataModel
     
     public partial class GatewayPayEntities : DbContext
     {
-        public GatewayPayEntities()
-            : base("name=GatewayPayEntities")
+        public GatewayPayEntities(string connStr)
+            : base(connStr)
         {
         }
-
-        public GatewayPayEntities(string connectionString)
-            : base(connectionString)
-        {
-        }
-
+    
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();
