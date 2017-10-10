@@ -1,9 +1,12 @@
 ﻿using Mi9Pay.Entities;
+using Mi9Pay.Web.App_Start;
 using Mi9Pay.Web.Binder;
+using Microsoft.Practices.Unity.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
@@ -18,6 +21,9 @@ namespace Mi9Pay.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            UnityApiConfig.RegisterComponents();
+            GlobalConfiguration.Configure(WebApiConfig.Register);
 
             ModelBinders.Binders.Add(typeof(OrderRequest), new OrderRequestBinder());
         }
