@@ -31,5 +31,28 @@ namespace Mi9Pay.Config
             }
         }
 
+
+        public static string PasswordPhase
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings.Get("PasswordPhase");
+            }
+        }
+
+        public static int TokenTimeout
+        {
+            get
+            {
+                int timeout = 300;
+                if (ConfigurationManager.AppSettings.AllKeys.Contains("TokenTimeout"))
+                {
+                    string timeoutValue = ConfigurationManager.AppSettings.Get("TokenTimeout");
+                    if (int.TryParse(timeoutValue, out timeout))
+                        return timeout;
+                }
+                return timeout;
+            }
+        }
     }
 }
