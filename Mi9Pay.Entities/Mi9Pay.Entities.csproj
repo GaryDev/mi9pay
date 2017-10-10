@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GatewayMgr\Token.cs" />
+    <Compile Include="GatewayMgr\User.cs" />
     <Compile Include="NotifyQueue.cs" />
     <Compile Include="OrderPayment.cs" />
     <Compile Include="OrderPaymentResponse.cs" />
@@ -62,6 +64,7 @@
       <Name>Mi9Pay.PayProvider</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
