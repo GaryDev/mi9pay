@@ -7,11 +7,16 @@ using Mi9Pay.Entities.GatewayMgr;
 
 namespace Mi9Pay.Service
 {
-    public partial class GatewayMgrService : IGatewayMgrService
+    public partial class GatewayMgrService
     {
         public int Authenticate(string username, string password)
         {
             return 1;
+        }
+
+        public bool ValidateToken(string token)
+        {
+            return true;
         }
 
         public Token GenerateToken(int userId)

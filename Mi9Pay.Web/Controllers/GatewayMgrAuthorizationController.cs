@@ -10,9 +10,19 @@ using Mi9Pay.Web.ActionFilters;
 
 namespace Mi9Pay.Web.Controllers
 {
-    public partial class GatewayMgrController
+    [ApiAuthenticationFilter]
+    [RoutePrefix("gatewaymgr/api/v1/auth")]
+    public class GatewayMgrAuthorizationController : GatewayMgrBaseController
     {
-        [Route("auth/login")]
+        private readonly IGatewayMgrService _gatewayMgrService;
+
+        public GatewayMgrAuthorizationController(IGatewayMgrService gatewayMgrService) 
+            : base(gatewayMgrService)
+        {
+            _gatewayMgrService = gatewayMgrService;
+        }
+
+        [Route("login")]
         [HttpPost]
         public HttpResponseMessage GetToken()
         {

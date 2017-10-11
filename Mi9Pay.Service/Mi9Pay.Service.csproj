@@ -64,7 +64,9 @@
     <Compile Include="Impl\BillServiceAlipay.cs" />
     <Compile Include="Impl\BillServiceWechat.cs" />
     <Compile Include="Impl\GatewayDbService.cs" />
+    <Compile Include="Impl\GatewayMgrService.cs" />
     <Compile Include="Impl\GatewayMgrService_Authorization.cs" />
+    <Compile Include="Impl\GatewayMgrService_Merchant.cs" />
     <Compile Include="Impl\GatewayService.cs" />
     <Compile Include="Impl\NotifyTaskService.cs" />
     <Compile Include="Impl\PaymentService.cs" />

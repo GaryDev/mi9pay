@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -49,6 +52,7 @@
     <Compile Include="Response\BaseResponse.cs" />
     <Compile Include="Response\BillDownloadResponse.cs" />
     <Compile Include="Response\ErrorResponse.cs" />
+    <Compile Include="Response\GatewayMgr\MerchantResponse.cs" />
     <Compile Include="Response\SuccessResponse.cs" />
     <Compile Include="Test\OrderDetailViewModel.cs" />
     <Compile Include="Test\OrderViewModel.cs" />

@@ -9,11 +9,8 @@ namespace Mi9Pay.Web.Controllers
 {
     public class GatewayMgrBaseController : ApiController
     {
-        protected readonly IGatewayMgrService _gatewayMgrService;
-
         public GatewayMgrBaseController(IGatewayMgrService gatewayMgrService)
         {
-            _gatewayMgrService = gatewayMgrService;
         }
     }
 }

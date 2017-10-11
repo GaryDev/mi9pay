@@ -159,10 +159,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionFilters\ApiAuthenticationFilter.cs" />
+    <Compile Include="ActionFilters\AuthorizationRequiredAttribute.cs" />
     <Compile Include="ActionFilters\BasicAuthenticationIdentity.cs" />
     <Compile Include="ActionFilters\CustomRequireHttpsAttribute.cs" />
     <Compile Include="ActionFilters\GenericAuthenticationFilter.cs" />
     <Compile Include="ActionFilters\LoggingFilterAttribute.cs" />
+    <Compile Include="Actions\GatewayMgrAction.cs" />
+    <Compile Include="Actions\GatewayMgrAction_Merchant.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -175,7 +178,8 @@
     <Compile Include="Controllers\GatewayController.cs" />
     <Compile Include="Controllers\GatewayMgrBaseController.cs" />
     <Compile Include="Controllers\GatewayMgrController.cs" />
-    <Compile Include="Controllers\GatewayMgrController_Authorization.cs" />
+    <Compile Include="Controllers\GatewayMgrAuthorizationController.cs" />
+    <Compile Include="Controllers\GatewayMgrController_Merchant.cs" />
     <Compile Include="Controllers\PaymentController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
