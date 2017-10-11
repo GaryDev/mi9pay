@@ -131,7 +131,7 @@ namespace Mi9Pay.Service
             MemoryStream ms = paymentSetting.PaymentQRCode();
             if (ms != null)
             {
-                CreatePaymentOrder(orderRequest, paymentSetting.Order.Subject);
+                SavePaymentOrder(orderRequest, paymentSetting.Order.Subject);
             }
             return ms;
         }
@@ -145,12 +145,12 @@ namespace Mi9Pay.Service
             paymentSetting.SetGatewayParameterValue("auth_code", barcode);
 
             string invoiceNumber = orderRequest.InvoiceNumber;
-            CreatePaymentOrder(orderRequest, paymentSetting.Order.Subject);
+            SavePaymentOrder(orderRequest, paymentSetting.Order.Subject);
 
             PaymentResult result = paymentSetting.BarcodePayment();
             if (result != null)
             {
-                UpdatePaymentOrder(orderRequest, result.TradeNo);
+                CompletePaymentOrder(orderRequest, result.TradeNo);
 
                 result.InvoiceNo = invoiceNumber;
                 response = BuildOrderPaymentResponse(result);
@@ -170,7 +170,7 @@ namespace Mi9Pay.Service
             PaymentResult result = paymentSetting.QueryForResult();
             if (result != null)
             {
-                UpdatePaymentOrder(orderRequest, result.TradeNo);
+                CompletePaymentOrder(orderRequest, result.TradeNo);
 
                 result.InvoiceNo = invoiceNumber;
                 response = BuildOrderPaymentResponse(result);
@@ -339,9 +339,10 @@ namespace Mi9Pay.Service
             paymentSetting.Order.DiscountAmount = (double)orderRequest.Discount;
         }
 
-        private void CreatePaymentOrder(OrderRequest orderRequest, string orderSubject)
+        private void SavePaymentOrder(OrderRequest orderRequest, string orderSubject)
         {
-            if (!PaymentOrderExisted(orderRequest))
+            GatewayPaymentOrder order = GetGatewayPaymentOrder(orderRequest);
+            if (order == null)
             {
                 Mapper.Initialize(cfg => {
                     cfg.CreateMap<OrderRequest, PaymentOrder>();
@@ -356,20 +357,22 @@ namespace Mi9Pay.Service
                     CreatePaymentOrder(paymentOrder);
                 }
             }
+            else
+            {
+                order.GatewayPaymentStorePaymentMethod = Guid.Parse(orderRequest.PaymentCombine);
+                UpdatePaymentOrder(order);
+            }
         }
 
-        private void UpdatePaymentOrder(OrderRequest orderRequest, string tradeNo)
+        private void CompletePaymentOrder(OrderRequest orderRequest, string tradeNo)
         {
-            PaymentOrder paymentOrder = new PaymentOrder
+            GatewayPaymentOrder order = GetGatewayPaymentOrder(orderRequest);
+            if (order != null)
             {
-                StoreId = orderRequest.StoreId,
-                Merchant = orderRequest.Merchant,
-                InvoiceNumber = orderRequest.InvoiceNumber,
-                StorePaymentMethod = Guid.Parse(orderRequest.PaymentCombine),
-                TradeNumber = tradeNo,
-                Status = PaymentOrderStatus.PAID
-            };
-            UpdatePaymentOrder(paymentOrder);
+                order.TradeNumber = tradeNo;
+                order.GatewayPaymentOrderStatus = GetGatewayPaymentOrderStatus(PaymentOrderStatus.PAID).UniqueId;
+                UpdatePaymentOrder(order);
+            }
         }
     }
 }

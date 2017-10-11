@@ -11,15 +11,9 @@ using Mi9Pay.PayProvider;
 
 namespace Mi9Pay.Web.Controllers
 {
-    [RoutePrefix("payment")]
-    public class PaymentController : BaseController
+    public partial class GatewayController
     {
-        public PaymentController(IGatewayService gatewayService) 
-            : base(gatewayService)
-        {
-        }
-
-        [Route("billdownload")]
+        [Route("payment/billdownload")]
         [HttpPost]
         public JsonResult BillDownload(BillDownloadRequest request)
         {
@@ -41,7 +35,7 @@ namespace Mi9Pay.Web.Controllers
             }
         }
 
-        [Route("refund")]
+        [Route("payment/refund")]
         [HttpPost]
         public JsonResult Refund(RefundRequest request)
         {

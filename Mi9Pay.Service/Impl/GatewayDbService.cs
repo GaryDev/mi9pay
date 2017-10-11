@@ -89,14 +89,11 @@ namespace Mi9Pay.Service
             return account;
         }
 
-        private bool PaymentOrderExisted(OrderRequest orderRequest)
+        private GatewayPaymentOrder GetGatewayPaymentOrder(OrderRequest orderRequest, PaymentOrderStatus payStatus = PaymentOrderStatus.UNPAID)
         {
-            GatewayPaymentOrder order = _repository.GetGatewayPaymentOrder(orderRequest.InvoiceNumber, 
-                orderRequest.StoreId, orderRequest.Merchant.UniqueId, Guid.Parse(orderRequest.PaymentCombine));
-            if (order != null && order.UniqueId != Guid.Empty)
-                return true;
-
-            return false;
+            GatewayPaymentOrder order = _repository.GetGatewayPaymentOrder(orderRequest.InvoiceNumber, orderRequest.StoreId, 
+                orderRequest.Merchant.UniqueId, GetGatewayPaymentOrderStatus(payStatus).UniqueId);
+            return order;
         }
 
         private void CreatePaymentOrder(PaymentOrder paymentOrder)
@@ -164,34 +161,15 @@ namespace Mi9Pay.Service
             }
         }
 
-        private void UpdatePaymentOrder(PaymentOrder paymentOrder)
+        private void UpdatePaymentOrder(GatewayPaymentOrder order)
         {
             try
             {
                 using (var scope = new TransactionScope())
                 {
-                    List<GatewayPaymentOrder> orderList = _repository.Order.GetMany(x => 
-                        x.OrderNumber == paymentOrder.InvoiceNumber && 
-                        x.StoreID == paymentOrder.StoreId && 
-                        x.GatewayPaymentMerchant == paymentOrder.Merchant.UniqueId).ToList();
-                    if (orderList != null && orderList.Count > 0)
-                    {
-                        foreach (GatewayPaymentOrder order in orderList)
-                        {
-                            if (order.GatewayPaymentStorePaymentMethod == paymentOrder.StorePaymentMethod)
-                            {
-                                order.TradeNumber = paymentOrder.TradeNumber;
-                                order.GatewayPaymentOrderStatus = GetGatewayPaymentOrderStatus(paymentOrder.Status).UniqueId;
-                            }
-                            else
-                            {
-                                order.GatewayPaymentOrderStatus = GetGatewayPaymentOrderStatus(PaymentOrderStatus.CLOSED).UniqueId;
-                            }
-                            _repository.Order.Update(order);
-                        }
-                        _repository.Save();
-                        scope.Complete();
-                    }
+                    _repository.Order.Update(order);
+                    _repository.Save();
+                    scope.Complete();
                 }
             }
             catch (Exception)

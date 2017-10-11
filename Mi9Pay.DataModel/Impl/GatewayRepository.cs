@@ -256,13 +256,13 @@ namespace Mi9Pay.DataModel
             return account;
         }
 
-        public GatewayPaymentOrder GetGatewayPaymentOrder(string invoiceNumber, int storeId, Guid merchant, Guid payMethodJoin)
+        public GatewayPaymentOrder GetGatewayPaymentOrder(string invoiceNumber, int storeId, Guid merchant, Guid payStatus)
         {
             var orderQuery = Order.GetManyQueryable(x => 
                 x.StoreID == storeId && 
                 x.GatewayPaymentMerchant == merchant && 
                 x.OrderNumber == invoiceNumber);
-            return orderQuery != null ? orderQuery.Where(o => o.GatewayPaymentStorePaymentMethod == payMethodJoin).FirstOrDefault() : null;
+            return orderQuery != null ? orderQuery.Where(o => o.GatewayPaymentOrderStatus == payStatus).FirstOrDefault() : null;
         }
 
         /// <summary>

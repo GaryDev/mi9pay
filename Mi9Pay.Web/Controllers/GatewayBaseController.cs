@@ -9,11 +9,11 @@ using System.Web.Mvc;
 
 namespace Mi9Pay.Web.Controllers
 {
-    public class BaseController : Controller
+    public class GatewayBaseController : Controller
     {
         protected readonly IGatewayService _gatewayService;
 
-        public BaseController(IGatewayService gatewayService)
+        public GatewayBaseController(IGatewayService gatewayService)
         {
             _gatewayService = gatewayService;
         }

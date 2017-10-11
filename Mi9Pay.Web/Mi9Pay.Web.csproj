@@ -174,13 +174,13 @@
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Binder\OrderRequestBinder.cs" />
-    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\GatewayBaseController.cs" />
     <Compile Include="Controllers\GatewayController.cs" />
     <Compile Include="Controllers\GatewayMgrBaseController.cs" />
     <Compile Include="Controllers\GatewayMgrController.cs" />
     <Compile Include="Controllers\GatewayMgrAuthorizationController.cs" />
     <Compile Include="Controllers\GatewayMgrController_Merchant.cs" />
-    <Compile Include="Controllers\PaymentController.cs" />
+    <Compile Include="Controllers\GatewayController_Payment.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

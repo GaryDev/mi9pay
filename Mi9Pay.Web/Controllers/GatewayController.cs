@@ -14,7 +14,7 @@ using Mi9Pay.PayProvider;
 namespace Mi9Pay.Web.Controllers
 {
     [RoutePrefix("gateway")]
-    public class GatewayController : BaseController
+    public partial class GatewayController : GatewayBaseController
     {
         public GatewayController(IGatewayService gatewayService) 
             : base(gatewayService)
