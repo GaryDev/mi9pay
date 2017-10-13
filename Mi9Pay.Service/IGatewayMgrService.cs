@@ -9,9 +9,11 @@ namespace Mi9Pay.Service
 {
     public interface IGatewayMgrService
     {
+        Token GenerateToken(int userId);
+
         int Authenticate(string username, string password);
         bool ValidateToken(string token);
-        Token GenerateToken(int userId);
+     
 
         List<Merchant> GetAllMerchants();
     }

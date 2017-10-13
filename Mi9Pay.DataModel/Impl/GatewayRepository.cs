@@ -13,6 +13,9 @@ namespace Mi9Pay.DataModel
         private GatewayPayEntities _context = null;
         private GenericRepository<GatewayPaymentApp> _appRepository;
 
+        private GenericRepository<GatewayPaymentUser> _userRepository;
+        private GenericRepository<GatewayPaymentToken> _tokenRepository;
+
         private GenericRepository<GatewayPaymentAccount> _accountRepository;
         private GenericRepository<GatewayPaymentMerchant> _merchantRepository;
         private GenericRepository<GatewayPaymentStore> _storeRepository;
@@ -220,6 +223,32 @@ namespace Mi9Pay.DataModel
                 if (this._notifyQueueRepository == null)
                     this._notifyQueueRepository = new GenericRepository<GatewayPaymentNotifyQueue>(_context);
                 return _notifyQueueRepository;
+            }
+        }
+
+        /// <summary>
+        /// Get/Set Property for user repository.
+        /// </summary>
+        public GenericRepository<GatewayPaymentUser> User
+        {
+            get
+            {
+                if (this._userRepository == null)
+                    this._userRepository = new GenericRepository<GatewayPaymentUser>(_context);
+                return _userRepository;
+            }
+        }
+
+        /// <summary>
+        /// Get/Set Property for token repository.
+        /// </summary>
+        public GenericRepository<GatewayPaymentToken> Token
+        {
+            get
+            {
+                if (this._tokenRepository == null)
+                    this._tokenRepository = new GenericRepository<GatewayPaymentToken>(_context);
+                return _tokenRepository;
             }
         }
 

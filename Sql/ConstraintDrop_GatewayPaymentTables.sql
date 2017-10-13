@@ -118,3 +118,11 @@ GO
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_GatewayPaymentUser_GatewayPaymentStore]') AND parent_object_id = OBJECT_ID(N'[dbo].[GatewayPaymentUser]'))
 ALTER TABLE [dbo].[GatewayPaymentUser] DROP CONSTRAINT [FK_GatewayPaymentUser_GatewayPaymentStore]
 GO
+
+/**
+GatewayPaymentToken CONSTRAINT
+**/
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_GatewayPaymentToken_GatewayPaymentUser]') AND parent_object_id = OBJECT_ID(N'[dbo].[GatewayPaymentToken]'))
+ALTER TABLE [dbo].[GatewayPaymentToken] DROP CONSTRAINT [FK_GatewayPaymentToken_GatewayPaymentUser]
+GO

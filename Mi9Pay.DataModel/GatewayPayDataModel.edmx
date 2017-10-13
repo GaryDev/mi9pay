@@ -231,12 +231,22 @@
           <Property Name="PaymentMethodDefault" Type="bit" />
           <Property Name="GatewayPaymentMethodTypeJoin" Type="uniqueidentifier" />
         </EntityType>
+        <EntityType Name="GatewayPaymentToken">
+          <Key>
+            <PropertyRef Name="UniqueId" />
+          </Key>
+          <Property Name="UniqueId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AuthToken" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IssuedOn" Type="datetime" Nullable="false" />
+          <Property Name="ExpiresOn" Type="datetime" Nullable="false" />
+          <Property Name="GatewayPaymentUser" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
         <EntityType Name="GatewayPaymentUser">
           <Key>
             <PropertyRef Name="UniqueId" />
           </Key>
           <Property Name="UniqueId" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="UserCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="UserCode" Type="int" Nullable="false" />
           <Property Name="UserName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="PassWord" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="GatewayPaymentStore" Type="uniqueidentifier" Nullable="false" />
@@ -410,6 +420,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_GatewayPaymentToken_GatewayPaymentUser">
+          <End Role="GatewayPaymentUser" Type="Self.GatewayPaymentUser" Multiplicity="1" />
+          <End Role="GatewayPaymentToken" Type="Self.GatewayPaymentToken" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GatewayPaymentUser">
+              <PropertyRef Name="UniqueId" />
+            </Principal>
+            <Dependent Role="GatewayPaymentToken">
+              <PropertyRef Name="GatewayPaymentUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_GatewayPaymentUser_GatewayPaymentPosition">
           <End Role="GatewayPaymentPosition" Type="Self.GatewayPaymentPosition" Multiplicity="1" />
           <End Role="GatewayPaymentUser" Type="Self.GatewayPaymentUser" Multiplicity="*" />
@@ -452,6 +474,7 @@
           <EntitySet Name="GatewayPaymentPosition" EntityType="Self.GatewayPaymentPosition" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GatewayPaymentStore" EntityType="Self.GatewayPaymentStore" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GatewayPaymentStorePaymentMethod" EntityType="Self.GatewayPaymentStorePaymentMethod" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GatewayPaymentToken" EntityType="Self.GatewayPaymentToken" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GatewayPaymentUser" EntityType="Self.GatewayPaymentUser" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_GatewayPaymentAccount_GatewayPaymentMerchant" Association="Self.FK_GatewayPaymentAccount_GatewayPaymentMerchant">
             <End Role="GatewayPaymentMerchant" EntitySet="GatewayPaymentMerchant" />
@@ -509,6 +532,10 @@
             <End Role="GatewayPaymentStore" EntitySet="GatewayPaymentStore" />
             <End Role="GatewayPaymentStorePaymentMethod" EntitySet="GatewayPaymentStorePaymentMethod" />
           </AssociationSet>
+          <AssociationSet Name="FK_GatewayPaymentToken_GatewayPaymentUser" Association="Self.FK_GatewayPaymentToken_GatewayPaymentUser">
+            <End Role="GatewayPaymentUser" EntitySet="GatewayPaymentUser" />
+            <End Role="GatewayPaymentToken" EntitySet="GatewayPaymentToken" />
+          </AssociationSet>
           <AssociationSet Name="FK_GatewayPaymentUser_GatewayPaymentPosition" Association="Self.FK_GatewayPaymentUser_GatewayPaymentPosition">
             <End Role="GatewayPaymentPosition" EntitySet="GatewayPaymentPosition" />
             <End Role="GatewayPaymentUser" EntitySet="GatewayPaymentUser" />
@@ -565,15 +592,6 @@
             <End Role="GatewayPaymentStore" EntitySet="GatewayPaymentStore" />
             <End Role="GatewayPaymentStorePaymentMethod" EntitySet="GatewayPaymentStorePaymentMethod" />
           </AssociationSet>
-          <EntitySet Name="GatewayPaymentUser" EntityType="GatewayPaymentModel.GatewayPaymentUser" />
-          <AssociationSet Name="FK_GatewayPaymentUser_GatewayPaymentPosition" Association="GatewayPaymentModel.FK_GatewayPaymentUser_GatewayPaymentPosition">
-            <End Role="GatewayPaymentPosition" EntitySet="GatewayPaymentPosition" />
-            <End Role="GatewayPaymentUser" EntitySet="GatewayPaymentUser" />
-          </AssociationSet>
-          <AssociationSet Name="FK_GatewayPaymentUser_GatewayPaymentStore" Association="GatewayPaymentModel.FK_GatewayPaymentUser_GatewayPaymentStore">
-            <End Role="GatewayPaymentStore" EntitySet="GatewayPaymentStore" />
-            <End Role="GatewayPaymentUser" EntitySet="GatewayPaymentUser" />
-          </AssociationSet>
           <EntitySet Name="GatewayPaymentNotifyQueue" EntityType="GatewayPaymentModel.GatewayPaymentNotifyQueue" />
           <EntitySet Name="GatewayPaymentAccount" EntityType="GatewayPaymentModel.GatewayPaymentAccount" />
           <AssociationSet Name="FK_GatewayPaymentAccount_GatewayPaymentMerchant" Association="GatewayPaymentModel.FK_GatewayPaymentAccount_GatewayPaymentMerchant">
@@ -616,6 +634,20 @@
           </AssociationSet>
           <EntitySet Name="GatewayPaymentBillAlipay" EntityType="GatewayPaymentModel.GatewayPaymentBillAlipay" />
           <EntitySet Name="GatewayPaymentBillWechat" EntityType="GatewayPaymentModel.GatewayPaymentBillWechat" />
+          <EntitySet Name="GatewayPaymentToken" EntityType="GatewayPaymentModel.GatewayPaymentToken" />
+          <EntitySet Name="GatewayPaymentUser" EntityType="GatewayPaymentModel.GatewayPaymentUser" />
+          <AssociationSet Name="FK_GatewayPaymentUser_GatewayPaymentPosition" Association="GatewayPaymentModel.FK_GatewayPaymentUser_GatewayPaymentPosition">
+            <End Role="GatewayPaymentPosition" EntitySet="GatewayPaymentPosition" />
+            <End Role="GatewayPaymentUser" EntitySet="GatewayPaymentUser" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GatewayPaymentUser_GatewayPaymentStore" Association="GatewayPaymentModel.FK_GatewayPaymentUser_GatewayPaymentStore">
+            <End Role="GatewayPaymentStore" EntitySet="GatewayPaymentStore" />
+            <End Role="GatewayPaymentUser" EntitySet="GatewayPaymentUser" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GatewayPaymentToken_GatewayPaymentUser" Association="GatewayPaymentModel.FK_GatewayPaymentToken_GatewayPaymentUser">
+            <End Role="GatewayPaymentUser" EntitySet="GatewayPaymentUser" />
+            <End Role="GatewayPaymentToken" EntitySet="GatewayPaymentToken" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="GatewayPaymentOrderDetail">
           <Key>
@@ -785,43 +817,6 @@
               <PropertyRef Name="UniqueId" />
             </Principal>
             <Dependent Role="GatewayPaymentStorePaymentMethod">
-              <PropertyRef Name="GatewayPaymentStore" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="GatewayPaymentUser">
-          <Key>
-            <PropertyRef Name="UniqueId" />
-          </Key>
-          <Property Name="UniqueId" Type="Guid" Nullable="false" />
-          <Property Name="UserCode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UserName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PassWord" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="GatewayPaymentStore" Type="Guid" Nullable="false" />
-          <Property Name="GatewayPaymentPosition" Type="Guid" Nullable="false" />
-          <NavigationProperty Name="GatewayPaymentPosition1" Relationship="GatewayPaymentModel.FK_GatewayPaymentUser_GatewayPaymentPosition" FromRole="GatewayPaymentUser" ToRole="GatewayPaymentPosition" />
-          <NavigationProperty Name="GatewayPaymentStore1" Relationship="GatewayPaymentModel.FK_GatewayPaymentUser_GatewayPaymentStore" FromRole="GatewayPaymentUser" ToRole="GatewayPaymentStore" />
-        </EntityType>
-        <Association Name="FK_GatewayPaymentUser_GatewayPaymentPosition">
-          <End Type="GatewayPaymentModel.GatewayPaymentPosition" Role="GatewayPaymentPosition" Multiplicity="1" />
-          <End Type="GatewayPaymentModel.GatewayPaymentUser" Role="GatewayPaymentUser" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="GatewayPaymentPosition">
-              <PropertyRef Name="UniqueId" />
-            </Principal>
-            <Dependent Role="GatewayPaymentUser">
-              <PropertyRef Name="GatewayPaymentPosition" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_GatewayPaymentUser_GatewayPaymentStore">
-          <End Type="GatewayPaymentModel.GatewayPaymentStore" Role="GatewayPaymentStore" Multiplicity="1" />
-          <End Type="GatewayPaymentModel.GatewayPaymentUser" Role="GatewayPaymentUser" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="GatewayPaymentStore">
-              <PropertyRef Name="UniqueId" />
-            </Principal>
-            <Dependent Role="GatewayPaymentUser">
               <PropertyRef Name="GatewayPaymentStore" />
             </Dependent>
           </ReferentialConstraint>
@@ -1067,6 +1062,67 @@
           <Property Name="Rate" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="TSID" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
+        <EntityType Name="GatewayPaymentToken">
+          <Key>
+            <PropertyRef Name="UniqueId" />
+          </Key>
+          <Property Name="UniqueId" Type="Guid" Nullable="false" />
+          <Property Name="AuthToken" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IssuedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ExpiresOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="GatewayPaymentUser" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="GatewayPaymentUser1" Relationship="GatewayPaymentModel.FK_GatewayPaymentToken_GatewayPaymentUser" FromRole="GatewayPaymentToken" ToRole="GatewayPaymentUser" />
+        </EntityType>
+        <EntityType Name="GatewayPaymentUser">
+          <Key>
+            <PropertyRef Name="UniqueId" />
+          </Key>
+          <Property Name="UniqueId" Type="Guid" Nullable="false" />
+          <Property Name="UserCode" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PassWord" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GatewayPaymentStore" Type="Guid" Nullable="false" />
+          <Property Name="GatewayPaymentPosition" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="GatewayPaymentPosition1" Relationship="GatewayPaymentModel.FK_GatewayPaymentUser_GatewayPaymentPosition" FromRole="GatewayPaymentUser" ToRole="GatewayPaymentPosition" />
+          <NavigationProperty Name="GatewayPaymentStore1" Relationship="GatewayPaymentModel.FK_GatewayPaymentUser_GatewayPaymentStore" FromRole="GatewayPaymentUser" ToRole="GatewayPaymentStore" />
+          <NavigationProperty Name="GatewayPaymentToken" Relationship="GatewayPaymentModel.FK_GatewayPaymentToken_GatewayPaymentUser" FromRole="GatewayPaymentUser" ToRole="GatewayPaymentToken" />
+        </EntityType>
+        <Association Name="FK_GatewayPaymentUser_GatewayPaymentPosition">
+          <End Type="GatewayPaymentModel.GatewayPaymentPosition" Role="GatewayPaymentPosition" Multiplicity="1" />
+          <End Type="GatewayPaymentModel.GatewayPaymentUser" Role="GatewayPaymentUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GatewayPaymentPosition">
+              <PropertyRef Name="UniqueId" />
+            </Principal>
+            <Dependent Role="GatewayPaymentUser">
+              <PropertyRef Name="GatewayPaymentPosition" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GatewayPaymentUser_GatewayPaymentStore">
+          <End Type="GatewayPaymentModel.GatewayPaymentStore" Role="GatewayPaymentStore" Multiplicity="1" />
+          <End Type="GatewayPaymentModel.GatewayPaymentUser" Role="GatewayPaymentUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GatewayPaymentStore">
+              <PropertyRef Name="UniqueId" />
+            </Principal>
+            <Dependent Role="GatewayPaymentUser">
+              <PropertyRef Name="GatewayPaymentStore" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GatewayPaymentToken_GatewayPaymentUser">
+          <End Type="GatewayPaymentModel.GatewayPaymentUser" Role="GatewayPaymentUser" Multiplicity="1" />
+          <End Type="GatewayPaymentModel.GatewayPaymentToken" Role="GatewayPaymentToken" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GatewayPaymentUser">
+              <PropertyRef Name="UniqueId" />
+            </Principal>
+            <Dependent Role="GatewayPaymentToken">
+              <PropertyRef Name="GatewayPaymentUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1182,18 +1238,6 @@
                 <ScalarProperty Name="GatewayPaymentMethodTypeJoin" ColumnName="GatewayPaymentMethodTypeJoin" />
                 <ScalarProperty Name="PaymentMethodDefault" ColumnName="PaymentMethodDefault" />
                 <ScalarProperty Name="GatewayPaymentStore" ColumnName="GatewayPaymentStore" />
-                <ScalarProperty Name="UniqueId" ColumnName="UniqueId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="GatewayPaymentUser">
-            <EntityTypeMapping TypeName="GatewayPaymentModel.GatewayPaymentUser">
-              <MappingFragment StoreEntitySet="GatewayPaymentUser">
-                <ScalarProperty Name="GatewayPaymentPosition" ColumnName="GatewayPaymentPosition" />
-                <ScalarProperty Name="GatewayPaymentStore" ColumnName="GatewayPaymentStore" />
-                <ScalarProperty Name="PassWord" ColumnName="PassWord" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="UserCode" ColumnName="UserCode" />
                 <ScalarProperty Name="UniqueId" ColumnName="UniqueId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1324,6 +1368,29 @@
                 <ScalarProperty Name="TradeTime" ColumnName="TradeTime" />
                 <ScalarProperty Name="GatewayPaymentMerchant" ColumnName="GatewayPaymentMerchant" />
                 <ScalarProperty Name="StoreId" ColumnName="StoreId" />
+                <ScalarProperty Name="UniqueId" ColumnName="UniqueId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GatewayPaymentToken">
+            <EntityTypeMapping TypeName="GatewayPaymentModel.GatewayPaymentToken">
+              <MappingFragment StoreEntitySet="GatewayPaymentToken">
+                <ScalarProperty Name="GatewayPaymentUser" ColumnName="GatewayPaymentUser" />
+                <ScalarProperty Name="ExpiresOn" ColumnName="ExpiresOn" />
+                <ScalarProperty Name="IssuedOn" ColumnName="IssuedOn" />
+                <ScalarProperty Name="AuthToken" ColumnName="AuthToken" />
+                <ScalarProperty Name="UniqueId" ColumnName="UniqueId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GatewayPaymentUser">
+            <EntityTypeMapping TypeName="GatewayPaymentModel.GatewayPaymentUser">
+              <MappingFragment StoreEntitySet="GatewayPaymentUser">
+                <ScalarProperty Name="GatewayPaymentPosition" ColumnName="GatewayPaymentPosition" />
+                <ScalarProperty Name="GatewayPaymentStore" ColumnName="GatewayPaymentStore" />
+                <ScalarProperty Name="PassWord" ColumnName="PassWord" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="UserCode" ColumnName="UserCode" />
                 <ScalarProperty Name="UniqueId" ColumnName="UniqueId" />
               </MappingFragment>
             </EntityTypeMapping>

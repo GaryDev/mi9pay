@@ -21,16 +21,13 @@
         <EntityTypeShape EntityType="GatewayPaymentModel.GatewayPaymentStorePaymentMethod" Width="2.875" PointX="0.5" PointY="11.625" />
         <AssociationConnector Association="GatewayPaymentModel.FK_GatewayPaymentStorePaymentMethod_GatewayPaymentMethodTypeJoin" />
         <AssociationConnector Association="GatewayPaymentModel.FK_GatewayPaymentStorePaymentMethod_GatewayPaymentStore" />
-        <EntityTypeShape EntityType="GatewayPaymentModel.GatewayPaymentUser" Width="2.625" PointX="12.5" PointY="12.25" />
-        <AssociationConnector Association="GatewayPaymentModel.FK_GatewayPaymentUser_GatewayPaymentPosition" />
-        <AssociationConnector Association="GatewayPaymentModel.FK_GatewayPaymentUser_GatewayPaymentStore" />
         <EntityTypeShape EntityType="GatewayPaymentModel.GatewayPaymentNotifyQueue" Width="2.125" PointX="21" PointY="3.25" />
         <EntityTypeShape EntityType="GatewayPaymentModel.GatewayPaymentAccount" Width="1.875" PointX="3.875" PointY="0.5" />
         <AssociationConnector Association="GatewayPaymentModel.FK_GatewayPaymentAccount_GatewayPaymentMerchant" />
         <AssociationConnector Association="GatewayPaymentModel.FK_GatewayPaymentAccount_GatewayPaymentMethod" />
         <EntityTypeShape EntityType="GatewayPaymentModel.GatewayPaymentApp" Width="1.875" PointX="0.625" PointY="0.5" />
         <AssociationConnector Association="GatewayPaymentModel.FK_GatewayPaymentApp_GatewayPaymentMerchant" />
-        <EntityTypeShape EntityType="GatewayPaymentModel.GatewayPaymentOrder" Width="2.75" PointX="4.25" PointY="3.625" />
+        <EntityTypeShape EntityType="GatewayPaymentModel.GatewayPaymentOrder" Width="2.875" PointX="4.75" PointY="3.625" />
         <AssociationConnector Association="GatewayPaymentModel.FK_GatewayPaymentOrder_GatewayPaymentCustomer" />
         <AssociationConnector Association="GatewayPaymentModel.FK_GatewayPaymentOrder_GatewayPaymentMerchant" />
         <AssociationConnector Association="GatewayPaymentModel.FK_GatewayPaymentOrder_GatewayPaymentOrderStatus" />
@@ -39,6 +36,11 @@
         <AssociationConnector Association="GatewayPaymentModel.FK_GatewayPaymentOrderDetail_GatewayPaymentOrder" />
         <EntityTypeShape EntityType="GatewayPaymentModel.GatewayPaymentBillAlipay" Width="2.5" PointX="18" PointY="3.25" />
         <EntityTypeShape EntityType="GatewayPaymentModel.GatewayPaymentBillWechat" Width="2.625" PointX="15" PointY="3.25" />
+        <EntityTypeShape EntityType="GatewayPaymentModel.GatewayPaymentToken" Width="2.75" PointX="16.5" PointY="12.75" />
+        <EntityTypeShape EntityType="GatewayPaymentModel.GatewayPaymentUser" Width="2.25" PointX="13.25" PointY="12.375" />
+        <AssociationConnector Association="GatewayPaymentModel.FK_GatewayPaymentUser_GatewayPaymentPosition" />
+        <AssociationConnector Association="GatewayPaymentModel.FK_GatewayPaymentUser_GatewayPaymentStore" />
+        <AssociationConnector Association="GatewayPaymentModel.FK_GatewayPaymentToken_GatewayPaymentUser" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

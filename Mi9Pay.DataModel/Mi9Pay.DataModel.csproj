@@ -114,6 +114,9 @@
     <Compile Include="GatewayPaymentStorePaymentMethod.cs">
       <DependentUpon>GatewayPayDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="GatewayPaymentToken.cs">
+      <DependentUpon>GatewayPayDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="GatewayPaymentUser.cs">
       <DependentUpon>GatewayPayDataModel.tt</DependentUpon>
     </Compile>

@@ -14,8 +14,13 @@ namespace Mi9Pay.DataModel
     
     public partial class GatewayPaymentUser
     {
+        public GatewayPaymentUser()
+        {
+            this.GatewayPaymentToken = new HashSet<GatewayPaymentToken>();
+        }
+    
         public System.Guid UniqueId { get; set; }
-        public string UserCode { get; set; }
+        public int UserCode { get; set; }
         public string UserName { get; set; }
         public string PassWord { get; set; }
         public System.Guid GatewayPaymentStore { get; set; }
@@ -23,5 +28,6 @@ namespace Mi9Pay.DataModel
     
         public virtual GatewayPaymentPosition GatewayPaymentPosition1 { get; set; }
         public virtual GatewayPaymentStore GatewayPaymentStore1 { get; set; }
+        public virtual ICollection<GatewayPaymentToken> GatewayPaymentToken { get; set; }
     }
 }
