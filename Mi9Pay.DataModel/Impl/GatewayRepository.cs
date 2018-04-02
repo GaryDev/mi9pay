@@ -36,9 +36,9 @@ namespace Mi9Pay.DataModel
 
         #endregion
 
-        public GatewayRepository()
+        public GatewayRepository(string providerConnString = null)
         {
-            string dbConnection = DBUtility.GetEntityConnectionString(DBUtility.DataModelFileName);
+            var dbConnection = DBUtility.GetEntityConnectionString(DBUtility.DataModelFileName, providerConnString);
             _context = new GatewayPayEntities(dbConnection);
         }
 

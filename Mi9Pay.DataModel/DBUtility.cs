@@ -12,17 +12,19 @@ namespace Mi9Pay.DataModel
     {
         public static readonly string DataModelFileName = "GatewayPayDataModel";
 
-		public static string GetEntityConnectionString(string fileName)
+		public static string GetEntityConnectionString(string fileName, string providerConnString = null)
         {
-            string providerName = "System.Data.SqlClient"; ///MS-SQL server was the database server
+            const string providerName = "System.Data.SqlClient";
+		    var conStr = new EntityConnectionStringBuilder
+		    {
+		        Provider = providerName,
+		        ProviderConnectionString = string.IsNullOrEmpty(providerConnString) ? AppConfig.EFConnectionString : providerConnString,
+		        Metadata = string.Format(@"res://*/{0}.csdl|res://*/{0}.ssdl|res://*/{0}.msl", fileName)
+		    };
+		    //database connection string
 
-            EntityConnectionStringBuilder conStr = new EntityConnectionStringBuilder();
-            conStr.Provider = providerName;
-            conStr.ProviderConnectionString = AppConfig.EFConnectionString; //database connection string
-
-            //main assembly level configuration
-            conStr.Metadata = string.Format(@"res://*/{0}.csdl|res://*/{0}.ssdl|res://*/{0}.msl", fileName);
-            return conStr.ToString();
+		    //main assembly level configuration
+		    return conStr.ToString();
         }
     }
 }

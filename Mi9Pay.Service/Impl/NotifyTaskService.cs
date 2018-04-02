@@ -17,9 +17,9 @@ namespace Mi9Pay.Service
 
         private GatewayRepository _repository;
 
-        public NotifyTaskService()
+        public NotifyTaskService(string connectString)
         {
-            _repository = new GatewayRepository();
+            _repository = new GatewayRepository(connectString);
         }
 
         public List<NotifyQueue> GetNotificationQueue(DateTime processTime)
