@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,7 +26,7 @@ namespace Mi9Pay.ViewModel.Test
         {
             StoreId = int.Parse(ConfigurationManager.AppSettings.Get("StoreId"));
             StoreCurrency = ConfigurationManager.AppSettings.Get("StoreCurrency");
-            InvoiceNumber = DateTime.Now.ToString("yyyyMMddHHmmss") + "0000" + (new Random()).Next(1, 10000).ToString();
+            InvoiceNumber = DateTime.Now.ToString("yyyyMMddHHmmss") + "0000" + (new Random()).Next(1, 10000);
 
             OrderItems = new List<OrderDetailViewModel>();
             int itemCount = int.Parse(ConfigurationManager.AppSettings.Get("ItemCount"));
@@ -53,12 +54,12 @@ namespace Mi9Pay.ViewModel.Test
             request.Add("store_id", StoreId.ToString());
             request.Add("currency", StoreCurrency);
             request.Add("invoice", InvoiceNumber);
-            request.Add("amount", (TotalAmount * 100).ToString());
+            request.Add("amount", (TotalAmount * 100).ToString(CultureInfo.InvariantCulture));
             for (int i = 0; i < OrderItems.Count; i++)
             {
                 request.Add(string.Format("item_{0}_name", i), OrderItems[i].ItemName);
-                request.Add(string.Format("item_{0}_quantity", i), OrderItems[i].ItemQty.ToString());
-                request.Add(string.Format("item_{0}_amount", i), (OrderItems[i].ItemAmount * 100).ToString());
+                request.Add(string.Format("item_{0}_quantity", i), OrderItems[i].ItemQty.ToString(CultureInfo.InvariantCulture));
+                request.Add(string.Format("item_{0}_amount", i), (OrderItems[i].ItemAmount * 100).ToString(CultureInfo.InvariantCulture));
             }
             request.Add("done_url", Config.DoneUrl);
             request.Add("notify_url", Config.NotifyUrl);

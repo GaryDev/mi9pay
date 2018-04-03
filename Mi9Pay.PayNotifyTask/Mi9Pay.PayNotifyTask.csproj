@@ -49,7 +49,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NotifyTaskBundle.cs" />
     <Compile Include="NotifyScheduleTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
